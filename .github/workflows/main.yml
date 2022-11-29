@@ -1,0 +1,30 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  format-lint:
+    name: Automatically format and lint code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install packages
+        run: npm ci
+      - name: Prettier
+        run: npm run format
+      - name: Lint
+        run: npm run lint
+  jest-run:
+    name: Runs Jest tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm i
+      - name: Run tests
+        run: npm run test:ci
