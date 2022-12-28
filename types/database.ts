@@ -58,3 +58,14 @@ export interface VolunteerProgramData {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface Employee {
+  _id: mongoose.Types.ObjectId;
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  status: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
