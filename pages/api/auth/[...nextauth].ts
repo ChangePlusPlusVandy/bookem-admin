@@ -45,7 +45,6 @@ export const authOptions = {
 
           // check if user's email exists in database
           const employee = await Employees.findOne({ email });
-          console.log(employee);
 
           // if user does not exist, return null
           if (!employee) return null;
@@ -56,7 +55,6 @@ export const authOptions = {
             password,
             employee.password
           );
-          console.log(checkPassword);
 
           // if password is incorrect, return null
           if (!checkPassword) return null;
