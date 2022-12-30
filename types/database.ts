@@ -32,7 +32,9 @@ export interface VolunteerLogData {
 export interface VolunteerProgramApplicationData {
   _id: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
+  user?: UserData;
   programId: mongoose.Types.ObjectId;
+  program?: VolunteerProgramData;
   formData: mongoose.Schema.Types.Mixed;
   createdAt: Date;
 }
