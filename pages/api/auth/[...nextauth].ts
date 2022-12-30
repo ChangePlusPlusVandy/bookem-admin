@@ -1,6 +1,6 @@
 // NextAuth documentation: https://next-auth.js.org/getting-started/example
 import dbConnect from 'lib/dbConnect';
-import Users from 'models/Users';
+import Employees from 'models/Employees';
 import NextAuth from 'next-auth/next';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
@@ -34,27 +34,41 @@ export const authOptions = {
       async authorize(credentials) {
         // if credentials do not exist, return null
         if (!credentials) return null;
+        console.log('Authorizing employee: ' + JSON.stringify(credentials));
 
         // get user email and password from credentials
         const { email, password } = credentials;
 
         // connect to database
-        await dbConnect();
+        try {
+          await dbConnect();
 
-        // check if user's email exists in database
-        const user = await Users.findOne({ email });
+          // check if user's email exists in database
+          const employee = await Employees.findOne({ email });
+          console.log(employee);
 
-        // if user does not exist, return null
-        if (!user) return null;
+          // if user does not exist, return null
+          if (!employee) return null;
+          console.log('Comparing with employee: ' + JSON.stringify(employee));
 
-        // compare password hash with database hash
-        const checkPassword = await bcrypt.compare(password, user.password);
+          // compare password hash with database hash
+          const checkPassword = await bcrypt.compare(
+            password,
+            employee.password
+          );
+          console.log(checkPassword);
 
-        // if password is incorrect, return null
-        if (!checkPassword) return null;
+          // if password is incorrect, return null
+          if (!checkPassword) return null;
 
-        // success. return user
-        return user;
+          // Check if employee no longer has access
+          if (employee.status === 0) return null;
+
+          // success. return user
+          return employee;
+        } catch (err) {
+          return null;
+        }
       },
     }),
     // Google docs: https://next-auth.js.org/providers/google
