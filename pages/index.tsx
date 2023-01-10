@@ -46,8 +46,6 @@ export default function Home() {
         <>
           <div>You have signed in as {session.user?.email}</div>
           <button onClick={() => signOut()}>Sign out</button>
-
-          {/* Display the list of users */}
           <UserTable
             headers={['Name', 'Email', 'Phone', 'Address']}
             users={users}
