@@ -67,7 +67,13 @@ export interface Employee {
   email: string;
   password: string;
   phone: string;
-  status: number;
+  status: EmployeeStatus;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export enum EmployeeStatus {
+  Forbidden = 'forbidden',
+  Employee = 'employee',
+  Administrator = 'Administrator',
 }

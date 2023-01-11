@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { EmployeeStatus } from 'types/database';
 
 // UserSchema describes what our documents should look like in our User collections
 const EmployeeSchema = new mongoose.Schema(
@@ -7,7 +8,12 @@ const EmployeeSchema = new mongoose.Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
     phone: { type: String, required: true },
-    status: { type: Number, required: true }, //0 = forbidden, 1 = employee, 2 = admin
+    status: {
+      type: EmployeeStatus,
+      default: EmployeeStatus.Employee,
+      required: true,
+      enum: EmployeeStatus,
+    },
   },
   {
     timestamps: {
