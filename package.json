@@ -13,13 +13,19 @@
     "test:ci": "jest --ci"
   },
   "dependencies": {
+    "@next-auth/mongodb-adapter": "^1.1.1",
+    "bcrypt": "^5.1.0",
+    "mongoose": "^6.7.5",
     "next": "13.0.5",
+    "next-auth": "^4.18.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-hook-form": "^7.40.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
+    "@types/bcrypt": "^5.0.0",
     "@types/node": "^18.11.9",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",

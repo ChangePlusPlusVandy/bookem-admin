@@ -1,13 +1,14 @@
-import { useSession, signOut } from 'next-auth/react';
-import styles from '@/styles/Home.module.css';
-import LoginPage from './LoginPage';
 import { UserTable } from '@/components/UserTable';
+import React from 'react';
 import { UserData } from 'types/database';
 import mongoose from 'mongoose';
 
-export default function Home() {
-  const { data: session, status } = useSession();
-
+/**
+ * Page used to test UserTable component
+ * Restructure is needed in the furture to add authentication before displaying the data
+ * @returns
+ */
+export default function Users() {
   //Dummy users
   const users: Array<UserData> = [
     {
@@ -37,21 +38,12 @@ export default function Home() {
       updatedAt: new Date(),
     },
   ];
-
   return (
-    <div className={styles.container}>
-      {status === 'loading' && <div>Loading...</div>}
-      {!session && <LoginPage />}
-      {session && (
-        <>
-          <div>You have signed in as {session.user?.email}</div>
-          <button onClick={() => signOut()}>Sign out</button>
-          <UserTable
-            headers={['Name', 'Email', 'Phone', 'Address']}
-            users={users}
-          />
-        </>
-      )}
+    <div>
+      <UserTable
+        headers={['Name', 'Email', 'Phone', 'Address']}
+        users={users}
+      />
     </div>
   );
 }
