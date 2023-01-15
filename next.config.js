@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
+  transpilePackages: ['bookem-shared'],
 };
 
 module.exports = nextConfig;
