@@ -1,6 +1,6 @@
 import { User } from 'next-auth';
 import React from 'react';
-import { UserData } from 'types/database';
+import { QueriedUserData as UserData } from 'bookem-shared/src/types/database';
 
 /**
  * Display users as a table
@@ -19,9 +19,11 @@ export const UserTable = ({
       <table>
         {/* Headers */}
         <thead>
-          {headers.map((header: string, index: number) => (
-            <th key={index}>{header}</th>
-          ))}
+          <tr>
+            {headers.map((header: string, index: number) => (
+              <th key={index}>{header}</th>
+            ))}
+          </tr>
         </thead>
 
         {/* Body: display each user's name, email, phone and address */}

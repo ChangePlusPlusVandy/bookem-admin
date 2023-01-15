@@ -1,6 +1,6 @@
 import { UserTable } from '@/components/UserTable';
 import React from 'react';
-import { UserData } from 'types/database';
+import { QueriedUserData as UserData } from 'bookem-shared/src/types/database';
 import mongoose from 'mongoose';
 
 /**

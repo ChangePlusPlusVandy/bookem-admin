@@ -1,6 +1,6 @@
 // NextAuth documentation: https://next-auth.js.org/getting-started/example
 import dbConnect from 'lib/dbConnect';
-import Employees from 'models/Employees';
+import Employees from 'bookem-shared/src/models/Employees';
 import NextAuth from 'next-auth/next';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
@@ -27,7 +27,7 @@ export const authOptions = {
         email: {
           label: 'Email',
           type: 'text',
-          placeholder: 'test_user@bookem.org',
+          placeholder: 'test_admin@bookem.org',
         },
         password: { label: 'Password', type: 'password' },
       },

@@ -1,6 +1,5 @@
-import VolunteerProgramApplications from 'models/VolunteerProgramApplications';
 import React from 'react';
-import { VolunteerProgramApplicationData } from 'types/database';
+import { QueriedVolunteerProgramApplicationDTO } from 'bookem-shared/src/types/database';
 
 //Display a list of program applications
 export const ProgramApplicationTable = ({
@@ -8,7 +7,7 @@ export const ProgramApplicationTable = ({
   applications,
 }: {
   headers: Array<string>;
-  applications: Array<VolunteerProgramApplicationData>;
+  applications: Array<QueriedVolunteerProgramApplicationDTO>;
 }) => {
   return (
     <div>
@@ -16,23 +15,27 @@ export const ProgramApplicationTable = ({
       <table>
         {/* Headers */}
         <thead>
-          {headers.map((header: string, index: number) => (
-            <th key={index}>{header}</th>
-          ))}
+          <tr>
+            {headers.map((header: string, index: number) => (
+              <th key={index}>{header}</th>
+            ))}
+          </tr>
         </thead>
 
         {/* Body: display each user's name, email, phone and address */}
         <tbody>
-          {applications.map((application: VolunteerProgramApplicationData) => {
-            return (
-              <tr key={application._id.toJSON()}>
-                <td>{application.user?.name}</td>
-                <td>{application.user?.email}</td>
-                <td>{application.program?.name}</td>
-                <td>{application.program?.programDate.getDate()}</td>
-              </tr>
-            );
-          })}
+          {applications.map(
+            (application: QueriedVolunteerProgramApplicationDTO) => {
+              return (
+                <tr key={application._id.toJSON()}>
+                  <td>{application.user?.name}</td>
+                  <td>{application.user?.email}</td>
+                  <td>{application.program?.name}</td>
+                  <td>{application.program?.programDate.getDate()}</td>
+                </tr>
+              );
+            }
+          )}
         </tbody>
       </table>
     </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { VolunteerProgramApplicationData } from 'types/database';
+import { QueriedVolunteerProgramApplicationDTO as VolunteerProgramApplicationData } from 'bookem-shared/src/types/database';
 import mongoose from 'mongoose';
 import { ProgramApplicationTable } from '@/components/ProgramApplicationTable';
 
