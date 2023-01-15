@@ -12,7 +12,7 @@
     "test": "jest --watch",
     "test:ci": "jest --ci"
   },
-"dependencies": {
+  "dependencies": {
     "@next-auth/mongodb-adapter": "^1.1.1",
     "bcrypt": "^5.1.0",
     "bookem-shared": "github:ChangePlusPlusVandy/bookem-shared",
