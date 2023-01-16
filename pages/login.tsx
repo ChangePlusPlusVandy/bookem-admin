@@ -1,17 +1,19 @@
 import React from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
-import { signIn } from 'next-auth/react';
+import { getSession, GetSessionParams, signIn } from 'next-auth/react';
 
 const LoginPage = () => {
+  //React hook form
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
+  //Function to handle login and redirect
   const handleLogin = async (data: FieldValues) => {
     const status = await signIn('credentials', {
-      redirect: false,
+      redirect: true,
       email: data.email,
       password: data.password,
     });
@@ -46,3 +48,23 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+export async function getServerSideProps(context: GetSessionParams) {
+  const session = await getSession(context);
+
+  // If the user is already logged in, redirect to the home page.
+  if (session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: true,
+      },
+    };
+  }
+
+  // If the user is not logged in, show the login page.
+  return {
+    props: {
+      session,
+    },
+  };
+}

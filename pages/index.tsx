@@ -1,6 +1,6 @@
 import { useSession, signOut } from 'next-auth/react';
 import styles from '@/styles/Home.module.css';
-import LoginPage from './LoginPage';
+import LoginPage from './login';
 import { UserTable } from '@/components/UserTable';
 import { QueriedUserData as UserData } from 'bookem-shared/src/types/database';
 import mongoose from 'mongoose';
@@ -20,3 +20,6 @@ export default function Home() {
     </div>
   );
 }
+
+// perform automatic redirection to login page if user not logged in.
+export { getServerSideProps } from '@/lib/getServerSideProps';
