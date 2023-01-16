@@ -48,5 +48,5 @@ export default function Users() {
   );
 }
 
-// // perform automatic redirection to login page if user not logged in.
+// perform automatic redirection to login page if user not logged in.
 export { getServerSideProps } from '@/lib/getServerSideProps';
