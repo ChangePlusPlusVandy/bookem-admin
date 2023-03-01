@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, Table, TableProps } from 'antd';
+import { Input, Table, TableProps, Tag } from 'antd';
 
 // VolunteerTable with dummy data (for now)
 
@@ -11,7 +11,7 @@ const VolunteerTable = () => {
       lastName: 'Jones',
       phone: '724-704-1663',
       email: 'test_user@bookem.org',
-      tags: 'RFR',
+      tags: ['RFR'],
     },
     {
       key: '2',
@@ -19,7 +19,7 @@ const VolunteerTable = () => {
       lastName: 'Nesmith',
       phone: '212-359-0913',
       email: 'test_user2@bookem.org',
-      tags: 'RIF',
+      tags: ['RIF'],
     },
   ];
 
@@ -48,6 +48,28 @@ const VolunteerTable = () => {
       title: 'Tags',
       dataIndex: 'tags',
       key: 'tags',
+      render: (_: any, { tags }: any) => (
+        <>
+          {tags.map((tag: string) => {
+            try {
+              let color = 'green';
+              if (tag.toLowerCase() === 'rfr') {
+                color = 'blue';
+              }
+              if (tag === 'rif') {
+                color = 'volcano';
+              }
+              return (
+                <Tag color={color} key={tag}>
+                  {tag.toUpperCase()}
+                </Tag>
+              );
+            } catch (e: any) {
+              console.log('Error loading tags: ' + e.what());
+            }
+          })}
+        </>
+      ),
       filters: [
         {
           text: 'RFR',
@@ -59,7 +81,7 @@ const VolunteerTable = () => {
         },
       ],
       onFilter: (value: string, record: { tags: string }) =>
-        record.tags.startsWith(value),
+        record.tags.includes(value),
     },
     {
       title: 'See More',
