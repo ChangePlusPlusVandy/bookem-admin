@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@next-auth/mongodb-adapter": "^1.1.1",
+    "antd": "^5.2.3",
     "bcrypt": "^5.1.0",
     "bookem-shared": "github:ChangePlusPlusVandy/bookem-shared",
     "mongodb": "^4.11.0",
