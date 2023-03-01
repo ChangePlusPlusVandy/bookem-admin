@@ -1,17 +1,19 @@
 import React from 'react';
 import { Table } from 'antd';
 
+// VolunteerTable with dummy data (for now)
+
 const VolunteerTable = () => {
   const columns = [
     {
       title: 'First Name',
-      dataIndex: 'first-name',
-      key: 'first-name',
+      dataIndex: 'firstName',
+      key: 'firstName',
     },
     {
       title: 'Last Name',
-      dataIndex: 'last-name',
-      key: 'last-name',
+      dataIndex: 'lastName',
+      key: 'lastName',
     },
     {
       title: 'Phone',
@@ -30,23 +32,27 @@ const VolunteerTable = () => {
     },
     {
       title: 'See More',
-      dataIndex: 'see-more',
-      key: 'see-more',
+      dataIndex: 'seeMore',
+      key: 'seeMore',
     },
   ];
 
   const dataSource = [
     {
       key: '1',
-      name: 'Mike',
-      age: 32,
-      address: '10 Downing Street',
+      firstName: 'Davy',
+      lastName: 'Jones',
+      phone: '724-704-1663',
+      email: 'test_user@bookem.org',
+      tags: 'RFR',
     },
     {
       key: '2',
-      name: 'John',
-      age: 42,
-      address: '10 Downing Street',
+      firstName: 'Mike',
+      lastName: 'Nesmith',
+      phone: '212-359-0913',
+      email: 'test_user2@bookem.org',
+      tags: 'RIF',
     },
   ];
 
