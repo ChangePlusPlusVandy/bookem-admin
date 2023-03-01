@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Input, Space, Table, TableProps, Tag } from 'antd';
+import { Button, Input, Space, Table, TableProps, Tag } from 'antd';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 // VolunteerTable with dummy data (for now)
 
@@ -66,20 +68,7 @@ const columns: any = [
   {
     dataIndex: 'seeMore',
     key: 'seeMore',
-    render: (
-      _: any,
-      record: {
-        name:
-          | string
-          | number
-          | boolean
-          | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-          | React.ReactFragment
-          | React.ReactPortal
-          | null
-          | undefined;
-      }
-    ) => (
+    render: (_: any) => (
       <Space size="middle">
         <a>See More</a>
       </Space>
@@ -122,20 +111,37 @@ const VolunteerTable = () => {
     setFilterTable(filterTable);
   };
 
+  const handleExport = () => {
+    const workbook = XLSX.utils.table_to_book(
+      document.querySelector('#table-container table')
+    );
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
+    const blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    saveAs(blob, 'volunteers.xlsx');
+  };
+
   return (
     <>
       <div>
         <Input.Search
-          // style={{ border: "3px solid red", margin: "0 0 10px 0" }}
           placeholder="Search "
           enterButton
           onSearch={onTableSearch}
         />
       </div>
       <div>
-        <Table
-          dataSource={filterTable === null ? baseData : filterTable}
-          columns={columns}></Table>
+        <div id="table-container">
+          <Table
+            dataSource={filterTable === null ? baseData : filterTable}
+            columns={columns}
+          />
+        </div>
+        <Button onClick={handleExport}>Export to Excel</Button>
       </div>
     </>
   );
