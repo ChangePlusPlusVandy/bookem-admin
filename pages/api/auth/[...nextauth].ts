@@ -8,6 +8,8 @@ import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
 import clientPromise from 'lib/mongodb';
 import bcrypt from 'bcrypt';
 import { SessionStrategy } from 'next-auth/core/types';
+import { JWT } from 'next-auth/jwt';
+import { QueriedEmployeeData } from 'bookem-shared/src/types/database';
 
 const sessionStrategy: SessionStrategy = 'jwt';
 
@@ -34,7 +36,6 @@ export const authOptions = {
       async authorize(credentials) {
         // if credentials do not exist, return null
         if (!credentials) return null;
-        console.log('Authorizing employee: ' + JSON.stringify(credentials));
 
         // get user email and password from credentials
         const { email, password } = credentials;
@@ -48,7 +49,6 @@ export const authOptions = {
 
           // if user does not exist, return null
           if (!employee) return null;
-          console.log('Comparing with employee: ' + JSON.stringify(employee));
 
           // compare password hash with database hash
           const checkPassword = await bcrypt.compare(
@@ -75,35 +75,48 @@ export const authOptions = {
       clientSecret: process.env.GOOGLE_SECRET || '',
     }),
   ],
-  // callbacks: {
-  //   async session(session: { user: UserData; token: any }, token: any) {
-  //     //session.accessToken = token.accessToken;
-  //     console.log('Session token');
-  //     console.log(token);
-  //     if (userAccount !== null) {
-  //       session.user = userAccount;
-  //     } else if (typeof token !== typeof undefined) {
-  //       session.token = token;
-  //     }
-  //     console.log('session callback returning');
-  //     console.log(session);
-  //     return session;
-  //   },
-  //   async jwt(
-  //     token: { user: any },
-  //     user: any,
-  //     account: any,
-  //     profile: any,
-  //     isNewUser: any
-  //   ) {
-  //     console.log('JWT Token User');
-  //     console.log(token.user);
-  //     if (typeof user !== typeof undefined) {
-  //       token.user = user;
-  //     }
-  //     return token;
-  //   },
-  // },
+  pages: {
+    // Configure the route for signin page
+    signIn: '/login',
+  },
+
+  callbacks: {
+    /**
+     * Update session's user.id with token.uid
+     * @param session
+     * @param token Contains user id
+     * @returns session with user.id inside
+     */
+    async session({ session, token }: { session: any; token: any }) {
+      if (session?.user) {
+        session.user._id = token.uid;
+        session.user.status = token.status;
+      }
+
+      console.log(session?.user);
+      return session;
+    },
+
+    /**
+     * Put user id inside JWT token
+     * @param token JWT token
+     * @param user Logged in user
+     * @returns JWT token with user's id encrypted inside
+     */
+    async jwt({
+      token,
+      user,
+    }: {
+      token: JWT;
+      user?: QueriedEmployeeData | any;
+    }) {
+      if (user) {
+        token.uid = user._id;
+        token.status = user.status;
+      }
+      return token;
+    },
+  },
 };
 
 export default NextAuth(authOptions);
