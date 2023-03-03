@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Input, Space, Table, TableProps, Tag } from 'antd';
+import { Button, Input, Space, Table, Tag, Typography } from 'antd';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
@@ -98,10 +98,9 @@ const data: any = [
 const VolunteerTable = () => {
   const [filterTable, setFilterTable] = useState(null);
   const [baseData] = useState(data);
+  const [totalVolunteers, setTotalVolunteers] = useState(data.length);
 
   const onTableSearch = (value: string) => {
-    // console.log("PASS", { value });
-
     let filterTable = baseData.filter((o: { [x: string]: any }) =>
       Object.keys(o).some(k =>
         String(o[k]).toLowerCase().includes(value.toLowerCase())
@@ -109,6 +108,7 @@ const VolunteerTable = () => {
     );
 
     setFilterTable(filterTable);
+    setTotalVolunteers(filterTable.length);
   };
 
   const handleExport = () => {
@@ -142,6 +142,9 @@ const VolunteerTable = () => {
           />
         </div>
         <Button onClick={handleExport}>Export to Excel</Button>
+      </div>
+      <div>
+        <Typography>Total volunteers: {totalVolunteers}</Typography>
       </div>
     </>
   );
