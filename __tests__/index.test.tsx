@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { useSession } from 'next-auth/react';
-import Home from '@/pages/index';
+import HomePage from '@/pages/index';
 jest.mock('next-auth/react');
 
 describe('Home', () => {
@@ -17,7 +17,7 @@ describe('Home', () => {
     ]);
 
     // renders the component
-    const { container } = render(<Home />);
+    const { container } = render(<HomePage />);
 
     // expect the component to contain the text "This is the Bookem Admin page"
     // expect the screen now to have a login message

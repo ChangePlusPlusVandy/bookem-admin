@@ -5,7 +5,7 @@ import NextAuth from 'next-auth/next';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
-import clientPromise from 'lib/mongodb';
+import clientPromise from '@/lib/mongodb';
 import bcrypt from 'bcrypt';
 import { SessionStrategy } from 'next-auth/core/types';
 import { JWT } from 'next-auth/jwt';
