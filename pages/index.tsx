@@ -1,9 +1,8 @@
 import { signOut } from 'next-auth/react';
-import styles from '@/styles/Home.module.css';
 
 const HomePage = () => {
   return (
-    <div className={styles.container}>
+    <div>
       <>
         <div>You have signed in</div>
         <button onClick={() => signOut()}>Sign out</button>
