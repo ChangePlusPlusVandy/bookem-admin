@@ -48,6 +48,8 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+// redirect to home page if user is already logged in
 export async function getServerSideProps(context: GetSessionParams) {
   const session = await getSession(context);
 

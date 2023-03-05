@@ -1,4 +1,4 @@
-import { signOut, useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import styles from '@/styles/Home.module.css';
 
 const HomePage = () => {
