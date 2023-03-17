@@ -7,7 +7,7 @@ import ProgramName from '@/components/Event/ProgramName';
 import TimeAndPlace from '@/components/Event/TimeAndPlace';
 import About from '@/components/Event/About';
 import Contact from '@/components/Event/Contact';
-import EditEventPopupform from '@/components/Event/EditEventPopupForm';
+import EditEventPopupWindowForm from '@/components/Forms/EditEventPopupWindowForm';
 import {
   BottomBox,
   EditButton,
@@ -35,7 +35,7 @@ const Event = ({ event }: { event: QueriedVolunteerProgramData }) => {
       </EditButton>
 
       {/* edit button */}
-      {showPopup && <EditEventPopupform setShowPopup={setShowPopup} />}
+      {showPopup && <EditEventPopupWindowForm setShowPopup={setShowPopup} />}
 
       <Header />
 

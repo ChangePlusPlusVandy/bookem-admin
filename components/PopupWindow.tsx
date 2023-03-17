@@ -4,13 +4,9 @@ import {
   Container,
   CloseButton,
 } from '@/styles/popupWindow.styles';
+import { PopupWindowProps } from '@/utils/types';
 
-type Props = {
-  hidePopup: () => void;
-  children: JSX.Element;
-};
-
-export const PopupWindow = ({ hidePopup, children }: Props) => {
+export const PopupWindow = ({ hidePopup, children }: PopupWindowProps) => {
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef);
 

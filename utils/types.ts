@@ -14,3 +14,8 @@ export interface SidebarIconParams {
   hoveredsrc: string;
   linkTo: string;
 }
+
+export interface PopupWindowProps {
+  hidePopup: () => void;
+  children: JSX.Element;
+}
