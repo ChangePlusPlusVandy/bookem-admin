@@ -1,41 +1,19 @@
 import { QueriedVolunteerProgramData } from 'bookem-shared/src/types/database';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import styled from 'styled-components';
-import Header from './Header';
-import BookIcon from './BookIcon';
-import ProgramName from './ProgramName';
-import TimeAndPlace from './TimeAndPlace';
-import About from './About';
-import Contact from './Contact';
-import EditEventPopupform from './EditEventPopupForm';
-import { EditButton } from '@/styles/event.styles';
-
-/**
- * Contain everything
- */
-const EventBox = styled.div`
-  width: 100%;
-  padding: 50px;
-`;
-
-/**
- * Contains the book icon and the program name info
- */
-const MiddleBox = styled.div`
-  display: flex;
-  margin-top: 45px;
-  margin-left: 30px;
-`;
-
-/**
- * Contain About and Contact info
- */
-const BottomBox = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  margin-top: 51px;
-`;
+import Header from '@/components/Event/Header';
+import BookIcon from '@/components/Event/BookIcon';
+import ProgramName from '@/components/Event/ProgramName';
+import TimeAndPlace from '@/components/Event/TimeAndPlace';
+import About from '@/components/Event/About';
+import Contact from '@/components/Event/Contact';
+import EditEventPopupform from '@/components/Event/EditEventPopupForm';
+import {
+  BottomBox,
+  EditButton,
+  EventBox,
+  MiddleBox,
+} from '@/styles/components/Event/event.styles';
 
 /**
  * Event Detail
@@ -46,20 +24,20 @@ const Event = ({ event }: { event: QueriedVolunteerProgramData }) => {
 
   return (
     <EventBox>
-      <Header>
-        <EditButton onClick={() => setShowPopup(true)}>
-          <Image
-            src="/event/pencil.png"
-            alt="Pencil icon"
-            width="50"
-            height="50"
-          />
-          Edit
-        </EditButton>
-      </Header>
+      <EditButton onClick={() => setShowPopup(prev => !prev)}>
+        <Image
+          src="/event/pencil.png"
+          alt="Pencil icon"
+          width="20"
+          height="20"
+        />
+        Edit
+      </EditButton>
 
       {/* edit button */}
       {showPopup && <EditEventPopupform setShowPopup={setShowPopup} />}
+
+      <Header />
 
       {/* Book Icon and Program name */}
       <MiddleBox>
@@ -73,7 +51,7 @@ const Event = ({ event }: { event: QueriedVolunteerProgramData }) => {
       {/* Program Description and Contact Info */}
       <BottomBox>
         <About description={event.description} />
-        <Contact />
+        <Contact phone={event.phone} email={event.email} />
       </BottomBox>
     </EventBox>
   );

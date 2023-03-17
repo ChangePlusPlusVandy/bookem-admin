@@ -1,16 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
-
-const AboutBox = styled.div`
-  width: 700px;
-`;
-
-const AboutHeader = styled.div`
-  font-size: 30px;
-`;
-const AboutContent = styled.div`
-  margin-top: 33px;
-`;
+import {
+  AboutBox,
+  AboutContent,
+  AboutHeader,
+} from '@/styles/components/Event/about.styles';
 
 /**
  * Contains the program description
