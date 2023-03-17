@@ -1,5 +1,5 @@
 import React from 'react';
-// import { UserIcon } from '@/components/UserIcon';
+import { UserIcon } from '@/components/Sidebar/UserIcon';
 import { useActiveRoute } from '@/lib/useActiveRoute';
 import {
   IconContainer,
@@ -19,8 +19,7 @@ export const Sidebar = () => {
   return (
     <Container>
       <IconContainer>
-        {/*  */}
-        {/* <UserIcon /> */}
+        <UserIcon />
       </IconContainer>
 
       {/* Iterate through iconParamList to display icons */}
