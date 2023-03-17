@@ -1,4 +1,4 @@
-import { IconParams } from '@/utils/types';
+import { SidebarIconParams } from '@/utils/types';
 
 /**
  * Default width of icons
@@ -13,7 +13,7 @@ export const SIDEBAR_ICON_HEIGHT = 42.47;
 /**
  * List of IconParams
  */
-export const SIDEBAR_ICON_PARAMS: IconParams[] = [
+export const SIDEBAR_ICON_PARAMS: SidebarIconParams[] = [
   {
     defaultSrc: '/sidebar/home-white.png',
     hoveredsrc: '/sidebar/home-black.png',
@@ -35,3 +35,13 @@ export const SIDEBAR_ICON_PARAMS: IconParams[] = [
     linkTo: '/settings',
   },
 ];
+
+/**
+ * Default width of event contact icons
+ */
+export const EVENT_CONTACT_ICON_WIDTH = 23;
+
+/**
+ * Default height of event contact icons
+ */
+export const EVENT_CONTACT_ICON_HEIGHT = 23;
