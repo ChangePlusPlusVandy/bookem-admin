@@ -1,22 +1,12 @@
-import { SideBar } from '@/components/SideBar';
 import styled from 'styled-components';
 
-const Container = styled.div`
+export const Container = styled.div`
   height: 100vh;
   width: 100vw;
   display: flex;
 `;
 
-const Subcontainer = styled.div`
+export const MainContent = styled.div`
   width: calc(100vw - 120px);
   overflow-y: scroll;
 `;
-
-export const Layout = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <Container>
-      <SideBar />
-      <Subcontainer>{children}</Subcontainer>
-    </Container>
-  );
-};
