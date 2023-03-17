@@ -1,53 +1,42 @@
 import Event from '@/components/Event/Event';
 import { QueriedVolunteerProgramData } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import mongoose from 'mongoose';
+import { useEffect, useState } from 'react';
 
+/**
+ * Event Detail Page
+ * @returns
+ */
 const EventDetail = () => {
   const router = useRouter();
   const { pid } = router.query;
 
-  const [event, setEvent] = useState<QueriedVolunteerProgramData>({
-    _id: new mongoose.Types.ObjectId(),
-    name: 'Default Event',
-    description:
-      "Book'em partners with Habitat for Humanity of Greater Nashville to provide books to children moving into their new homes. Books are handpicked, bundled, and personalized with a name tag before being taken to home dedication sites.",
-    programDate: new Date('October 20, 2014 11:13:00'),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    volunteers: [new mongoose.Types.ObjectId()],
-    isOpen: false,
-    category: 'RFR',
-    email: 'test_user@bookem.org',
-    location: '2301 Vanderbilt Place',
-    maxSpot: 10,
-    phone: '(615)555-5555',
-  });
+  const [event, setEvent] = useState<QueriedVolunteerProgramData>();
+  const [error, setError] = useState<Error>();
 
+  // use simple fetch to fetch when component is mounted
   useEffect(() => {
-    //Fetch the data using pid
-    setEvent({
-      _id: new mongoose.Types.ObjectId(),
-      name: 'Example Event',
-      description:
-        "Book'em partners with Habitat for Humanity of Greater Nashville to provide books to children moving into their new homes. Books are handpicked, bundled, and personalized with a name tag before being taken to home dedication sites.",
-      programDate: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      volunteers: [new mongoose.Types.ObjectId()],
-      isOpen: false,
-      category: 'RFR',
-      email: 'test_user@bookem.org',
-      location: '2301 Vanderbilt Place',
-      maxSpot: 10,
-      phone: '(615)555-5555',
-    });
-  }, [pid]);
+    if (pid) {
+      fetch('/api/event/' + pid)
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(
+              'An error has occurred while fetching: ' + res.statusText
+            );
+          }
+          return res.json();
+        })
+        .then(data => setEvent(data))
+        .catch(err => setError(err));
+    } else setError(new Error('No pid found'));
+  }, []);
 
   return (
     <>
-      <Event event={event} />
+      {/* TODO: render 404 page */}
+      {error && <>404 Event not found!</>}
+      {!event && !error && <div>Loading...</div>}
+      {event && <Event event={event} />}
     </>
   );
 };
