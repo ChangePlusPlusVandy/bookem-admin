@@ -48,7 +48,12 @@ const Event = ({ event }: { event: QueriedVolunteerProgramData }) => {
     <EventBox>
       <Header>
         <EditButton onClick={() => setShowPopup(true)}>
-          <Image src="/pencil.png" alt="Pencil icon" width="50" height="50" />
+          <Image
+            src="/event/pencil.png"
+            alt="Pencil icon"
+            width="50"
+            height="50"
+          />
           Edit
         </EditButton>
       </Header>
