@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import Image from 'next/image';
 
 export const IconContainer = styled.div`
   display: flex;
@@ -11,5 +10,3 @@ export const IconContainer = styled.div`
   border-radius: 50%;
   border: 10px solid #5a5a5a;
 `;
-
-export const Icon = styled(Image)``;

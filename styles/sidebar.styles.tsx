@@ -51,8 +51,3 @@ export const IconLink = styled(Link)<{
     }
   }
 `;
-
-/**
- * Icon image
- */
-export const Icon = styled(Image)``;
