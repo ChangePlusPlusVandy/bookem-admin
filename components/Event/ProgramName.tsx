@@ -4,15 +4,12 @@ import {
   ProgramNameBox,
   NameAndSpot,
 } from '@/styles/components/Event/programName.styles';
-import { useSession } from 'next-auth/react';
 
 /**
  * Contain the Program name and sign up button
  * @param program
  */
 const ProgramName = ({ program }: { program: QueriedVolunteerProgramData }) => {
-  const { data: session } = useSession();
-
   /**
    * Calculate the length of the program volunteers
    * If program.volunteers is undefined, return 0
