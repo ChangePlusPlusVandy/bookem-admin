@@ -1,86 +1,43 @@
-import Image from 'next/image';
+import { convertToDate, getTime } from '@/utils/utils';
 import React from 'react';
-import styled from 'styled-components';
+import Image from 'next/image';
 
-const TimeAndPlaceBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  height: 50px;
-  margin-top: 20px;
-`;
-
-/**
- * Contains the Icon + text
- */
-const IconBox = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const Icon = styled(Image)``;
-
-const IconText = styled.span`
-  margin-left: 20px;
-  font-size: 18px;
-`;
-
-/**
- * Parameter of each icon + text box
- * @src src for the icon image
- * @text text associated with that icon
- */
-interface IconParams {
-  src: string;
-  text: string;
-}
+import {
+  TimeAndPlaceBox,
+  IconBox,
+  IconText,
+} from '@/styles/components/Event/timeAndPlace.styles';
 
 /**
  * Contain Program's date and location
  * @param programDate
  */
-const TimeAndPlace = ({ programDate }: { programDate: Date }) => {
-  const iconWidth = 50;
-  const iconHeight = 50;
-
-  /**
-   * List of icon params
-   */
-  const iconParamList: IconParams[] = [
-    {
-      src: '/event/calendar.png',
-      text: programDate.toLocaleString('default', {
-        month: 'long',
-        year: 'numeric',
-        day: 'numeric',
-      }),
-    },
-    {
-      src: '/event/clock.png',
-      text: programDate.getHours() + ':' + programDate.getMinutes(),
-    },
-    {
-      src: '/event/map-pin.png',
-      text: '3593 Cedar Rd. Nashville',
-    },
-  ];
-
+const TimeAndPlace = ({
+  programDate,
+  location,
+}: {
+  programDate: Date;
+  location: string;
+}) => {
   return (
     <TimeAndPlaceBox>
-      {/* Iterate through iconParamList to produce a list of icon + text */}
-      {iconParamList.map(iconParam => {
-        return (
-          <IconBox key={iconParam.src}>
-            <Icon
-              src={iconParam.src}
-              alt=""
-              width={iconWidth}
-              height={iconHeight}></Icon>
-            <IconText>{iconParam.text}</IconText>
-          </IconBox>
-        );
-      })}
+      {/* Calendar */}
+      <IconBox>
+        <Image src={'/event/calendar.png'} alt="" width={50} height={50} />
+        <IconText>{convertToDate(programDate.toString())}</IconText>
+      </IconBox>
+
+      {/* Clock */}
+      <IconBox>
+        <Image src={'/event/clock.png'} alt="" width={50} height={50} />
+        <IconText>{getTime(programDate.toString())}</IconText>
+      </IconBox>
+
+      {/* Location */}
+      <IconBox>
+        <Image src={'/event/map-pin.png'} alt="" width={50} height={50} />
+        <IconText>{location}</IconText>
+      </IconBox>
     </TimeAndPlaceBox>
   );
 };

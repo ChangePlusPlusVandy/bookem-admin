@@ -46,7 +46,7 @@ const Event = ({ event }: { event: QueriedVolunteerProgramData }) => {
       </MiddleBox>
 
       {/* Time and Place of the program */}
-      <TimeAndPlace programDate={event.programDate} />
+      <TimeAndPlace programDate={event.programDate} location={event.location} />
 
       {/* Program Description and Contact Info */}
       <BottomBox>
