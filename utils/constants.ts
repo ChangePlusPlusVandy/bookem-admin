@@ -20,19 +20,14 @@ export const SIDEBAR_ICON_PARAMS: IconParams[] = [
     linkTo: '/',
   },
   {
-    defaultSrc: '/sidebar/hand-shake-white.png',
-    hoveredsrc: '/sidebar/hand-shake-black.png',
+    defaultSrc: '/sidebar/volunteer-management-white.png',
+    hoveredsrc: '/sidebar/volunteer-management-black.png',
     linkTo: '/volunteer',
   },
   {
-    defaultSrc: '/sidebar/currency-dollar-white.png',
-    hoveredsrc: '/sidebar/currency-dollar-black.png',
-    linkTo: '/donate',
-  },
-  {
-    defaultSrc: '/sidebar/book-open-white.png',
-    hoveredsrc: '/sidebar/book-open-black.png',
-    linkTo: '/request',
+    defaultSrc: '/sidebar/program-management-white.png',
+    hoveredsrc: '/sidebar/program-management-black.png',
+    linkTo: '/program',
   },
   {
     defaultSrc: '/sidebar/setting-white.png',
