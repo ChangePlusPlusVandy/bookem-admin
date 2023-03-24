@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Input, Space, Table, Tag, Typography } from 'antd';
+import { Button, Input, Space, Table, TableProps, Tag, Typography } from 'antd';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import useSWR from 'swr';
 import { UserData } from 'bookem-shared/src/types/database';
+import {
+  BottomRow,
+  Header,
+  SearchContainter,
+  StyledTable,
+  StyledTypography,
+  TableContainer,
+} from '@/styles/volunteerTable.styles';
 
 interface VolunteerRowData {
   key: number;
@@ -89,15 +97,15 @@ const fetcher = (url: string) => fetch(url).then(res => res.json());
 const VolunteerTable = () => {
   const { data, error, isLoading } = useSWR<UserData[]>('/api/users/', fetcher);
 
-  const [dataForTable, setDataForTable] = useState<VolunteerRowData[]>([]);
-
   useEffect(() => {
-    if (data) {
+    console.log(data);
+    if (!isLoading && data) {
       setDataForTable(convertUserDataToRowData(data));
     }
-  }, []);
+  }, [data, isLoading]);
 
-  const [filterTable, setFilterTable] = useState<any>(null);
+  const [dataForTable, setDataForTable] = useState<VolunteerRowData[]>([]);
+  const [filterTable, setFilterTable] = useState<VolunteerRowData[]>([]);
   const [totalVolunteers, setTotalVolunteers] = useState(dataForTable.length);
 
   // check for errors and loading
@@ -134,24 +142,41 @@ const VolunteerTable = () => {
   return (
     <>
       <div>
-        <Input.Search
-          placeholder="Search "
-          enterButton
-          onSearch={onTableSearch}
-        />
+        <Header>Volunteer Management</Header>
+        <SearchContainter>
+          <Input.Search
+            placeholder="Search "
+            onSearch={onTableSearch}
+            style={{ width: 800 }}
+            allowClear
+          />
+          <Button
+            onClick={handleExport}
+            style={{
+              width: 250,
+              marginLeft: 90,
+              backgroundColor: 'darkgray',
+              color: 'whitesmoke',
+            }}>
+            Export
+          </Button>
+        </SearchContainter>
       </div>
-      <div>
+      <TableContainer>
         <div id="table-container">
-          <Table
+          <StyledTable
             dataSource={filterTable === null ? dataForTable : filterTable}
             columns={columns}
+            pagination={false}
+            scroll={{ y: 550 }}
           />
         </div>
-        <Button onClick={handleExport}>Export to Excel</Button>
-      </div>
-      <div>
-        <Typography>Total volunteers: {totalVolunteers}</Typography>
-      </div>
+        <BottomRow>
+          <StyledTypography>
+            Total volunteers: {totalVolunteers}
+          </StyledTypography>
+        </BottomRow>
+      </TableContainer>
     </>
   );
 };
