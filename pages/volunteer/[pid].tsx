@@ -9,11 +9,36 @@ import mongoose from 'mongoose';
 import { setEnvironmentData } from 'worker_threads';
 
 const Header = styled.div`
+  width: 100%;
   padding: 60px;
-  font-size: 30px;
   height: 9vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   margin-bottom: 1vh;
   align-items: center;
+`;
+
+const HeaderText = styled.p`
+  font-size: 30px;
+`;
+
+const Export = styled.button`
+  border: none;
+  height: 40px;
+  width: 150px;
+  border-radius: 10px;
+  &:hover {
+    background-color: gray;
+  }
+`;
+const GeneralSection = styled.div`
+  margin-left: 20px;
+`;
+
+const GeneralSectionHeader = styled.p`
+  font-weight: bold;
+  font-size: 18px;
 `;
 
 const SectionHeader = styled.div`
@@ -21,15 +46,14 @@ const SectionHeader = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex: none;
   top: 0px;
   position: sticky;
   justify-self: flex-start;
-  background-color: gray;
+  background-color: #e3e3e3;
   height: 40px;
-  padding: 2px;
-  border-radius: 20px;
-  padding: auto;
-  color: white;
+  border: solid 5px #e3e3e3;
+  border-radius: 10px 0px 0px;
   z-index: 5;
 `;
 const Container = styled.div`
@@ -49,7 +73,7 @@ const Body = styled.div`
 `;
 const Info = styled.p`
   margin: 0 auto;
-  font-size: 20px;
+  font-size: 18px;
 `;
 
 const ProgramNotes = styled.div`
@@ -59,7 +83,7 @@ const ProgramNotes = styled.div`
   align-items: center;
   justify-content: space-between;
   overflow-y: hidden;
-  border-radius: 20px;
+  border-radius: 10px;
   width: 30%;
 `;
 
@@ -68,10 +92,11 @@ const StackedBoxes = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
-  border: solid black 1px;
-  border-radius: 20px;
-  padding: 20px;
+  justify-content: start;
+  border: solid #e3e3e3 1px;
+  border-radius: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
   width: 100%;
 `;
 const Section = styled.div`
@@ -79,17 +104,28 @@ const Section = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  border: solid black 1px;
+  border: solid #e3e3e3 1px;
   overflow-y: auto;
-  border-radius: 20px;
+  overflow-x: hidden;
+  border-radius: 10px;
   width: 25%;
   border-top: none;
 `;
 
 const IndividualHours = styled.div`
-  border-bottom: solid black 1px;
+  border-bottom: solid #e3e3e3 1px;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  padding: 20px;
+  font-size: 18px;
+  gap: 10px;
+  padding: 20px 40px;
+`;
+
+const EventTitle = styled.p`
+  margin: 0px;
+  font-size: 18px;
+  font-weight: bold;
 `;
 const Application = styled.div``;
 const RifNotes = styled.div``;
@@ -163,17 +199,36 @@ export default function Volunteer() {
 
   return (
     <Container>
-      {userInfoLoaded && <Header>{userInfo.name}</Header>}
+      {userInfoLoaded && (
+        <Header>
+          <HeaderText>{userInfo.name}</HeaderText> <Export>Export</Export>
+        </Header>
+      )}
       <Body>
         {userInfoLoaded && (
           <Section>
             <SectionHeader> General Info </SectionHeader>
-            <Info>{userInfo.email}</Info>
-            <Info>{userInfo.phone}</Info>
-            <Info>{userInfo.address}</Info>
-            <Info>{userInfo.ethnicity}</Info>
-            <Info>{userInfo.gender}</Info>
-            <Info>{userInfo.sourceHeardFrom}</Info>
+            <GeneralSection>
+              <GeneralSectionHeader>Contact</GeneralSectionHeader>
+              <Info>{userInfo.email}</Info>
+              <Info>{userInfo.phone}</Info>
+            </GeneralSection>
+            <GeneralSection>
+              <GeneralSectionHeader>Ethnicity</GeneralSectionHeader>
+              <Info>{userInfo.ethnicity}</Info>
+            </GeneralSection>
+            <GeneralSection>
+              <GeneralSectionHeader>Gender</GeneralSectionHeader>
+              <Info>{userInfo.gender}</Info>
+            </GeneralSection>
+            <GeneralSection>
+              <GeneralSectionHeader>Address</GeneralSectionHeader>
+              <Info>{userInfo.address}</Info>
+            </GeneralSection>
+            <GeneralSection>
+              <GeneralSectionHeader>Source</GeneralSectionHeader>
+              <Info>{userInfo.sourceHeardFrom}</Info>
+            </GeneralSection>
           </Section>
         )}
         {loggedHoursLoaded && (
@@ -182,18 +237,23 @@ export default function Volunteer() {
             {loggedHours.map(data => (
               // eslint-disable-next-line react/jsx-key
               <IndividualHours>
-                {'School: ' + data.school}
-                <br></br>
+                <EventTitle>{data.school}</EventTitle>
                 {'Hours: ' + data.hours}
                 <br></br>
                 {'Date: ' + data.date}
+                <br></br>
+                {'Books Distributed: ' + data.numBooks}
               </IndividualHours>
             ))}
           </Section>
         )}
         <ProgramNotes>
-          <StackedBoxes></StackedBoxes>
-          <StackedBoxes></StackedBoxes>
+          <StackedBoxes>
+            <SectionHeader></SectionHeader>
+          </StackedBoxes>
+          <StackedBoxes>
+            <SectionHeader></SectionHeader>
+          </StackedBoxes>
         </ProgramNotes>
       </Body>
     </Container>
