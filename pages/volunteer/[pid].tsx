@@ -197,6 +197,9 @@ export default function Volunteer() {
     }
   }, [pid]);
 
+  function convertToDate(date: Date) {
+    return date.getMonth() + '/' + date.getDate() + '/' + date.getFullYear();
+  }
   return (
     <Container>
       {userInfoLoaded && (
@@ -240,7 +243,7 @@ export default function Volunteer() {
                 <EventTitle>{data.school}</EventTitle>
                 {'Hours: ' + data.hours}
                 <br></br>
-                {'Date: ' + data.date}
+                {'Date: ' + convertToDate(new Date(data.date))}
                 <br></br>
                 {'Books Distributed: ' + data.numBooks}
               </IndividualHours>
