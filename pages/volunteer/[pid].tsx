@@ -53,7 +53,8 @@ const SectionHeader = styled.div`
   justify-self: flex-start;
   background-color: #e3e3e3;
   height: 40px;
-  border-radius: 10px 0px 0px;
+  font-size: 18px;
+  border-radius: 10px;
   z-index: 1;
 `;
 
@@ -145,8 +146,41 @@ const EventTitle = styled.p`
   font-size: 18px;
   font-weight: bold;
 `;
-const Application = styled.div``;
-const RifNotes = styled.div``;
+
+const ClickableHeader = styled.button`
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: none;
+  top: 0px;
+  position: sticky;
+  justify-self: flex-start;
+  background-color: #e3e3e3;
+  height: 40px;
+  border-radius: 10px;
+  border: none;
+  font-size: 18px;
+  &:hover {
+    background-color: lightgray;
+  }
+`;
+const ClickedHeader = styled.button`
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: none;
+  top: 0px;
+  position: sticky;
+  justify-self: flex-start;
+  background-color: gray;
+  height: 40px;
+  border-radius: 10px;
+  border: none;
+  color: white;
+  font-size: 18px;
+`;
 
 export default function Volunteer() {
   const router = useRouter();
@@ -177,6 +211,8 @@ export default function Volunteer() {
   const [loggedHoursLoaded, setLoggedHoursLoaded] = useState(false);
 
   const [loggedHours, setLoggedHours] = useState<QueriedVolunteerLogData[]>([]);
+
+  const [displayRIF, setDisplayRIF] = useState(false);
 
   const getUser = async () => {
     try {
@@ -290,11 +326,29 @@ export default function Volunteer() {
           </Section>
         )}
         <ProgramNotes>
+          {!displayRIF && (
+            <StackedBoxes>
+              <SectionHeader>
+                <ClickedHeader>RFR</ClickedHeader>
+                <ClickableHeader onClick={() => setDisplayRIF(true)}>
+                  RIF
+                </ClickableHeader>
+              </SectionHeader>
+            </StackedBoxes>
+          )}
+
+          {displayRIF && (
+            <StackedBoxes>
+              <SectionHeader>
+                <ClickableHeader onClick={() => setDisplayRIF(false)}>
+                  RFR
+                </ClickableHeader>
+                <ClickedHeader>RIF</ClickedHeader>
+              </SectionHeader>
+            </StackedBoxes>
+          )}
           <StackedBoxes>
-            <SectionHeader></SectionHeader>
-          </StackedBoxes>
-          <StackedBoxes>
-            <SectionHeader></SectionHeader>
+            <SectionHeader>RIF Notes</SectionHeader>
           </StackedBoxes>
         </ProgramNotes>
       </Body>
