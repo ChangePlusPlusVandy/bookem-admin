@@ -14,6 +14,9 @@ export const FormBox = styled.div`
 
 export const FormHeader = styled.legend`
   font-weight: bold;
+  font-size: 2em;
+  text-align: center;
+  width: 400px;
 `;
 
 export const List = styled.ul`
@@ -25,13 +28,48 @@ export const List = styled.ul`
 `;
 
 export const FormLabel = styled.label`
-  margin-top: 20px;
+  margin-top: 25px;
+  font-weight: bold;
+`;
+
+export const FormLogistics = styled.div`
+  margin: 17px 10px 0 0;
+  font-weight: normal;
 `;
 
 export const FormInput = styled.input`
-  margin-top: 20px;
+  margin: 10px 10px 0 0;
   border-radius: 10px;
   height: 25px;
+  width: 200px;
+  padding: 5px;
+`;
+
+export const FormRowInput = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+export const ShortFormInput = styled.input`
+  margin: 15px 10px 0 0;
+  border-radius: 10px;
+  height: 25px;
+  width: 35px;
+  text-align: center;
+`;
+
+export const MediumFormInput = styled.input`
+  margin: 15px 20px 0 20px;
+  border-radius: 10px;
+  height: 25px;
+  width: 70px;
+`;
+
+export const LongFormInput = styled.input`
+  margin: 15px 10px 0 0;
+  border-radius: 10px;
+  height: 25px;
+  width: 410px;
 `;
 
 export const LargeFormInput = styled.textarea`
