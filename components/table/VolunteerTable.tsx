@@ -127,8 +127,9 @@ const VolunteerTable = () => {
   // function to export what is on the table at the time to an excel file
   const handleExport = () => {
     const workbook = XLSX.utils.table_to_book(
-      document.querySelector('#table-container table')
+      document.querySelector('#table-container')
     );
+    console.log(workbook);
     const excelBuffer = XLSX.write(workbook, {
       bookType: 'xlsx',
       type: 'array',
