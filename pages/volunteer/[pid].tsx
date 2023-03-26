@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import {
   QueriedUserData,
   QueriedVolunteerLogData,
+  VolunteerLogData,
 } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
 import mongoose from 'mongoose';
@@ -52,9 +53,26 @@ const SectionHeader = styled.div`
   justify-self: flex-start;
   background-color: #e3e3e3;
   height: 40px;
-  border: solid 5px #e3e3e3;
   border-radius: 10px 0px 0px;
-  z-index: 5;
+  z-index: 1;
+`;
+
+const SectionFooter = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex: none;
+  bottom: 0px;
+  position: sticky;
+  justify-self: flex-start;
+  background-color: #e3e3e3;
+  height: 25px;
+  font-size: 15px;
+  padding: 0px 15px;
+  border-radius: 0px 0px 10px;
+  z-index: 1;
 `;
 const Container = styled.div`
   display: flex;
@@ -200,6 +218,23 @@ export default function Volunteer() {
   function convertToDate(date: Date) {
     return date.getMonth() + '/' + date.getDate() + '/' + date.getFullYear();
   }
+
+  function totalHours(data: Array<QueriedVolunteerLogData>) {
+    let total = 0;
+    for (let i = 0; i < data.length; i++) {
+      total += data[i].hours;
+    }
+    return total;
+  }
+
+  function totalBooks(data: Array<QueriedVolunteerLogData>) {
+    let total = 0;
+    for (let i = 0; i < data.length; i++) {
+      total += data[i].numBooks ?? 0;
+    }
+    return total;
+  }
+
   return (
     <Container>
       {userInfoLoaded && (
@@ -248,6 +283,10 @@ export default function Volunteer() {
                 {'Books Distributed: ' + data.numBooks}
               </IndividualHours>
             ))}
+            <SectionFooter>
+              <div>Total Hours: {totalHours(loggedHours)} </div>
+              <div>Total Books: {totalBooks(loggedHours)}</div>
+            </SectionFooter>
           </Section>
         )}
         <ProgramNotes>
