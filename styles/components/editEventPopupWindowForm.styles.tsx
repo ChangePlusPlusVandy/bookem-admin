@@ -45,7 +45,7 @@ export const FormInput = styled.input`
   padding: 5px;
 `;
 
-export const FormRowInput = styled.div`
+export const InputFlex = styled.div`
   display: flex;
   flex-direction: row;
 `;
