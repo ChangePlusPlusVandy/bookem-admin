@@ -4,7 +4,7 @@ import {
   FormLabel,
   FormLogistics,
   FormInput,
-  FormRowInput,
+  InputFlex,
   ShortFormInput,
   MediumFormInput,
   LongFormInput,
@@ -22,7 +22,7 @@ const EditEventPopupWindowForm = ({
 }) => {
   const { register, handleSubmit } = useForm();
 
-  const pages = ['Info #1', 'Info #2', 'Review'];
+  const pages = ['Info #1', 'Info #2'];
 
   const onSubmit = (data: any) => {
     const results = JSON.stringify({
@@ -55,7 +55,7 @@ const EditEventPopupWindowForm = ({
             <FormHeader>Edit Event</FormHeader>
 
             <FormLabel>Event Name</FormLabel>
-            <FormRowInput>
+            <InputFlex>
               <FormInput
                 {...register('EventName')}
                 type="text"
@@ -68,7 +68,7 @@ const EditEventPopupWindowForm = ({
                 placeholder="Event Category (optional)"
                 pattern="[A-Za-z]"
                 title="Input must be text"></FormInput>
-            </FormRowInput>
+            </InputFlex>
 
             <FormLabel>Logistics</FormLabel>
             <FormInput
@@ -77,7 +77,7 @@ const EditEventPopupWindowForm = ({
               placeholder="Date"
               pattern="^((0|1)\d{1})\/((0|1|2)\d{1})\/((19|20)\d{2})"
               title="Input must be in MM/DD/YYYY format"></FormInput>
-            <FormRowInput>
+            <InputFlex>
               <ShortFormInput
                 {...register('Hour')}
                 type="text"
@@ -97,8 +97,8 @@ const EditEventPopupWindowForm = ({
                 placeholder="AM/PM"
                 pattern="(AM|PM)"
                 title="Input must be in text format"></MediumFormInput>
-            </FormRowInput>
-            <FormRowInput>
+            </InputFlex>
+            <InputFlex>
               <ShortFormInput
                 {...register('Spots')}
                 type="text"
@@ -106,7 +106,7 @@ const EditEventPopupWindowForm = ({
                 pattern="^[0-9]*$"
                 title="Input must be a whole number"></ShortFormInput>
               <FormLogistics>spots available</FormLogistics>
-            </FormRowInput>
+            </InputFlex>
             <FormLabel>Address</FormLabel>
             <LongFormInput
               {...register('Street')}
@@ -114,7 +114,7 @@ const EditEventPopupWindowForm = ({
               placeholder="Street"
               pattern="^((0|1)\d{1})\/((0|1|2)\d{1})\/((19|20)\d{2})"
               title="Input must be in MM/DD/YYYY format"></LongFormInput>
-            <FormRowInput>
+            <InputFlex>
               <FormInput
                 {...register('City')}
                 type="text"
@@ -127,7 +127,7 @@ const EditEventPopupWindowForm = ({
                 placeholder="State"
                 pattern="^((0|1)\d{1})\/((0|1|2)\d{1})\/((19|20)\d{2})"
                 title="Input must be in MM/DD/YYYY format"></FormInput>
-            </FormRowInput>
+            </InputFlex>
             <FormInput
               {...register('Zip')}
               type="text"
@@ -155,8 +155,6 @@ const EditEventPopupWindowForm = ({
               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
               title="Input must be a valid email address"></FormInput>
           </EditEventForm>,
-
-          <EditEventForm key={pages[1]}>{/* Review page */}</EditEventForm>,
         ]}
       />
     </PopupWindow>
