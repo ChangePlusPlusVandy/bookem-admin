@@ -128,7 +128,7 @@ const WindowFlow = ({
         {/** Submit button appears if on last page */}
         {currentPage == pages.length && (
           <ButtonCenter>
-            <SubmitButton onClick={onSubmit}>Submit</SubmitButton>
+            <SubmitButton onClick={onSubmit}>Done</SubmitButton>
           </ButtonCenter>
         )}
       </BottomContainer>
