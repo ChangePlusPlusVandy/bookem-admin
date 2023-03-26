@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Input, Space, Table, TableProps, Tag, Typography } from 'antd';
+import { Button, Input, Space, Tag } from 'antd';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import useSWR from 'swr';
@@ -96,17 +96,28 @@ const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 const VolunteerTable = () => {
   const { data, error, isLoading } = useSWR<UserData[]>('/api/users/', fetcher);
-
-  useEffect(() => {
-    console.log(data);
-    if (!isLoading && data) {
-      setDataForTable(convertUserDataToRowData(data));
-    }
-  }, [data, isLoading]);
-
+  const { data: totalHours } = useSWR<UserData[]>(
+    '/api/users/totalHours',
+    fetcher
+  );
   const [dataForTable, setDataForTable] = useState<VolunteerRowData[]>([]);
   const [filterTable, setFilterTable] = useState<VolunteerRowData[]>([]);
   const [totalVolunteers, setTotalVolunteers] = useState(dataForTable.length);
+  const [hours, setHours] = useState(totalHours);
+  const [isFiltering, setIsFilter] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!isLoading && totalHours) {
+      setHours(totalHours);
+    }
+  }, [totalHours, isLoading]);
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      setDataForTable(convertUserDataToRowData(data));
+      setTotalVolunteers(dataForTable.length);
+    }
+  }, [data, isLoading, dataForTable.length]);
 
   // check for errors and loading
   if (error) return <div>Failed to load volunteer table</div>;
@@ -114,6 +125,13 @@ const VolunteerTable = () => {
 
   // function that determines what the table looks like after a search by the user
   const onTableSearch = (value: string) => {
+    if (value === '') {
+      setFilterTable([]);
+      setTotalVolunteers(dataForTable.length);
+      setIsFilter(false);
+      return;
+    }
+
     let filterTable = dataForTable.filter((o: { [x: string]: any }) =>
       Object.keys(o).some(k =>
         String(o[k]).toLowerCase().includes(value.toLowerCase())
@@ -122,6 +140,8 @@ const VolunteerTable = () => {
 
     setFilterTable(filterTable);
     setTotalVolunteers(filterTable.length);
+    setHours(hours);
+    setIsFilter(true);
   };
 
   // function to export what is on the table at the time to an excel file
@@ -129,7 +149,6 @@ const VolunteerTable = () => {
     const workbook = XLSX.utils.table_to_book(
       document.querySelector('#table-container')
     );
-    console.log(workbook);
     const excelBuffer = XLSX.write(workbook, {
       bookType: 'xlsx',
       type: 'array',
@@ -166,7 +185,7 @@ const VolunteerTable = () => {
       <TableContainer>
         <div id="table-container">
           <StyledTable
-            dataSource={filterTable === null ? dataForTable : filterTable}
+            dataSource={isFiltering ? filterTable : dataForTable}
             columns={columns}
             pagination={false}
             scroll={{ y: 550 }}
@@ -175,6 +194,9 @@ const VolunteerTable = () => {
         <BottomRow>
           <StyledTypography>
             Total volunteers: {totalVolunteers}
+          </StyledTypography>
+          <StyledTypography>
+            <>Total hours: {hours}</>
           </StyledTypography>
         </BottomRow>
       </TableContainer>

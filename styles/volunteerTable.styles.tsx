@@ -21,6 +21,7 @@ export const TableContainer = styled.div`
 
 export const StyledTypography = styled(Typography)`
   margin-left: 250px;
+  margin-right: 100px;
 `;
 
 export const StyledTable = styled(Table)`
@@ -30,6 +31,8 @@ export const StyledTable = styled(Table)`
 `;
 
 export const BottomRow = styled.div`
+  display: flex;
+  flex-direction: row;
   background-color: lightgray;
   height: 30px;
   border-radius: 10px;
