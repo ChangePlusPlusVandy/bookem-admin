@@ -1,6 +1,6 @@
 // NextAuth documentation: https://next-auth.js.org/getting-started/example
 import dbConnect from 'lib/dbConnect';
-import Employees from 'bookem-shared/src/models/Employees';
+import Admins from 'bookem-shared/src/models/Admins';
 import NextAuth from 'next-auth/next';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
@@ -9,7 +9,7 @@ import clientPromise from '@/lib/mongodb';
 import bcrypt from 'bcrypt';
 import { SessionStrategy } from 'next-auth/core/types';
 import { JWT } from 'next-auth/jwt';
-import { QueriedEmployeeData } from 'bookem-shared/src/types/database';
+import { QueriedAdminData } from 'bookem-shared/src/types/database';
 
 const sessionStrategy: SessionStrategy = 'jwt';
 
@@ -45,7 +45,7 @@ export const authOptions = {
           await dbConnect();
 
           // check if user's email exists in database
-          const employee = await Employees.findOne({ email });
+          const employee = await Admins.findOne({ email });
 
           // if user does not exist, return null
           if (!employee) return null;
@@ -103,13 +103,7 @@ export const authOptions = {
      * @param user Logged in user
      * @returns JWT token with user's id encrypted inside
      */
-    async jwt({
-      token,
-      user,
-    }: {
-      token: JWT;
-      user?: QueriedEmployeeData | any;
-    }) {
+    async jwt({ token, user }: { token: JWT; user?: QueriedAdminData | any }) {
       if (user) {
         token.uid = user._id;
         token.status = user.status;
