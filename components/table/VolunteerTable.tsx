@@ -3,7 +3,7 @@ import { Button, Input, Space, Tag } from 'antd';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import useSWR from 'swr';
-import { UserData } from 'bookem-shared/src/types/database';
+import { QueriedUserData, UserData } from 'bookem-shared/src/types/database';
 import {
   BottomRow,
   Header,
@@ -12,6 +12,7 @@ import {
   StyledTypography,
   TableContainer,
 } from '@/styles/volunteerTable.styles';
+import { ObjectId } from 'mongodb';
 
 interface VolunteerRowData {
   key: number;
@@ -19,6 +20,7 @@ interface VolunteerRowData {
   email: string;
   phone: string;
   tags: string[];
+  id: ObjectId;
 }
 
 const columns: any = [
@@ -95,7 +97,10 @@ const columns: any = [
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 const VolunteerTable = () => {
-  const { data, error, isLoading } = useSWR<UserData[]>('/api/users/', fetcher);
+  const { data, error, isLoading } = useSWR<QueriedUserData[]>(
+    '/api/users/',
+    fetcher
+  );
   const { data: totalHours } = useSWR<UserData[]>(
     '/api/users/totalHours',
     fetcher
@@ -124,7 +129,7 @@ const VolunteerTable = () => {
   if (isLoading) return <div>Loading...</div>;
 
   // function that determines what the table looks like after a search by the user
-  const onTableSearch = (value: string) => {
+  const onTableSearch = async (value: string) => {
     if (value === '') {
       setFilterTable([]);
       setTotalVolunteers(dataForTable.length);
@@ -138,10 +143,26 @@ const VolunteerTable = () => {
       )
     );
 
+    // make a fetch request to get gotal hours for the filtered table
+    const ids = filterTable.map(obj => obj.id);
+    const newHours = await queryTotalHours(ids);
+
+    setHours(newHours);
     setFilterTable(filterTable);
     setTotalVolunteers(filterTable.length);
-    setHours(hours);
     setIsFilter(true);
+  };
+
+  const queryTotalHours = async (ids: any[]) => {
+    const totalHours = await fetch('/api/users/totalHours', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ filters: ids }),
+    });
+    const data = await totalHours.json();
+    return data;
   };
 
   // function to export what is on the table at the time to an excel file
@@ -204,7 +225,7 @@ const VolunteerTable = () => {
   );
 };
 
-const convertUserDataToRowData = (data: UserData[]) => {
+const convertUserDataToRowData = (data: QueriedUserData[]) => {
   const result = data.map((user, index) => {
     return {
       key: index,
@@ -212,6 +233,7 @@ const convertUserDataToRowData = (data: UserData[]) => {
       email: user.email,
       phone: user.phone,
       tags: user.tags,
+      id: user._id,
     };
   });
   return result;

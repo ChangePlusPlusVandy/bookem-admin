@@ -4,8 +4,8 @@ import dbConnect from '@/lib/dbConnect';
 
 import { getSession } from 'next-auth/react';
 import Users from 'bookem-shared/src/models/Users';
-import { UserData } from 'bookem-shared/src/types/database';
-import VolunteerLogs from 'bookem-shared/src/models/VolunteerLogs';
+import { _id } from '@next-auth/mongodb-adapter';
+import mongoose from 'mongoose';
 
 export default async function handler(
   req: NextApiRequest,
@@ -21,41 +21,59 @@ export default async function handler(
   }
 
   switch (req.method) {
+    case 'POST':
     case 'GET':
-      // Connect to the database
-      await dbConnect();
+      let aggregationPipeline: any[] = [
+        {
+          $lookup: {
+            from: 'volunteerLogs',
+            localField: '_id',
+            foreignField: 'userId',
+            as: 'logs',
+          },
+        },
+        {
+          $project: {
+            userId: 1,
+            totalHours: {
+              $sum: '$logs.hours',
+            },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            sum: {
+              $sum: '$totalHours',
+            },
+          },
+        },
+      ];
 
       try {
-        let sumOfHours = await Users.aggregate([
-          {
-            $lookup: {
-              from: 'volunteerLogs',
-              localField: '_id',
-              foreignField: 'userId',
-              as: 'logs',
-            },
-          },
-          {
-            $project: {
-              userId: 1,
-              totalHours: {
-                $sum: '$logs.hours',
+        // Connect to the database
+        await dbConnect();
+
+        // if filters are provided, match the users first
+        if (req.body.filters) {
+          let objectIdArray = req.body.filters.map(
+            (s: string) => new mongoose.Types.ObjectId(s)
+          );
+          aggregationPipeline = [
+            {
+              $match: {
+                _id: {
+                  $in: objectIdArray,
+                },
               },
             },
-          },
-          {
-            $group: {
-              _id: null,
-              sum: {
-                $sum: '$totalHours',
-              },
-            },
-          },
-        ]);
-        console.log(sumOfHours[0].sum);
+            ...aggregationPipeline,
+          ];
+        }
+        const sumOfHours = await Users.aggregate(aggregationPipeline);
         res.status(200).json(sumOfHours[0].sum);
       } catch (e) {
-        console.error('An error has occurred in index.ts', e);
+        console.error('An error has occurred in totalHours.ts', e);
         res.status(500).json({
           error: 'Sorry, an error occurred while connecting to the database',
         });
