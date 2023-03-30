@@ -17,7 +17,8 @@ const TimeAndPlace = ({
   location,
 }: {
   programDate: Date;
-  location: string;
+  // TODO: fix this to use type
+  location: { street: String; city: String; state: String; zip: Number };
 }) => {
   return (
     <TimeAndPlaceBox>
@@ -36,7 +37,16 @@ const TimeAndPlace = ({
       {/* Location */}
       <IconBox>
         <Image src={'/event/map-pin.png'} alt="" width={50} height={50} />
-        <IconText>{location}</IconText>
+        {/* TODO: parse location object into string */}
+        <IconText>
+          {location.street +
+            ', ' +
+            location.city +
+            ', ' +
+            location.state +
+            ' ' +
+            location.zip}
+        </IconText>
       </IconBox>
     </TimeAndPlaceBox>
   );
