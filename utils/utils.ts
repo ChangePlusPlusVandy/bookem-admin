@@ -19,5 +19,7 @@ export const getTime = (str: string) => {
     }
   }
 
-  return hours + ':' + date.getMinutes().toString() + ' ' + ampm;
+  const minuteStr = String(date.getMinutes()).padStart(2, '0');
+
+  return hours + ':' + minuteStr + ' ' + ampm;
 };
