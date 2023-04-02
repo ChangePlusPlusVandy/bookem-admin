@@ -203,16 +203,18 @@ const ForwardButton = styled.button`
   width: 30px;
   border-radius: 100%;
   position: absolute;
-  left: 0px;
-  bottom: 0px;
+  left: 3px;
+  border: none;
+  bottom: 3px;
 `;
 const BackButton = styled.button`
   height: 30px;
   width: 30px;
   border-radius: 100%;
   position: absolute;
-  right: 0px;
-  bottom: 0px;
+  right: 3px;
+  border: none;
+  bottom: 3px;
 `;
 
 export default function Volunteer() {

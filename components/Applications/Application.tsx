@@ -3,7 +3,18 @@ import styled from 'styled-components';
 import { QueriedVolunteerProgramApplicationData } from 'bookem-shared/src/types/database';
 import { QueriedVolunteerProgramData } from 'bookem-shared/src/types/database';
 
-const Container = styled.div``;
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const TextItem = styled.p`
+  margin-left: auto;
+  margin-right: auto;
+`;
 export default function UserApplication(
   props: QueriedVolunteerProgramApplicationData
 ) {
@@ -32,9 +43,9 @@ export default function UserApplication(
 
   return (
     <Container>
-      {' '}
-      Application for {event?.name} <br></br>
-      Application: {props.formData}
+      <TextItem>Application for {event?.name}</TextItem>
+      <TextItem>Application: {props.formData}</TextItem>
+      <TextItem>Status: {props.status}</TextItem>
     </Container>
   );
 }
