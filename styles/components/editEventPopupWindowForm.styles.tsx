@@ -1,15 +1,19 @@
 import styled from 'styled-components';
 
+export const EditEventContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow-y: scroll;
+  height: 100%;
+`;
+
 export const EditEventForm = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  margin-top: 20px;
-`;
-
-export const FormBox = styled.div`
-  display: flex;
-  justify-content: center;
+  margin: 30px;
+  padding-bottom: 50px;
 `;
 
 export const FormHeader = styled.legend`
@@ -59,7 +63,7 @@ export const ShortFormInput = styled.input`
 `;
 
 export const MediumFormInput = styled.input`
-  margin: 15px 20px 0 20px;
+  margin: 15px 20px 0 25px;
   border-radius: 10px;
   height: 25px;
   width: 70px;
@@ -72,18 +76,25 @@ export const LongFormInput = styled.input`
   width: 410px;
 `;
 
+export const AboutEvent = styled.div`
+  width: 100%;
+`;
+
 export const LargeFormInput = styled.textarea`
   margin-top: 20px;
   border-radius: 10px;
-  width: 400px;
+  width: 100%;
+  max-width: 410px;
   height: 100px;
+  max-height: 300px;
   font-family: 'Times New Roman', serif;
   font-size: 1em;
+  resize: vertical;
+  padding: 10px;
 `;
 
 export const SubmitButton = styled.input`
   margin-left: 150px;
-  margin-top: 40px;
   width: 100px;
   height: 40px;
   border-radius: 10px;
