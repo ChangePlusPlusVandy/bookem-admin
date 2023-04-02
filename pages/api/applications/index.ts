@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import dbConnect from '@/lib/dbConnect';
 
-import VolunteerLogs from 'bookem-shared/src/models/VolunteerLogs';
+import VolunteerProgramApplications from 'bookem-shared/src/models/VolunteerProgramApplications';
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,7 +15,7 @@ export default async function handler(
       await dbConnect();
       try {
         console.log('userid' + userid);
-        const logs = await VolunteerLogs.find({
+        const logs = await VolunteerProgramApplications.find({
           userId: userid,
         });
 

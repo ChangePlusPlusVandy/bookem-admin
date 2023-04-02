@@ -3,12 +3,15 @@ import styled from 'styled-components';
 import {
   QueriedUserData,
   QueriedVolunteerLogData,
+  QueriedVolunteerProgramApplicationData,
+  QueriedVolunteerProgramApplicationDTO,
   VolunteerLogData,
 } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
 import mongoose from 'mongoose';
 import { setEnvironmentData } from 'worker_threads';
-
+import App from '../_app';
+import UserApplication from '@/components/Applications/Application';
 const Header = styled.div`
   width: 100%;
   padding: 60px;
@@ -50,7 +53,6 @@ const SectionHeader = styled.div`
   flex: none;
   top: 0px;
   position: sticky;
-  justify-self: flex-start;
   background-color: #e3e3e3;
   height: 40px;
   font-size: 18px;
@@ -65,9 +67,9 @@ const SectionFooter = styled.div`
   justify-content: space-between;
   align-items: center;
   flex: none;
+  margin-top: auto;
   bottom: 0px;
   position: sticky;
-  justify-self: flex-start;
   background-color: #e3e3e3;
   height: 25px;
   font-size: 15px;
@@ -103,11 +105,25 @@ const ProgramNotes = styled.div`
   justify-content: space-between;
   overflow-y: hidden;
   border-radius: 10px;
-  width: 30%;
+  width: 38%;
 `;
 
-const StackedBoxes = styled.div`
-  height: 48%;
+const ApplicationContainer = styled.div`
+  height: 58%;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: start;
+  border: solid #e3e3e3 1px;
+  border-radius: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+`;
+
+const NotesContainer = styled.div`
+  height: 38%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -127,7 +143,7 @@ const Section = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   border-radius: 10px;
-  width: 25%;
+  width: 24%;
   border-top: none;
 `;
 
@@ -182,6 +198,23 @@ const ClickedHeader = styled.button`
   font-size: 18px;
 `;
 
+const ForwardButton = styled.button`
+  height: 30px;
+  width: 30px;
+  border-radius: 100%;
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+`;
+const BackButton = styled.button`
+  height: 30px;
+  width: 30px;
+  border-radius: 100%;
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+`;
+
 export default function Volunteer() {
   const router = useRouter();
   const { pid } = router.query;
@@ -208,11 +241,21 @@ export default function Volunteer() {
     updatedAt: new Date(),
   });
 
+  const [curApplicationIndex, setCurApplicationIndex] = useState(0);
   const [loggedHoursLoaded, setLoggedHoursLoaded] = useState(false);
-
   const [loggedHours, setLoggedHours] = useState<QueriedVolunteerLogData[]>([]);
-
-  const [displayRIF, setDisplayRIF] = useState(false);
+  const [userApplications, setUserApplications] = useState<
+    QueriedVolunteerProgramApplicationData[]
+  >([
+    {
+      _id: new mongoose.Types.ObjectId(),
+      userId: new mongoose.Types.ObjectId(),
+      formData: 'No Applications Found',
+      eventId: new mongoose.Types.ObjectId(),
+      status: 'string',
+      createdAt: new Date(),
+    },
+  ]);
 
   const getUser = async () => {
     try {
@@ -221,7 +264,6 @@ export default function Volunteer() {
         method: 'GET',
       });
       const data = await res.json();
-      console.log('Data here: ', data);
       setUserInfoLoaded(true);
       setUserInfo(data);
     } catch (err) {
@@ -236,9 +278,22 @@ export default function Volunteer() {
         method: 'GET',
       });
       const data = await res.json();
-      console.log('Data here: ', data);
       setLoggedHoursLoaded(true);
       setLoggedHours(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getApplications = async () => {
+    try {
+      const path = '/api/applications/' + pid;
+      const res = await fetch(path, {
+        method: 'GET',
+      });
+      const data = await res.json();
+      console.log(data);
+      setUserApplications(data);
     } catch (err) {
       console.log(err);
     }
@@ -248,9 +303,25 @@ export default function Volunteer() {
     if (pid) {
       getUser();
       getVolunteerLogs();
+      getApplications();
     }
   }, [pid]);
 
+  function goForward() {
+    if (curApplicationIndex == userApplications.length - 1) {
+      setCurApplicationIndex(0);
+    } else {
+      setCurApplicationIndex(curApplicationIndex + 1);
+    }
+  }
+
+  function goBackward() {
+    if (curApplicationIndex == 0) {
+      setCurApplicationIndex(userApplications.length - 1);
+    } else {
+      setCurApplicationIndex(curApplicationIndex - 1);
+    }
+  }
   function convertToDate(date: Date) {
     return date.getMonth() + '/' + date.getDate() + '/' + date.getFullYear();
   }
@@ -326,30 +397,16 @@ export default function Volunteer() {
           </Section>
         )}
         <ProgramNotes>
-          {!displayRIF && (
-            <StackedBoxes>
-              <SectionHeader>
-                <ClickedHeader>RFR</ClickedHeader>
-                <ClickableHeader onClick={() => setDisplayRIF(true)}>
-                  RIF
-                </ClickableHeader>
-              </SectionHeader>
-            </StackedBoxes>
-          )}
-
-          {displayRIF && (
-            <StackedBoxes>
-              <SectionHeader>
-                <ClickableHeader onClick={() => setDisplayRIF(false)}>
-                  RFR
-                </ClickableHeader>
-                <ClickedHeader>RIF</ClickedHeader>
-              </SectionHeader>
-            </StackedBoxes>
-          )}
-          <StackedBoxes>
+          <ApplicationContainer>
+            <SectionHeader>Applications</SectionHeader>
+            <UserApplication
+              {...userApplications[curApplicationIndex]}></UserApplication>
+            <BackButton onClick={goBackward}></BackButton>
+            <ForwardButton onClick={goForward}></ForwardButton>
+          </ApplicationContainer>
+          <NotesContainer>
             <SectionHeader>RIF Notes</SectionHeader>
-          </StackedBoxes>
+          </NotesContainer>
         </ProgramNotes>
       </Body>
     </Container>
