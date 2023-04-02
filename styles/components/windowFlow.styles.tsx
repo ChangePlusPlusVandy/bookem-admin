@@ -87,9 +87,10 @@ export const ArrowButton = styled.button`
  * Container for "Submit" button in middle of page
  */
 export const ButtonCenter = styled.div`
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0);
+  padding-top: 40px;
+  padding-bottom: 30px;
+  margin: auto;
+  position: static;
 `;
 
 /**
