@@ -45,25 +45,22 @@ export const authOptions = {
           await dbConnect();
 
           // check if user's email exists in database
-          const employee = await Admins.findOne({ email });
+          const admin = await Admins.findOne({ email });
 
           // if user does not exist, return null
-          if (!employee) return null;
+          if (!admin) return null;
 
           // compare password hash with database hash
-          const checkPassword = await bcrypt.compare(
-            password,
-            employee.password
-          );
+          const checkPassword = await bcrypt.compare(password, admin.password);
 
           // if password is incorrect, return null
           if (!checkPassword) return null;
 
-          // Check if employee no longer has access
-          if (employee.status === 0) return null;
+          // Check if admin no longer has access
+          if (admin.status === 0) return null;
 
           // success. return user
-          return employee;
+          return admin;
         } catch (err) {
           return null;
         }
