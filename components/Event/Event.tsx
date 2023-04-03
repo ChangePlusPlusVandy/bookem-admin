@@ -1,25 +1,25 @@
-import { QueriedVolunteerProgramData } from 'bookem-shared/src/types/database';
+import { QueriedVolunteerEventData } from 'bookem-shared/src/types/database';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import Header from '@/components/Event/Header';
-import BookIcon from '@/components/Event/BookIcon';
-import ProgramName from '@/components/Event/ProgramName';
-import TimeAndPlace from '@/components/Event/TimeAndPlace';
-import About from '@/components/Event/About';
-import Contact from '@/components/Event/Contact';
-import EditEventPopupWindowForm from '@/components/Forms/EditEventPopupWindowForm';
+import Header from './Header';
+import BookIcon from './BookIcon';
+// import EventName from './EventName';
+import TimeAndPlace from './TimeAndPlace';
+import About from './About';
+import Contact from './Contact';
 import {
-  BottomBox,
-  EditButton,
   EventBox,
   MiddleBox,
+  BottomBox,
+  EditButton,
 } from '@/styles/components/Event/event.styles';
+import EditEventPopupWindowForm from '../Forms/EditEventPopupWindowForm';
 
 /**
  * Event Detail
  * @param event Data about the event
  */
-const Event = ({ event }: { event: QueriedVolunteerProgramData }) => {
+const Event = ({ event }: { event: QueriedVolunteerEventData }) => {
   const [showPopup, setShowPopup] = useState(false);
 
   return (
@@ -39,16 +39,16 @@ const Event = ({ event }: { event: QueriedVolunteerProgramData }) => {
 
       <Header />
 
-      {/* Book Icon and Program name */}
+      {/* Book Icon and Event name */}
       <MiddleBox>
         <BookIcon />
-        <ProgramName program={event} />
+        {/* <EventName event={event} /> */}
       </MiddleBox>
 
-      {/* Time and Place of the program */}
-      <TimeAndPlace programDate={event.programDate} location={event.location} />
+      {/* Time and Place of the event */}
+      <TimeAndPlace eventDate={event.startDate} location={event.location} />
 
-      {/* Program Description and Contact Info */}
+      {/* Event Description and Contact Info */}
       <BottomBox>
         <About description={event.description} />
         <Contact phone={event.phone} email={event.email} />
