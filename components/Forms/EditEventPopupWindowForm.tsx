@@ -15,7 +15,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import PopupWindow from '@/components/PopupWindow';
-import { QueriedVolunteerProgramData } from 'bookem-shared/src/types/database';
+import { QueriedVolunteerEventData } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
 import { convertToDate, getTime } from '@/utils/utils';
 import {
@@ -32,7 +32,7 @@ const EditEventPopupWindowForm = ({
   const { pid } = router.query;
 
   const { register, handleSubmit } = useForm();
-  const [eventData, setEventData] = useState<QueriedVolunteerProgramData>();
+  const [eventData, setEventData] = useState<QueriedVolunteerEventData>();
   const [error, setError] = useState<Error>();
 
   useEffect(() => {
@@ -98,7 +98,7 @@ const EditEventPopupWindowForm = ({
               placeholder="Event Category (optional)"
               pattern="[A-Za-z]"
               title="Input must be text"
-              defaultValue={eventData?.category}></FormInput>
+              defaultValue={eventData?.program.tagName}></FormInput>
           </InputFlex>
 
           <FormLabel>Logistics</FormLabel>
@@ -109,7 +109,7 @@ const EditEventPopupWindowForm = ({
             pattern="^((0|1)\d{1})\/((0|1|2)\d{1})\/((19|20)\d{2})"
             title="Input must be in MM/DD/YYYY format"
             defaultValue={convertToDate(
-              eventData?.programDate.toString() || ''
+              eventData?.startDate.toString() || ''
             )}></FormInput>
           <InputFlex>
             <ShortFormInput
