@@ -1,5 +1,5 @@
 import Event from '@/components/Event/Event';
-import { QueriedVolunteerProgramData } from 'bookem-shared/src/types/database';
+import { QueriedVolunteerEventData } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -11,7 +11,7 @@ const EventDetail = () => {
   const router = useRouter();
   const { pid } = router.query;
 
-  const [event, setEvent] = useState<QueriedVolunteerProgramData>();
+  const [event, setEvent] = useState<QueriedVolunteerEventData>();
   const [error, setError] = useState<Error>();
 
   // use simple fetch to fetch when component is mounted
