@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import {
   QueriedUserData,
   QueriedVolunteerLogData,
-  QueriedVolunteerProgramApplicationData,
-  QueriedVolunteerProgramApplicationDTO,
+  QueriedVolunteerApplicationData,
+  QueriedVolunteerApplicationDTO,
   VolunteerLogData,
 } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
@@ -235,8 +235,7 @@ export default function Volunteer() {
       passed: true,
       expirationDate: new Date(),
     },
-    userType: 'type',
-    programs: [new mongoose.Types.ObjectId()],
+    events: [],
     tags: [],
     _id: new mongoose.Types.ObjectId(),
     createdAt: new Date(),
@@ -247,7 +246,7 @@ export default function Volunteer() {
   const [loggedHoursLoaded, setLoggedHoursLoaded] = useState(false);
   const [loggedHours, setLoggedHours] = useState<QueriedVolunteerLogData[]>([]);
   const [userApplications, setUserApplications] = useState<
-    QueriedVolunteerProgramApplicationData[]
+    QueriedVolunteerApplicationData[]
   >([
     {
       _id: new mongoose.Types.ObjectId(),

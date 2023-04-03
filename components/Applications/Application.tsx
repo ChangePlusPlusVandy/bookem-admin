@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { QueriedVolunteerProgramApplicationData } from 'bookem-shared/src/types/database';
-import { QueriedVolunteerProgramData } from 'bookem-shared/src/types/database';
+import { QueriedVolunteerApplicationData } from 'bookem-shared/src/types/database';
+import { QueriedVolunteerEventData } from 'bookem-shared/src/types/database';
 
 const Container = styled.div`
   width: 100%;
@@ -16,10 +16,10 @@ const TextItem = styled.p`
   margin-right: auto;
 `;
 export default function UserApplication(
-  props: QueriedVolunteerProgramApplicationData
+  props: QueriedVolunteerApplicationData
 ) {
   const [eventLoaded, setEventLoaded] = useState(false);
-  const [event, setEvent] = useState<QueriedVolunteerProgramData>();
+  const [event, setEvent] = useState<QueriedVolunteerEventData>();
 
   async function getEvent() {
     try {
