@@ -1,6 +1,7 @@
 import dbConnect from '@/lib/dbConnect';
 import Users from 'bookem-shared/src/models/Users';
 import VolunteerEvents from 'bookem-shared/src/models/VolunteerEvents';
+import Tags from 'bookem-shared/src/models/Tags';
 import {
   QueriedUserData,
   QueriedVolunteerEventData,
@@ -27,9 +28,13 @@ export default async function handler(
       try {
         await dbConnect();
 
-        // Query event
-        const allEvents: QueriedVolunteerEventData =
-          (await VolunteerEvents.find()) as unknown as QueriedVolunteerEventData;
+        // TODO: remove this after development
+        await Tags.find({});
+
+        // query events and populate fields with mongoose refs
+        const allEvents = await VolunteerEvents.find()
+          .populate({ path: 'program' })
+          .exec();
 
         return res.status(200).json(allEvents);
       } catch (error) {

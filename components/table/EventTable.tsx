@@ -173,7 +173,7 @@ const convertEventDataToRowData = (data: QueriedVolunteerEventData[]) => {
       eventName: event.name,
       date: stringDate,
       numVolunteers: event.volunteers.length,
-      tags: event.program.tagName,
+      tags: event.program?.tagName,
     };
   });
   return result;
