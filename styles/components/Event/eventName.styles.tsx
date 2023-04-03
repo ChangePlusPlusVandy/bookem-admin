@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ProgramNameBox = styled.div`
+export const EventNameBox = styled.div`
   margin-left: 82px;
   height: auto;
 `;
