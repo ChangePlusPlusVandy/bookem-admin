@@ -1,7 +1,13 @@
+import VolunteerTable from '@/components/table/VolunteerTable';
 import React from 'react';
 
 const volunteer = () => {
-  return <div>volunteer</div>;
+  return (
+    <>
+      <div>volunteer</div>
+      <VolunteerTable />
+    </>
+  );
 };
 
 export default volunteer;
