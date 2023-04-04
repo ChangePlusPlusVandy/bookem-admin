@@ -36,6 +36,9 @@ export default async function handler(
         if (!ObjectId.isValid(id as string))
           return res.status(400).json({ message: 'Invalid id' });
 
+        // TODO: remove this after development
+        await Tags.find({});
+
         // query event and populate fields with mongoose refs
         const event = await VolunteerEvents.findById(id)
           .populate({ path: 'program' })
