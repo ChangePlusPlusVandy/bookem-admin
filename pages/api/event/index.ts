@@ -1,9 +1,10 @@
 import dbConnect from '@/lib/dbConnect';
 import Users from 'bookem-shared/src/models/Users';
-import VolunteerPrograms from 'bookem-shared/src/models/VolunteerPrograms';
+import VolunteerEvents from 'bookem-shared/src/models/VolunteerEvents';
+import Tags from 'bookem-shared/src/models/Tags';
 import {
   QueriedUserData,
-  QueriedVolunteerProgramData,
+  QueriedVolunteerEventData,
 } from 'bookem-shared/src/types/database';
 import { ObjectId } from 'mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -20,18 +21,22 @@ export default async function handler(
   switch (req.method) {
     /**
      * @route GET /api/event/
-     * @desc Get all programs
-     * @res QueriedVolunteerProgramData
+     * @desc Get all events
+     * @res QueriedVolunteerEventData
      */
     case 'GET':
       try {
         await dbConnect();
 
-        // Query program
-        const allPrograms: QueriedVolunteerProgramData =
-          (await VolunteerPrograms.find()) as unknown as QueriedVolunteerProgramData;
+        // TODO: remove this after development
+        await Tags.find({});
 
-        return res.status(200).json(allPrograms);
+        // query events and populate fields with mongoose refs
+        const allEvents = await VolunteerEvents.find()
+          .populate({ path: 'program' })
+          .exec();
+
+        return res.status(200).json(allEvents);
       } catch (error) {
         console.error(error);
         res.status(500).json({ message: error });

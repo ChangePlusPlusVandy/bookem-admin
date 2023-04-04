@@ -3,7 +3,7 @@ import { Button, Input, Space, Tag } from 'antd';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import useSWR from 'swr';
-import { QueriedVolunteerProgramData } from 'bookem-shared/src/types/database';
+import { QueriedVolunteerEventData } from 'bookem-shared/src/types/database';
 import {
   Header,
   SearchContainter,
@@ -68,7 +68,7 @@ const columns: any = [
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 const EventTable = () => {
-  const { data, error, isLoading } = useSWR<QueriedVolunteerProgramData[]>(
+  const { data, error, isLoading } = useSWR<QueriedVolunteerEventData[]>(
     '/api/event/',
     fetcher
   );
@@ -155,10 +155,10 @@ const EventTable = () => {
   );
 };
 
-const convertEventDataToRowData = (data: QueriedVolunteerProgramData[]) => {
+const convertEventDataToRowData = (data: QueriedVolunteerEventData[]) => {
   const result = data.map((event, index) => {
-    // Convert programDate into a string date formatted mm/dd/yyyy
-    const date = new Date(event.programDate);
+    // Convert eventDate into a string date formatted mm/dd/yyyy
+    const date = new Date(event.startDate);
     const stringDate =
       (date.getMonth() > 8
         ? date.getMonth() + 1
@@ -173,7 +173,7 @@ const convertEventDataToRowData = (data: QueriedVolunteerProgramData[]) => {
       eventName: event.name,
       date: stringDate,
       numVolunteers: event.volunteers.length,
-      tags: event.category,
+      tags: event.program?.tagName,
     };
   });
   return result;

@@ -1,7 +1,13 @@
+import EventTable from '@/components/table/EventTable';
 import React from 'react';
 
 const program = () => {
-  return <div>program</div>;
+  return (
+    <>
+      <div>program</div>
+      <EventTable />
+    </>
+  );
 };
 
 export default program;

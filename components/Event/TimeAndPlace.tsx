@@ -1,42 +1,44 @@
 import { convertToDate, getTime } from '@/utils/utils';
 import React from 'react';
 import Image from 'next/image';
-
 import {
   TimeAndPlaceBox,
   IconBox,
   IconText,
 } from '@/styles/components/Event/timeAndPlace.styles';
+import { VolunteerEventLocation } from 'bookem-shared/src/types/database';
+import { convertLocationToString } from 'bookem-shared/src/utils/utils';
 
 /**
- * Contain Program's date and location
- * @param programDate
+ * Contain event's date and location
+ * @param eventDate
+ * @param location
  */
 const TimeAndPlace = ({
-  programDate,
+  eventDate,
   location,
 }: {
-  programDate: Date;
-  location: string;
+  eventDate: Date;
+  location: VolunteerEventLocation;
 }) => {
   return (
     <TimeAndPlaceBox>
       {/* Calendar */}
       <IconBox>
         <Image src={'/event/calendar.png'} alt="" width={50} height={50} />
-        <IconText>{convertToDate(programDate.toString())}</IconText>
+        <IconText>{convertToDate(eventDate.toString())}</IconText>
       </IconBox>
 
       {/* Clock */}
       <IconBox>
         <Image src={'/event/clock.png'} alt="" width={50} height={50} />
-        <IconText>{getTime(programDate.toString())}</IconText>
+        <IconText>{getTime(eventDate.toString())}</IconText>
       </IconBox>
 
       {/* Location */}
       <IconBox>
         <Image src={'/event/map-pin.png'} alt="" width={50} height={50} />
-        <IconText>{location}</IconText>
+        <IconText>{convertLocationToString(location)}</IconText>
       </IconBox>
     </TimeAndPlaceBox>
   );
