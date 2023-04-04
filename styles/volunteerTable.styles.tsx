@@ -1,22 +1,13 @@
 import { Table, Typography } from 'antd';
 import styled from 'styled-components';
 
-export const Header = styled.h2`
-  text-size: 40px;
-  text-font: Inter;
-  margin-top: 30px;
-  margin-left: 50px;
-`;
-
 export const SearchContainter = styled.div`
+  display: flex;
   margin-left: 50px;
 `;
 
 export const TableContainer = styled.div`
-  width: 1180px;
-  height: 300px;
-  margin-left: 30px;
-  padding: 20px;
+  margin-top: 20px;
 `;
 
 export const StyledTypography = styled(Typography)`

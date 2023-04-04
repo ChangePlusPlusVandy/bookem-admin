@@ -6,7 +6,6 @@ import useSWR from 'swr';
 import { QueriedUserData, UserData } from 'bookem-shared/src/types/database';
 import {
   BottomRow,
-  Header,
   SearchContainter,
   StyledTable,
   StyledTypography,
@@ -14,6 +13,7 @@ import {
 } from '@/styles/volunteerTable.styles';
 import { ObjectId } from 'mongodb';
 
+// TODO: extract to utils/types in the future
 interface VolunteerRowData {
   key: number;
   firstName: string;
@@ -23,6 +23,7 @@ interface VolunteerRowData {
   id: ObjectId;
 }
 
+// TODO: extract to utils/constants in the future
 const columns: any = [
   {
     title: 'First Name',
@@ -51,6 +52,7 @@ const columns: any = [
     render: (_: any, { tags }: any) => (
       <>
         {tags.map((tag: string) => {
+          // TODO: add documentation for this
           try {
             let color = 'green';
             if (tag.toLowerCase() === 'rfr') {
@@ -177,32 +179,31 @@ const VolunteerTable = () => {
     const blob = new Blob([excelBuffer], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
+    // TODO: automatically add date to file name for easier organization
     saveAs(blob, 'volunteers.xlsx');
   };
 
   return (
     <>
-      <div>
-        <Header>Volunteer Management</Header>
-        <SearchContainter>
-          <Input.Search
-            placeholder="Search "
-            onSearch={onTableSearch}
-            style={{ width: 800 }}
-            allowClear
-          />
-          <Button
-            onClick={handleExport}
-            style={{
-              width: 250,
-              marginLeft: 90,
-              backgroundColor: 'darkgray',
-              color: 'whitesmoke',
-            }}>
-            Export
-          </Button>
-        </SearchContainter>
-      </div>
+      <SearchContainter>
+        <Input.Search
+          placeholder="Search "
+          onSearch={onTableSearch}
+          style={{ width: 800 }}
+          allowClear
+        />
+        <Button
+          onClick={handleExport}
+          style={{
+            width: 250,
+            marginLeft: 90,
+            backgroundColor: 'darkgray',
+            color: 'whitesmoke',
+          }}>
+          Export
+        </Button>
+      </SearchContainter>
+
       <TableContainer>
         <div id="table-container">
           <StyledTable
@@ -225,6 +226,7 @@ const VolunteerTable = () => {
   );
 };
 
+// TODO: move to utils folder
 const convertUserDataToRowData = (data: QueriedUserData[]) => {
   const result = data.map((user, index) => {
     return {
