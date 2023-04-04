@@ -1,10 +1,11 @@
 import VolunteerTable from '@/components/table/VolunteerTable';
-import { VolunteerLayout } from '@/styles/volunteer.styles';
+import { VolunteerLayout, Title } from '@/styles/volunteer.styles';
 import React from 'react';
 
 const volunteer = () => {
   return (
     <VolunteerLayout>
+      <Title>Volunteer Management</Title>
       <VolunteerTable />
     </VolunteerLayout>
   );

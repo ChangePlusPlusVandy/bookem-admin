@@ -6,7 +6,6 @@ import useSWR from 'swr';
 import { QueriedUserData, UserData } from 'bookem-shared/src/types/database';
 import {
   BottomRow,
-  Header,
   SearchContainter,
   StyledTable,
   StyledTypography,
@@ -186,27 +185,25 @@ const VolunteerTable = () => {
 
   return (
     <>
-      <div>
-        <Header>Volunteer Management</Header>
-        <SearchContainter>
-          <Input.Search
-            placeholder="Search "
-            onSearch={onTableSearch}
-            style={{ width: 800 }}
-            allowClear
-          />
-          <Button
-            onClick={handleExport}
-            style={{
-              width: 250,
-              marginLeft: 90,
-              backgroundColor: 'darkgray',
-              color: 'whitesmoke',
-            }}>
-            Export
-          </Button>
-        </SearchContainter>
-      </div>
+      <SearchContainter>
+        <Input.Search
+          placeholder="Search "
+          onSearch={onTableSearch}
+          style={{ width: 800 }}
+          allowClear
+        />
+        <Button
+          onClick={handleExport}
+          style={{
+            width: 250,
+            marginLeft: 90,
+            backgroundColor: 'darkgray',
+            color: 'whitesmoke',
+          }}>
+          Export
+        </Button>
+      </SearchContainter>
+
       <TableContainer>
         <div id="table-container">
           <StyledTable
