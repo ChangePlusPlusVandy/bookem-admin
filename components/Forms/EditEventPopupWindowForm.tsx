@@ -6,13 +6,12 @@ import {
   FormInput,
   InputFlex,
   ShortFormInput,
-  MediumFormInput,
   LongFormInput,
   LargeFormInput,
   AboutEvent,
   EditEventContainer,
 } from '@/styles/components/editEventPopupWindowForm.styles';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import PopupWindow from '@/components/PopupWindow';
 import {
@@ -21,14 +20,12 @@ import {
   VolunteerEventLocation,
 } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
-import { convertToDate, getTime } from '@/utils/utils';
 import {
   SubmitButton,
   ButtonCenter,
 } from '@/styles/components/windowFlow.styles';
-import { DatePicker } from 'antd';
-import type { RangePickerProps } from 'antd/es/date-picker';
-import dayjs from 'dayjs';
+import { DatePicker, TimePicker } from 'antd';
+import moment from 'moment';
 
 interface ModifiedVolunteerEventData
   extends Omit<VolunteerEventData, 'volunteers'> {}
@@ -54,13 +51,13 @@ const EditEventPopupWindowForm = ({
 
   const { RangePicker } = DatePicker;
 
-  const onChange = (value: RangePickerProps['value']) => {
-    console.log('Selected Time: ', value);
-  };
+  function onChange(date, dateString) {
+    console.log(date, dateString);
+  }
 
-  const onOk = (value: RangePickerProps['value']) => {
-    console.log('onOk: ', value);
-  };
+  // function onChange(time, timeString) {
+  //   console.log(time, timeString);
+  // }
 
   // useEffect(() => {
   //   if (pid) {
@@ -80,8 +77,6 @@ const EditEventPopupWindowForm = ({
   //       .catch(err => setError(err));
   //   } else setError(new Error('No pid found'));
   // }, []);
-
-  const pages = ['Info #1', 'Info #2'];
 
   const onSubmit = (data: any) => {
     // VolunteerEventData
@@ -142,61 +137,30 @@ const EditEventPopupWindowForm = ({
 
           <FormLabel>Logistics</FormLabel>
 
-          <RangePicker
-            defaultValue={[
-              dayjs(eventData?.startDate),
-              dayjs(eventData?.endDate),
-            ]}
-            showTime={{ format: 'HH:mm' }}
-            format="YYYY-MM-DD HH:mm"
-            onChange={onChange}
-            onOk={onOk}
-          />
-          {/* <InputFlex>
-            <FormLogistics>Start Date</FormLogistics>
-          </InputFlex>
+          <RangePicker onChange={onChange} />
           <InputFlex>
-            <FormInput
-              {...register('startDate')}
-              type="text"
-              placeholder="Start Date"
-              pattern="^((0|1)\d{1})\/((0|1|2)\d{1})\/((19|20)\d{2})"
-              title="Input must be in MM/DD/YYYY format"
-              defaultValue={convertToDate(
-                eventData?.startDate.toString() || ''
-              )}></FormInput>
-            <FormInput
-              {...register('endDate')}
-              type="text"
-              placeholder="End Date"
-              pattern="^((0|1)\d{1})\/((0|1|2)\d{1})\/((19|20)\d{2})"
-              title="Input must be in MM/DD/YYYY format"
-              defaultValue={convertToDate(
-                eventData?.endDate.toString() || ''
-              )}></FormInput>
-          </InputFlex> */}
+            <TimePicker
+              use12Hours
+              format="h:mm a"
+              defaultValue={eventData?.startDate}
+              onChange={onChange}
+            />
+            <TimePicker use12Hours format="h:mm a" onChange={onChange} />
+          </InputFlex>
 
           <InputFlex>
-            <ShortFormInput
-              {...register('hour')}
-              type="text"
-              placeholder="HH"
-              pattern="[0-1]?[0-9]|2[0-4]"
-              title="Input must be in HH:MM format"></ShortFormInput>
-            <FormLogistics>:</FormLogistics>
-            <ShortFormInput
-              {...register('minute')}
-              type="text"
-              placeholder="MM"
-              pattern="[0-5]?[0-9]?"
-              title="Input must be in HH:MM format"></ShortFormInput>
-            <MediumFormInput
-              {...register('time')}
-              type="text"
-              placeholder="AM/PM"
-              pattern="(AM|PM)"
-              title="Input must be in text format"></MediumFormInput>
+            <TimePicker
+              format="h:mm a"
+              defaultValue={moment('12:08', 'HH:mm')}
+              disabled
+            />
+            <TimePicker
+              format="h:mm a"
+              defaultValue={moment('12:08', 'HH:mm')}
+              disabled
+            />
           </InputFlex>
+
           <InputFlex>
             <ShortFormInput
               {...register('maxSpot')}
