@@ -69,12 +69,28 @@ const columns: any = [
     dataIndex: 'seeMore',
     key: 'seeMore',
     // TODO: fix this
-    render: (record: QueriedVolunteerEventData) => {
-      console.log(record);
-      if (record) {
-        return <Link href={`/event/${record._id}`}>See More</Link>;
-      }
-    },
+    render: (_: any, { events }: any) => (
+      <>
+        {events?.map((event: any) => {
+          return (
+            <Link key={event.name} href={`/event/${event._id}`}>
+              See More
+            </Link>
+          );
+        })}
+      </>
+
+      // this works! if uncommented
+      // <>
+      //   {tags.map((tag: QueriedTagData) => {
+      //     return (
+      //       <Link key={tag.tagName} href={`/event/${tag._id}`}>
+      //         See More
+      //       </Link>
+      //     );
+      //   })}
+      // </>
+    ),
   },
 ];
 
