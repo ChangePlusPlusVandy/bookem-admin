@@ -39,13 +39,42 @@ const Response = styled.p`
 `;
 
 const ItemContainer = styled.div``;
+
+const PendingContainer = styled.div`
+  width: 50%;
+  min-width: 150px;
+  margin: 0px auto;
+  border: black 1px solid;
+  border-radius: 10px;
+  height: 50px;
+  flex: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ApproveText = styled.p`
+  font-size: 15px;
+  font-weight: bold;
+  margin: auto;
+`;
+const ApproveButton = styled.button`
+  height: 35px;
+  width: 35px;
+  border-radius: 100%;
+  flex: none;
+  border: none;
+  margin: auto;
+`;
+
 const UserApplication = ({
   application,
 }: {
-  application: VolunteerApplicationData;
+  application: QueriedVolunteerApplicationData;
 }) => {
   const [eventLoaded, setEventLoaded] = useState(false);
   const [event, setEvent] = useState<QueriedVolunteerEventData>();
+  const [approvalStatus, setApprovalStatus] = useState('pending');
 
   async function getEvent() {
     try {
@@ -64,13 +93,50 @@ const UserApplication = ({
   useEffect(() => {
     if (application) {
       getEvent();
+      setApprovalStatus(application.status);
     }
   }, [application]);
+
+  async function handleApproveApplication() {
+    try {
+      const approveObject = { updatedStatus: 'approved', id: application._id };
+      const path = '/api/applications/updateStatus';
+      await fetch(path, {
+        method: 'POST',
+        body: JSON.stringify(approveObject),
+      });
+      setApprovalStatus('approved');
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async function handleRejectApplication() {
+    try {
+      const approveObject = { updatedStatus: 'rejected', id: application._id };
+      const path = '/api/applications/updateStatus';
+      await fetch(path, {
+        method: 'POST',
+        body: JSON.stringify(approveObject),
+      });
+      setApprovalStatus('rejected');
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   return (
     <Container>
       <Title>Application for {event?.name}</Title>
-      <Status>Status: {application.status}</Status>
+      {approvalStatus !== 'pending' && (
+        <Status>Status: {approvalStatus}</Status>
+      )}
+      {approvalStatus === 'pending' && (
+        <PendingContainer>
+          <ApproveText>Approve?</ApproveText>
+          <ApproveButton onClick={handleApproveApplication}></ApproveButton>
+          <ApproveButton onClick={handleRejectApplication}>X</ApproveButton>
+        </PendingContainer>
+      )}
       {application.formData.map((item: any) => (
         <ItemContainer key={item.question}>
           <Question>{item.question}</Question>

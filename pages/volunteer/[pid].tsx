@@ -245,6 +245,7 @@ export default function Volunteer() {
   const [curApplicationIndex, setCurApplicationIndex] = useState(0);
   const [loggedHoursLoaded, setLoggedHoursLoaded] = useState(false);
   const [loggedHours, setLoggedHours] = useState<QueriedVolunteerLogData[]>([]);
+  const [userFound, setUserFound] = useState(false);
   const [userApplications, setUserApplications] = useState<
     QueriedVolunteerApplicationData[]
   >([
@@ -281,7 +282,11 @@ export default function Volunteer() {
       });
       const data = await res.json();
       setLoggedHoursLoaded(true);
-      setLoggedHours(data);
+      console.log('data here', data);
+      if (!data.error) {
+        setLoggedHours(data);
+        setUserFound(true);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -347,13 +352,14 @@ export default function Volunteer() {
 
   return (
     <Container>
-      {userInfoLoaded && (
+      {!userFound && <Header>User Not Found</Header>}
+      {userInfoLoaded && userFound && (
         <Header>
           <HeaderText>{userInfo.name}</HeaderText> <Export>Export</Export>
         </Header>
       )}
       <Body>
-        {userInfoLoaded && (
+        {userInfoLoaded && userFound && (
           <Section>
             <SectionHeader> General Info </SectionHeader>
             <GeneralSection>
@@ -379,7 +385,7 @@ export default function Volunteer() {
             </GeneralSection>
           </Section>
         )}
-        {loggedHoursLoaded && (
+        {loggedHoursLoaded && userFound && (
           <Section>
             <SectionHeader> Log Hour History </SectionHeader>
             {loggedHours.map(data => (
@@ -399,7 +405,7 @@ export default function Volunteer() {
             </SectionFooter>
           </Section>
         )}
-        {applicationsLoaded && (
+        {applicationsLoaded && userFound && (
           <RightContainer>
             <ApplicationContainer>
               <SectionHeader>Applications</SectionHeader>
