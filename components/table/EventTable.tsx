@@ -1,22 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Input, Space, Tag } from 'antd';
+import { Button, Input, Tag } from 'antd';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import useSWR from 'swr';
-import { QueriedVolunteerEventData } from 'bookem-shared/src/types/database';
 import {
-  Header,
+  QueriedTagData,
+  QueriedVolunteerEventData,
+} from 'bookem-shared/src/types/database';
+import {
   SearchContainter,
   StyledTable,
   TableContainer,
 } from '@/styles/volunteerTable.styles';
+import Link from 'next/link';
+import { ObjectId } from 'mongodb';
 
 interface EventRowData {
   key: number;
   eventName: string;
   date: string;
   numVolunteers: number;
-  tags: string;
+  tags: QueriedTagData[];
+  id: ObjectId;
 }
 
 const columns: any = [
@@ -40,28 +45,36 @@ const columns: any = [
     title: 'Tags',
     dataIndex: 'tags',
     key: 'tags',
-    //     render: (_: any, { tags }: any) => <>{tags.map((tag: string) => {})}</>,
-    //     filters: [
-    //       {
-    //         text: 'RFR',
-    //         value: 'RFR',
-    //       },
-    //       {
-    //         text: 'RIF',
-    //         value: 'RIF',
-    //       },
-    //     ],
-    //     onFilter: (value: string, record: { tags: string }) =>
-    //       record.tags.includes(value),
+    render: (_: any, { tags }: any) => (
+      <>
+        {tags.map((tag: QueriedTagData) => {
+          return <Tag key={tag.tagName}>{tag.tagName}</Tag>;
+        })}
+      </>
+    ),
+    filters: [
+      {
+        text: 'RFR',
+        value: 'RFR',
+      },
+      {
+        text: 'RIF',
+        value: 'RIF',
+      },
+    ],
+    onFilter: (value: string, record: { tags: string }) =>
+      record.tags.includes(value),
   },
   {
     dataIndex: 'seeMore',
     key: 'seeMore',
-    render: (_: any) => (
-      <Space size="middle">
-        <a>See More</a>
-      </Space>
-    ),
+    // TODO: fix this
+    render: (record: QueriedVolunteerEventData) => {
+      console.log(record);
+      if (record) {
+        return <Link href={`/event/${record._id}`}>See More</Link>;
+      }
+    },
   },
 ];
 
@@ -118,10 +131,12 @@ const EventTable = () => {
     saveAs(blob, 'events.xlsx');
   };
 
+  {
+    console.log(dataForTable);
+  }
   return (
     <>
       <div>
-        <Header>Event Management</Header>
         <SearchContainter>
           <Input.Search
             placeholder="Search "
@@ -173,7 +188,8 @@ const convertEventDataToRowData = (data: QueriedVolunteerEventData[]) => {
       eventName: event.name,
       date: stringDate,
       numVolunteers: event.volunteers.length,
-      tags: event.program?.tagName,
+      tags: event.tags,
+      id: event._id,
     };
   });
   return result;
