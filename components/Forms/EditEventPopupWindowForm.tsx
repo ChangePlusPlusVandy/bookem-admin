@@ -15,13 +15,20 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import PopupWindow from '@/components/PopupWindow';
-import { QueriedVolunteerEventData } from 'bookem-shared/src/types/database';
+import {
+  QueriedVolunteerEventData,
+  VolunteerEventData,
+  VolunteerEventLocation,
+} from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
 import { convertToDate, getTime } from '@/utils/utils';
 import {
   SubmitButton,
   ButtonCenter,
 } from '@/styles/components/windowFlow.styles';
+
+interface ModifiedVolunteerEventData
+  extends Omit<VolunteerEventData, 'volunteers'> {}
 
 const EditEventPopupWindowForm = ({
   setShowPopup,
@@ -31,50 +38,69 @@ const EditEventPopupWindowForm = ({
   const router = useRouter();
   const { pid } = router.query;
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm({
+    defaultValues: async () => {
+      const response = await fetch('/api/event/' + pid);
+      const data = await response.json();
+      console.log('aaaaa', data);
+      return data;
+    },
+  });
   const [eventData, setEventData] = useState<QueriedVolunteerEventData>();
   const [error, setError] = useState<Error>();
 
-  useEffect(() => {
-    if (pid) {
-      fetch('/api/event/' + pid)
-        .then(res => {
-          if (!res.ok) {
-            throw new Error(
-              'An error has occurred while fetching: ' + res.statusText
-            );
-          }
-          return res.json();
-        })
-        .then(data => {
-          setEventData(data);
-          console.log(data);
-        })
-        .catch(err => setError(err));
-    } else setError(new Error('No pid found'));
-  }, []);
+  // useEffect(() => {
+  //   if (pid) {
+  //     fetch('/api/event/' + pid)
+  //       .then(res => {
+  //         if (!res.ok) {
+  //           throw new Error(
+  //             'An error has occurred while fetching: ' + res.statusText
+  //           );
+  //         }
+  //         return res.json();
+  //       })
+  //       .then(data => {
+  //         setEventData(data);
+  //         console.log(data);
+  //       })
+  //       .catch(err => setError(err));
+  //   } else setError(new Error('No pid found'));
+  // }, []);
 
   const pages = ['Info #1', 'Info #2'];
 
   const onSubmit = (data: any) => {
-    const results = JSON.stringify({
-      eventName: data.EventName,
-      eventCategory: data.EventCategory,
-      date: data.Date,
-      hh: data.Hour,
-      mm: data.Min,
-      time: data.Time,
-      numSpots: data.Spots,
-      street: data.Street,
-      city: data.City,
-      state: data.State,
-      zip: data.Zip,
-      about: data.About,
-      phoneNumber: data.PhoneNumber,
-      email: data.Email,
-      numBooks: data.NumberOfBooks,
-    });
-    console.log(results);
+    // VolunteerEventData
+    console.log('THIS ISDATA: ', data);
+
+    const location: VolunteerEventLocation = {
+      street: data.street,
+      city: data.city,
+      state: data.state,
+      zip: data.zip,
+    };
+
+    const dataToSave: ModifiedVolunteerEventData = {
+      name: data.name,
+      description: data.description,
+      startDate: data.startDate,
+      endDate: data.startDate,
+      maxSpot: data.maxSpot,
+      location: location,
+      phone: data.phone,
+      email: data.email,
+      program: data.program,
+      requireApplication: false,
+      tags: [],
+    };
+
+    // how to convert this into VolunteerEventData
+    // and then send this to PATCH /api/event/:id
+    // await fetch('/api/event/' + pid, {
+    //   method: 'PATCH',
+    //   body: dataToSave
+    // })
   };
 
   return (
@@ -86,14 +112,14 @@ const EditEventPopupWindowForm = ({
           <FormLabel>Event Name</FormLabel>
           <InputFlex>
             <FormInput
-              {...register('EventName')}
+              {...register('name')}
               type="text"
               placeholder="Event Name"
               pattern="[A-Za-z]"
               title="Input must be text"
               defaultValue={eventData?.name}></FormInput>
             <FormInput
-              {...register('EventCategory')}
+              {...register('program')}
               type="text"
               placeholder="Event Category (optional)"
               pattern="[A-Za-z]"
@@ -102,31 +128,48 @@ const EditEventPopupWindowForm = ({
           </InputFlex>
 
           <FormLabel>Logistics</FormLabel>
-          <FormInput
-            {...register('Date')}
-            type="text"
-            placeholder="Date"
-            pattern="^((0|1)\d{1})\/((0|1|2)\d{1})\/((19|20)\d{2})"
-            title="Input must be in MM/DD/YYYY format"
-            defaultValue={convertToDate(
-              eventData?.startDate.toString() || ''
-            )}></FormInput>
+          <InputFlex>
+            <FormLogistics>Start Date</FormLogistics>
+            <FormLogistics>&emsp;</FormLogistics>
+            <FormLogistics>End Date</FormLogistics>
+          </InputFlex>
+          <InputFlex>
+            <FormInput
+              {...register('startDate')}
+              type="text"
+              placeholder="Start Date"
+              pattern="^((0|1)\d{1})\/((0|1|2)\d{1})\/((19|20)\d{2})"
+              title="Input must be in MM/DD/YYYY format"
+              defaultValue={convertToDate(
+                eventData?.startDate.toString() || ''
+              )}></FormInput>
+            <FormInput
+              {...register('endDate')}
+              type="text"
+              placeholder="End Date"
+              pattern="^((0|1)\d{1})\/((0|1|2)\d{1})\/((19|20)\d{2})"
+              title="Input must be in MM/DD/YYYY format"
+              defaultValue={convertToDate(
+                eventData?.endDate.toString() || ''
+              )}></FormInput>
+          </InputFlex>
+
           <InputFlex>
             <ShortFormInput
-              {...register('Hour')}
+              {...register('hour')}
               type="text"
               placeholder="HH"
               pattern="[0-1]?[0-9]|2[0-4]"
               title="Input must be in HH:MM format"></ShortFormInput>
             <FormLogistics>:</FormLogistics>
             <ShortFormInput
-              {...register('Min')}
+              {...register('minute')}
               type="text"
               placeholder="MM"
               pattern="[0-5]?[0-9]?"
               title="Input must be in HH:MM format"></ShortFormInput>
             <MediumFormInput
-              {...register('Time')}
+              {...register('time')}
               type="text"
               placeholder="AM/PM"
               pattern="(AM|PM)"
@@ -134,14 +177,7 @@ const EditEventPopupWindowForm = ({
           </InputFlex>
           <InputFlex>
             <ShortFormInput
-              {...register('Spots')}
-              type="text"
-              placeholder="#"
-              pattern="^[0-9]*$"
-              title="Input must be a whole number"></ShortFormInput>
-            <FormLogistics>spots filled out of</FormLogistics>
-            <ShortFormInput
-              {...register('MaxSpots')}
+              {...register('maxSpot')}
               type="text"
               placeholder="#"
               pattern="^[0-9]*$"
@@ -151,7 +187,7 @@ const EditEventPopupWindowForm = ({
           </InputFlex>
           <FormLabel>Address</FormLabel>
           <LongFormInput
-            {...register('Street')}
+            {...register('street')}
             type="text"
             placeholder="Street"
             pattern="[A-Za-z0-9]"
@@ -159,14 +195,14 @@ const EditEventPopupWindowForm = ({
             defaultValue={eventData?.location.street}></LongFormInput>
           <InputFlex>
             <FormInput
-              {...register('City')}
+              {...register('city')}
               type="text"
               placeholder="City"
               pattern="[A-Za-z]"
               title="Input must be a valid city"
               defaultValue={eventData?.location.city}></FormInput>
             <FormInput
-              {...register('State')}
+              {...register('state')}
               type="text"
               placeholder="State"
               pattern="[A-Za-z]"
@@ -174,7 +210,7 @@ const EditEventPopupWindowForm = ({
               defaultValue={eventData?.location.state}></FormInput>
           </InputFlex>
           <FormInput
-            {...register('Zip')}
+            {...register('zip')}
             type="text"
             placeholder="Zip Code"
             pattern="^(?(^00000(|-0000))|(\d{5}(|-\d{4})))$"
@@ -184,27 +220,27 @@ const EditEventPopupWindowForm = ({
           <FormLabel>About the event</FormLabel>
           <AboutEvent>
             <LargeFormInput
-              {...register('About')}
+              {...register('description')}
               placeholder="About..."
               defaultValue={eventData?.description}></LargeFormInput>
           </AboutEvent>
           <FormLabel>Contact</FormLabel>
           <FormInput
-            {...register('PhoneNumber')}
+            {...register('phone')}
             type="text"
             placeholder="Phone number"
             pattern="/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/"
             title="Input must be a valid phone number"
             defaultValue={eventData?.phone}></FormInput>
           <FormInput
-            {...register('Email')}
+            {...register('email')}
             type="text"
             placeholder="Email address"
             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
             title="Input must be a valid email address"
             defaultValue={eventData?.email}></FormInput>
           <ButtonCenter>
-            <SubmitButton onClick={onSubmit}>Done</SubmitButton>
+            <SubmitButton onClick={handleSubmit(onSubmit)}>Done</SubmitButton>
           </ButtonCenter>
         </EditEventForm>
       </EditEventContainer>
