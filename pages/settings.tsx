@@ -1,7 +1,14 @@
+import AdminTable from '@/components/table/AdminTable';
+import { Title, VolunteerLayout } from '@/styles/volunteer.styles';
 import React from 'react';
 
 const settings = () => {
-  return <div>settings</div>;
+  return (
+    <VolunteerLayout>
+      <Title>Admin Management & Settings</Title>
+      <AdminTable />
+    </VolunteerLayout>
+  );
 };
 
 export default settings;
