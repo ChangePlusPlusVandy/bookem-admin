@@ -26,6 +26,8 @@ import {
   SubmitButton,
   ButtonCenter,
 } from '@/styles/components/windowFlow.styles';
+import { DatePicker } from 'antd';
+import type { Dayjs } from 'dayjs';
 
 interface ModifiedVolunteerEventData
   extends Omit<VolunteerEventData, 'volunteers'> {}
@@ -48,6 +50,29 @@ const EditEventPopupWindowForm = ({
   });
   const [eventData, setEventData] = useState<QueriedVolunteerEventData>();
   const [error, setError] = useState<Error>();
+
+  const { RangePicker } = DatePicker;
+
+  type RangeValue = [Dayjs | null, Dayjs | null] | null;
+  const [dates, setDates] = useState<RangeValue>(null);
+  const [value, setValue] = useState<RangeValue>(null);
+
+  const disabledDate = (current: Dayjs) => {
+    if (!dates) {
+      return false;
+    }
+    const tooLate = dates[0] && current.diff(dates[0], 'days') >= 7;
+    const tooEarly = dates[1] && dates[1].diff(current, 'days') >= 7;
+    return !!tooEarly || !!tooLate;
+  };
+
+  const onOpenChange = (open: boolean) => {
+    if (open) {
+      setDates([null, null]);
+    } else {
+      setDates(null);
+    }
+  };
 
   // useEffect(() => {
   //   if (pid) {
@@ -128,10 +153,16 @@ const EditEventPopupWindowForm = ({
           </InputFlex>
 
           <FormLabel>Logistics</FormLabel>
-          <InputFlex>
+
+          <RangePicker
+            value={dates || value}
+            disabledDate={disabledDate}
+            onCalendarChange={val => setDates(val)}
+            onChange={val => setValue(val)}
+            onOpenChange={onOpenChange}
+          />
+          {/* <InputFlex>
             <FormLogistics>Start Date</FormLogistics>
-            <FormLogistics>&emsp;</FormLogistics>
-            <FormLogistics>End Date</FormLogistics>
           </InputFlex>
           <InputFlex>
             <FormInput
@@ -152,7 +183,7 @@ const EditEventPopupWindowForm = ({
               defaultValue={convertToDate(
                 eventData?.endDate.toString() || ''
               )}></FormInput>
-          </InputFlex>
+          </InputFlex> */}
 
           <InputFlex>
             <ShortFormInput
