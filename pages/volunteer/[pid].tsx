@@ -6,6 +6,7 @@ import {
   QueriedVolunteerApplicationData,
   QueriedVolunteerApplicationDTO,
   VolunteerLogData,
+  ApplicationStatus,
 } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
 import mongoose from 'mongoose';
@@ -97,7 +98,7 @@ const Info = styled.p`
   font-size: 18px;
 `;
 
-const ProgramNotes = styled.div`
+const RightContainer = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -117,8 +118,7 @@ const ApplicationContainer = styled.div`
   justify-content: start;
   border: solid #e3e3e3 1px;
   border-radius: 10px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   width: 100%;
 `;
 
@@ -251,12 +251,13 @@ export default function Volunteer() {
     {
       _id: new mongoose.Types.ObjectId(),
       userId: new mongoose.Types.ObjectId(),
-      formData: 'No Applications Found',
+      formData: [],
       eventId: new mongoose.Types.ObjectId(),
-      status: 'string',
+      status: ApplicationStatus.Pending,
       createdAt: new Date(),
     },
   ]);
+  const [applicationsLoaded, setApplicationsLoaded] = useState(false);
 
   const getUser = async () => {
     try {
@@ -295,6 +296,7 @@ export default function Volunteer() {
       const data = await res.json();
       console.log(data);
       setUserApplications(data);
+      setApplicationsLoaded(true);
     } catch (err) {
       console.log(err);
     }
@@ -397,18 +399,22 @@ export default function Volunteer() {
             </SectionFooter>
           </Section>
         )}
-        <ProgramNotes>
-          <ApplicationContainer>
-            <SectionHeader>Applications</SectionHeader>
-            <UserApplication
-              {...userApplications[curApplicationIndex]}></UserApplication>
-            <BackButton onClick={goBackward}></BackButton>
-            <ForwardButton onClick={goForward}></ForwardButton>
-          </ApplicationContainer>
-          <NotesContainer>
-            <SectionHeader>RIF Notes</SectionHeader>
-          </NotesContainer>
-        </ProgramNotes>
+        {applicationsLoaded && (
+          <RightContainer>
+            <ApplicationContainer>
+              <SectionHeader>Applications</SectionHeader>
+              <UserApplication
+                application={
+                  userApplications[curApplicationIndex]
+                }></UserApplication>
+              <BackButton onClick={goBackward}></BackButton>
+              <ForwardButton onClick={goForward}></ForwardButton>
+            </ApplicationContainer>
+            <NotesContainer>
+              <SectionHeader>RIF Notes</SectionHeader>
+            </NotesContainer>
+          </RightContainer>
+        )}
       </Body>
     </Container>
   );

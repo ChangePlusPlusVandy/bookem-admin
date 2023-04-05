@@ -1,29 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { QueriedVolunteerApplicationData } from 'bookem-shared/src/types/database';
+import {
+  QueriedVolunteerApplicationData,
+  VolunteerApplicationData,
+} from 'bookem-shared/src/types/database';
 import { QueriedVolunteerEventData } from 'bookem-shared/src/types/database';
 
 const Container = styled.div`
   width: 100%;
+  padding: 30px 50px;
+  gap: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: top;
+  overflow-y: auto;
 `;
 
-const TextItem = styled.p`
-  margin-left: auto;
-  margin-right: auto;
+const Title = styled.p`
+  font-weight: bold;
+  margin: 0px auto;
+  font-size: 20px;
 `;
-export default function UserApplication(
-  props: QueriedVolunteerApplicationData
-) {
+const Status = styled.p`
+  margin: 0px auto;
+  font-size: 15px;
+`;
+
+const Question = styled.p`
+  font-size: 15px;
+  font-weight: bold;
+  margin: 0px;
+`;
+
+const Response = styled.p`
+  font-size: 15px;
+  margin: 0px;
+`;
+
+const ItemContainer = styled.div``;
+const UserApplication = ({
+  application,
+}: {
+  application: VolunteerApplicationData;
+}) => {
   const [eventLoaded, setEventLoaded] = useState(false);
   const [event, setEvent] = useState<QueriedVolunteerEventData>();
 
   async function getEvent() {
     try {
-      const path = '/api/event/' + props.eventId;
+      const path = '/api/event/' + application.eventId;
       const res = await fetch(path, {
         method: 'GET',
       });
@@ -36,16 +62,23 @@ export default function UserApplication(
   }
 
   useEffect(() => {
-    if (props) {
+    if (application) {
       getEvent();
     }
-  }, [props]);
+  }, [application]);
 
   return (
     <Container>
-      <TextItem>Application for {event?.name}</TextItem>
-      <TextItem>Application: {props.formData}</TextItem>
-      <TextItem>Status: {props.status}</TextItem>
+      <Title>Application for {event?.name}</Title>
+      <Status>Status: {application.status}</Status>
+      {application.formData.map((item: any) => (
+        <ItemContainer key={item.question}>
+          <Question>{item.question}</Question>
+          <Response>{item.answer}</Response>
+        </ItemContainer>
+      ))}
     </Container>
   );
-}
+};
+
+export default UserApplication;
