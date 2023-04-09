@@ -26,6 +26,8 @@ import {
 } from '@/styles/components/windowFlow.styles';
 import { DatePicker, TimePicker } from 'antd';
 import moment from 'moment';
+import Dayjs from 'dayjs';
+import { start } from 'repl';
 
 interface ModifiedVolunteerEventData
   extends Omit<VolunteerEventData, 'volunteers'> {}
@@ -47,13 +49,15 @@ const EditEventPopupWindowForm = ({
     },
   });
   const [eventData, setEventData] = useState<QueriedVolunteerEventData>();
+  const [locationData, setLocationData] = useState<VolunteerEventLocation>();
+  const [startTime, setStartTime] = useState('12:00');
+  const [endTime, setEndTime] = useState('12:00');
+  const [startDate, setStartDate] = useState('01/01/01');
+  const [endDate, setEndDate] = useState('01/01/01');
+
   const [error, setError] = useState<Error>();
 
   const { RangePicker } = DatePicker;
-
-  function onChange(date, dateString) {
-    console.log(date, dateString);
-  }
 
   // function onChange(time, timeString) {
   //   console.log(time, timeString);
@@ -137,26 +141,50 @@ const EditEventPopupWindowForm = ({
 
           <FormLabel>Logistics</FormLabel>
 
-          <RangePicker onChange={onChange} />
+          <RangePicker
+          // defaultValue:[moment('2020-03-09'), moment('2020-03-27')]
+          // onChange={(value, startDate, endDate) => {
+          //   setStartDate(startDate);
+          //   setEndDate(endDate);
+          // }}
+          />
+
           <InputFlex>
             <TimePicker
               use12Hours
               format="h:mm a"
-              defaultValue={eventData?.startDate}
-              onChange={onChange}
+              defaultValue={Dayjs(
+                Dayjs(eventData?.startDate.getTime()),
+                'HH:mm'
+              )}
+              onChange={(value, startTime) => {
+                setStartTime(startTime);
+                console.log(startTime);
+              }}
             />
-            <TimePicker use12Hours format="h:mm a" onChange={onChange} />
+            <TimePicker
+              use12Hours
+              format="h:mm a"
+              defaultValue={Dayjs(
+                Dayjs(eventData?.startDate.getTime()),
+                'HH:mm'
+              )}
+              onChange={(value, endTime) => {
+                setEndTime(endTime);
+                console.log(endTime);
+              }}
+            />
           </InputFlex>
 
           <InputFlex>
             <TimePicker
               format="h:mm a"
-              defaultValue={moment('12:08', 'HH:mm')}
+              defaultValue={Dayjs('12:08', 'HH:mm')}
               disabled
             />
             <TimePicker
               format="h:mm a"
-              defaultValue={moment('12:08', 'HH:mm')}
+              defaultValue={Dayjs('12:09', 'HH:mm')}
               disabled
             />
           </InputFlex>
@@ -178,7 +206,7 @@ const EditEventPopupWindowForm = ({
             placeholder="Street"
             pattern="[A-Za-z0-9]"
             title="Input must be in address format"
-            defaultValue={eventData?.location.street}></LongFormInput>
+            defaultValue={locationData?.street}></LongFormInput>
           <InputFlex>
             <FormInput
               {...register('city')}
@@ -186,14 +214,14 @@ const EditEventPopupWindowForm = ({
               placeholder="City"
               pattern="[A-Za-z]"
               title="Input must be a valid city"
-              defaultValue={eventData?.location.city}></FormInput>
+              defaultValue={locationData?.city}></FormInput>
             <FormInput
               {...register('state')}
               type="text"
               placeholder="State"
               pattern="[A-Za-z]"
               title="Input must be a valid state"
-              defaultValue={eventData?.location.state}></FormInput>
+              defaultValue={locationData?.state}></FormInput>
           </InputFlex>
           <FormInput
             {...register('zip')}
@@ -201,7 +229,7 @@ const EditEventPopupWindowForm = ({
             placeholder="Zip Code"
             pattern="^(?(^00000(|-0000))|(\d{5}(|-\d{4})))$"
             title="Input must be in proper zip code format"
-            defaultValue={eventData?.location.zip}></FormInput>
+            defaultValue={locationData?.zip}></FormInput>
 
           <FormLabel>About the event</FormLabel>
           <AboutEvent>
