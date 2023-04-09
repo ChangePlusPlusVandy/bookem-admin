@@ -4,6 +4,8 @@ import styled from 'styled-components';
 export const SearchContainter = styled.div`
   display: flex;
   margin-left: 50px;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 export const TableContainer = styled.div`
@@ -30,22 +32,29 @@ export const BottomRow = styled.div`
 `;
 
 export const RoundButton = styled.div`
+display: flex;
 border-radius: 25px;
-text-align: center;
-margin: 4px 2px;
+align-items: center;
+justify-content: center;
 border: 1px solid darkgray;
 padding: 5px 5px;
 width: 50px;
 height: 50px;
-color: darkgray;
+background-color: darkgray;
 cursor: pointer;
 
 &:hover {
-  background-color: darkgray;
+  background-color: gray;
   color: white;
 }
 
 &:active {
   background-color: gray;
 }
+`
+
+export const ButtonText = styled.p`
+    font-size: 20px;
+    color: white
+
 `

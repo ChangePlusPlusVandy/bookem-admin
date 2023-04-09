@@ -1,10 +1,11 @@
 import {
-    AboutBox,
+  AboutBox,
   BoldText,
   FirstandLast,
   Title,
 } from '@/styles/components/Admin/adminInfo.styles';
-import React from 'react';
+import React, { useState } from 'react';
+import CheckCircle from './CheckCircle';
 
 const CategoryandData = (props: { category: string; data: string }) => {
   return (
@@ -16,9 +17,17 @@ const CategoryandData = (props: { category: string; data: string }) => {
 };
 
 const AdminInfo = () => {
+  const [firstName, setFirstName] = useState('Melissa');
+  const [lastName, setLastName] = useState('Spradlin');
+  const [email, setEmail] = useState('melissa@bookem.org');
+  const [phone, setPhone] = useState('1234567899');
+  const [role, setRole] = useState('Executive Director');
 
-    // get current admin data from database
+  // TODO get current admin data from database
 
+  const handleClick = () => {
+    console.log('clicked');
+  };
 
   return (
     <AboutBox>
@@ -28,12 +37,50 @@ const AdminInfo = () => {
         <BoldText>Last Name</BoldText>
       </FirstandLast>
       <FirstandLast>
-        <p>Melissa</p>
-        <p>Spradlin</p>
+        <input
+          type="text"
+          name="firstName"
+          value={firstName}
+          onChange={ev => setFirstName(ev.target.value)}
+        />
+        <input
+          type="text"
+          name="lastName"
+          value={lastName}
+          onChange={ev => setLastName(ev.target.value)}
+        />
       </FirstandLast>
-      <CategoryandData category="Email" data="me@me.com" />
-      <CategoryandData category="Phone" data="(805) 657-0708" />
-      <CategoryandData category="Role" data="Executive Director" />
+      <div>
+        <BoldText>Email</BoldText>
+        <input
+          type="text"
+          name="email"
+          value={email}
+          onChange={ev => setEmail(ev.target.value)}
+        />
+      </div>
+      <div>
+        <BoldText>Phone</BoldText>
+        <input
+          type="text"
+          name="phone"
+          value={phone}
+          onChange={ev => setPhone(ev.target.value)}
+        />
+      </div>
+      <div>
+        <BoldText>Role</BoldText>
+        <input
+          type="text"
+          name="role"
+          value={role}
+          onChange={ev => setRole(ev.target.value)}
+        />
+      </div>
+
+      <div onClick={handleClick}>
+        <CheckCircle></CheckCircle>
+      </div>
     </AboutBox>
   );
 };

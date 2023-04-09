@@ -4,14 +4,17 @@ import useSWR from 'swr';
 import { AdminData } from 'bookem-shared/src/types/database';
 import {
   BottomRow,
+  ButtonText,
+  RoundButton,
   SearchContainter,
   StyledTable,
   TableContainer,
-} from '@/styles/volunteerTable.styles';
+} from '@/styles/components/Admin/adminTable.styles';
 import { ObjectId } from 'mongodb';
 import PopupWindow from '../PopupWindow';
 import AdminInfo from '../Admin/AdminInfo';
 
+// TODO: check if the account superadmin
 // TODO: extract to utils/types in the future
 interface AdminRowData {
   key: number;
@@ -113,6 +116,12 @@ const AdminTable = () => {
           style={{ width: 800 }}
           allowClear
         />
+        <RoundButton>
+          <ButtonText>+</ButtonText>
+        </RoundButton>
+        <RoundButton>
+        <ButtonText>-</ButtonText>
+        </RoundButton>
         <Button
           onClick={() => setShowPopup(true)}
           style={{
@@ -135,6 +144,15 @@ const AdminTable = () => {
           />
         </div>
       </TableContainer>
+      <Button
+          style={{
+            width: '30%',
+            backgroundColor: 'darkgray',
+            color: 'whitesmoke',
+            alignSelf: 'center',
+          }}>
+          Log Out
+        </Button>
     </>
   );
 };
