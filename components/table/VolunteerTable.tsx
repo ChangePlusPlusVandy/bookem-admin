@@ -103,14 +103,11 @@ const VolunteerTable = () => {
     '/api/users/',
     fetcher
   );
-  const { data: totalHours } = useSWR<UserData[]>(
-    '/api/users/totalHours',
-    fetcher
-  );
+  const { data: totalHours } = useSWR<number>('/api/users/totalHours', fetcher);
   const [dataForTable, setDataForTable] = useState<VolunteerRowData[]>([]);
   const [filterTable, setFilterTable] = useState<VolunteerRowData[]>([]);
   const [totalVolunteers, setTotalVolunteers] = useState(dataForTable.length);
-  const [hours, setHours] = useState(totalHours);
+  const [hours, setHours] = useState<number>();
   const [isFiltering, setIsFilter] = useState<boolean>(false);
 
   useEffect(() => {
@@ -148,6 +145,14 @@ const VolunteerTable = () => {
     // make a fetch request to get gotal hours for the filtered table
     const ids = filterTable.map(obj => obj.id);
     const newHours = await queryTotalHours(ids);
+
+    // handle error if newHours is an error object
+    if ('error' in newHours) {
+      alert(
+        'Error: could not get total hours for filtered table. Please contact for support'
+      );
+      return;
+    }
 
     setHours(newHours);
     setFilterTable(filterTable);
