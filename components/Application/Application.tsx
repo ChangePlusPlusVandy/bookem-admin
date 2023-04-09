@@ -19,9 +19,11 @@ const Title = styled.p`
   margin: 0px auto;
   font-size: 20px;
 `;
+
 const Status = styled.p`
-  margin: 0px auto;
+  margin-left: auto;
   font-size: 15px;
+  width: 40%;
 `;
 
 const Question = styled.p`
@@ -37,37 +39,20 @@ const Response = styled.p`
 
 const ItemContainer = styled.div``;
 
-const PendingContainer = styled.div`
-  width: 50%;
-  min-width: 150px;
-  margin: 0px auto;
-  border: black 1px solid;
-  border-radius: 10px;
-  height: 50px;
-  flex: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ApproveText = styled.p`
-  font-size: 15px;
-  font-weight: bold;
-  margin: auto;
-`;
+const ApprovalForm = styled.form``;
 
 const StatusContainer = styled.div`
   width: 100%;
   display: flex;
-`;
-const ApproveButton = styled.button`
-  flex: none;
-  border: none;
-  margin: auto;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
 `;
 
-const DropdownContainer = styled.div``;
-const ToggleDropdown = styled.button``;
+const StatusPrompt = styled.label``;
+const StatusOptions = styled.select``;
+
+const Option = styled.option``;
 
 const UserApplication = ({
   application,
@@ -117,6 +102,7 @@ const UserApplication = ({
     try {
       const approveObject = { updatedStatus: 'rejected', id: application._id };
       const path = '/api/applications/updateStatus';
+      console.log("I'm here!");
       await fetch(path, {
         method: 'POST',
         body: JSON.stringify(approveObject),
@@ -127,14 +113,42 @@ const UserApplication = ({
     }
   }
 
+  async function handlePendingApplication() {
+    try {
+      const approveObject = { updatedStatus: 'pending', id: application._id };
+      const path = '/api/applications/updateStatus';
+      await fetch(path, {
+        method: 'POST',
+        body: JSON.stringify(approveObject),
+      });
+      setApprovalStatus('pending');
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  function handleInputChange(e: any) {
+    console.log(e.target.value);
+    if (e.target.value === 'approved') {
+      handleApproveApplication();
+    } else if (e.target.value === 'rejected') {
+      handleRejectApplication();
+    } else {
+      handlePendingApplication();
+    }
+  }
+
   return (
     <Container>
       <Title>Application for {event?.name}</Title>
       <StatusContainer>
-        {!dropdownOpen && <Status>Status: {approvalStatus}</Status>}
-        <ToggleDropdown></ToggleDropdown>
+        <StatusPrompt>Status: </StatusPrompt>
+        <StatusOptions onChange={handleInputChange} value={approvalStatus}>
+          <Option value="approved">approved</Option>
+          <Option value="rejected">rejected</Option>
+          <Option value="pending">pending</Option>
+        </StatusOptions>
       </StatusContainer>
-      {dropdownOpen && <DropdownContainer></DropdownContainer>}
       {application.formData.map((item: any) => (
         <ItemContainer key={item.question}>
           <Question>{item.question}</Question>
