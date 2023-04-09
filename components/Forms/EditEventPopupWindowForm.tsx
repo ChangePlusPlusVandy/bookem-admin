@@ -27,7 +27,6 @@ import {
 import { DatePicker, TimePicker } from 'antd';
 import moment from 'moment';
 import Dayjs from 'dayjs';
-import { start } from 'repl';
 
 interface ModifiedVolunteerEventData
   extends Omit<VolunteerEventData, 'volunteers'> {}
@@ -254,7 +253,7 @@ const EditEventPopupWindowForm = ({
             title="Input must be a valid email address"
             defaultValue={eventData?.email}></FormInput>
           <ButtonCenter>
-            <SubmitButton onClick={handleSubmit(onSubmit)}>Done</SubmitButton>
+            <SubmitButton onClick={handleSubmit(onSubmit)}>Save</SubmitButton>
           </ButtonCenter>
         </EditEventForm>
       </EditEventContainer>
