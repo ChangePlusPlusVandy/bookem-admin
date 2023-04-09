@@ -72,7 +72,7 @@ export const MediumFormInput = styled.input`
 export const LongFormInput = styled.input`
   margin: 15px 10px 0 0;
   border-radius: 10px;
-  height: 400px;
+  height: 25px;
   width: 410px;
 `;
 
