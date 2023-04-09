@@ -68,7 +68,6 @@ const columns: any = [
   {
     dataIndex: 'seeMore',
     key: 'seeMore',
-    // TODO: fix this - data reading as undefined
     render: (_: any, { id, eventName }: EventRowData) => (
       <>
         <Link key={eventName} href={`/event/${id}`}>
