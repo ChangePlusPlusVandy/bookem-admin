@@ -8,7 +8,7 @@ import {
 } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
 import mongoose from 'mongoose';
-import UserApplication from '@/components/Applications/Application';
+import UserApplication from '@/components/Application/Application';
 import {
   ApplicationContainer,
   BackButton,
@@ -212,8 +212,7 @@ export default function Volunteer() {
           <Section>
             <SectionHeader> Log Hour History </SectionHeader>
             {loggedHours.map(data => (
-              // eslint-disable-next-line react/jsx-key
-              <IndividualHours>
+              <IndividualHours key={data._id.toString()}>
                 <EventTitle>{data.school}</EventTitle>
                 {'Hours: ' + data.hours}
                 <br></br>
