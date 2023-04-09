@@ -68,28 +68,13 @@ const columns: any = [
   {
     dataIndex: 'seeMore',
     key: 'seeMore',
-    // TODO: fix this
-    render: (_: any, { events }: any) => (
+    // TODO: fix this - data reading as undefined
+    render: (_: any, { id, eventName }: EventRowData) => (
       <>
-        {events?.map((event: any) => {
-          return (
-            <Link key={event.name} href={`/event/${event._id}`}>
-              See More
-            </Link>
-          );
-        })}
+        <Link key={eventName} href={`/event/${id}`}>
+          See More
+        </Link>
       </>
-
-      // this works! if uncommented
-      // <>
-      //   {tags.map((tag: QueriedTagData) => {
-      //     return (
-      //       <Link key={tag.tagName} href={`/event/${tag._id}`}>
-      //         See More
-      //       </Link>
-      //     );
-      //   })}
-      // </>
     ),
   },
 ];
@@ -146,10 +131,6 @@ const EventTable = () => {
     });
     saveAs(blob, 'events.xlsx');
   };
-
-  {
-    console.log(dataForTable);
-  }
   return (
     <>
       <div>
