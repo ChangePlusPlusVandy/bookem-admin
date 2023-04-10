@@ -12,6 +12,7 @@ import {
   TableContainer,
 } from '@/styles/volunteerTable.styles';
 import { ObjectId } from 'mongodb';
+import Link from 'next/link';
 
 // TODO: extract to utils/types in the future
 interface VolunteerRowData {
@@ -88,10 +89,10 @@ const columns: any = [
   {
     dataIndex: 'seeMore',
     key: 'seeMore',
-    render: (_: any) => (
-      <Space size="middle">
-        <a>See More</a>
-      </Space>
+    render: (_: any, { id, email }: VolunteerRowData) => (
+      <Link key={email} href={`/volunteer/${id}`}>
+        See more
+      </Link>
     ),
   },
 ];

@@ -149,7 +149,7 @@ const UserApplication = ({
           <Option value="pending">pending</Option>
         </StatusOptions>
       </StatusContainer>
-      {application.formData.map((item: any) => (
+      {application?.formData.map((item: any) => (
         <ItemContainer key={item.question}>
           <Question>{item.question}</Question>
           <Response>{item.answer}</Response>
