@@ -29,7 +29,7 @@ const EventDetail = () => {
         .then(data => setEvent(data))
         .catch(err => setError(err));
     } else setError(new Error('No pid found'));
-  }, []);
+  }, [pid]);
 
   return (
     <>
