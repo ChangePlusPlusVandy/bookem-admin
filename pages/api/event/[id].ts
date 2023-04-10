@@ -102,6 +102,42 @@ export default async function handler(
       }
 
       break;
+
+    /**
+     * @route PATCH /api/event/[id]
+     * @desc Update the event by id
+     * @req event id, user in session
+     * @res Success message
+     */
+    case 'PATCH':
+      try {
+        // connect to db
+        await dbConnect();
+
+        if (!id) return res.status(400).json({ message: 'Missing id' });
+
+        // check if id is a valid mongoose id
+        if (!ObjectId.isValid(id as string))
+          return res.status(400).json({ message: 'Invalid id' });
+
+        // validate that req.body follows the VolunteerEventSchema
+
+        // update event based on input
+        const event = await VolunteerEvents.findByIdAndUpdate(id, req.body);
+        console.log('before update: ', event);
+        console.log('after update: ', req.body);
+
+        // if event is not found
+        if (!event)
+          return res.status(400).json({ message: 'Program not found' });
+
+        return res.status(200).json('Update Success');
+      } catch (error: any) {
+        res.status(500).json({ message: error.message });
+        console.error(error);
+      }
+
+      break;
     // case 'PUT':
     // case 'DELETE':
     // default:

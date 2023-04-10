@@ -12,18 +12,17 @@ export const PopupWindow = ({ hidePopup, children }: PopupWindowProps) => {
 
   function useOutsideAlerter(ref: React.RefObject<HTMLElement>) {
     //function to detect click outside of element
-    useEffect(() => {
-      function handleClickOutside(event: any) {
-        if (ref.current && !ref.current.contains(event.target)) {
-          hidePopup();
-        }
-      }
-
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }, [ref]);
+    // useEffect(() => {
+    //   function handleClickOutside(event: any) {
+    //     if (ref.current && !ref.current.contains(event.target)) {
+    //       hidePopup();
+    //     }
+    //   }
+    //   document.addEventListener('mousedown', handleClickOutside);
+    //   return () => {
+    //     document.removeEventListener('mousedown', handleClickOutside);
+    //   };
+    // }, [ref]);
   }
 
   return (
