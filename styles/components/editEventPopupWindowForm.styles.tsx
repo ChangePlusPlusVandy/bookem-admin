@@ -74,6 +74,7 @@ export const LongFormInput = styled.input`
   border-radius: 10px;
   height: 25px;
   width: 410px;
+  padding: 5px;
 `;
 
 export const AboutEvent = styled.div`
