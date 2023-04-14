@@ -63,7 +63,6 @@ const UserApplication = ({
   const [event, setEvent] = useState<QueriedVolunteerEventData>();
   const [approvalStatus, setApprovalStatus] = useState('pending');
 
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   async function getEvent() {
     try {
       const path = '/api/event/' + application.eventId;
@@ -143,7 +142,7 @@ const UserApplication = ({
       <Title>Application for {event?.name}</Title>
       <StatusContainer>
         <StatusPrompt>Status: </StatusPrompt>
-        <StatusOptions onChange={handleInputChange} value={approvalStatus}>
+        <StatusOptions value={approvalStatus} onChange={handleInputChange}>
           <Option value="approved">approved</Option>
           <Option value="rejected">rejected</Option>
           <Option value="pending">pending</Option>

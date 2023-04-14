@@ -232,6 +232,7 @@ export default function Volunteer() {
             <ApplicationContainer>
               <SectionHeader>Applications</SectionHeader>
               <UserApplication
+                // TODO: instead of querying applications in volunteerpage, pass in user ID and have application handle rendering
                 application={
                   userApplications[curApplicationIndex]
                 }></UserApplication>
