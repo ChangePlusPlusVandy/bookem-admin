@@ -13,6 +13,7 @@ import {
   TableContainer,
 } from '@/styles/volunteerTable.styles';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ObjectId } from 'mongodb';
 
 interface EventRowData {
@@ -137,9 +138,21 @@ const EventTable = () => {
           <Input.Search
             placeholder="Search "
             onSearch={onTableSearch}
-            style={{ width: 800 }}
+            style={{ width: 800, marginRight: 20 }}
             allowClear
           />
+          <Link href="/">
+            <Image
+              src="/table/addbutton.png"
+              alt=""
+              width={32}
+              height={32}
+              style={{ marginRight: 20 }}
+            />
+          </Link>
+          <Link href="/">
+            <Image src="/table/tagsbutton.png" alt="" width={32} height={32} />
+          </Link>
           <Button
             onClick={handleExport}
             style={{
