@@ -39,7 +39,7 @@ const Contact = ({ phone, email }: { phone: string; email: string }) => (
           height={EVENT_CONTACT_ICON_HEIGHT}
         />
         <IconText>
-          <a href="mailto: '+email+'">{email}</a>
+          <a href={`mailto:${email}`}>{email}</a>
         </IconText>
       </IconBox>
     </BigIconBox>
