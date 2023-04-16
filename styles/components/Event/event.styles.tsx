@@ -32,9 +32,24 @@ export const BottomBox = styled.div`
 export const EditButton = styled.div`
   position: absolute;
   right: 50px;
+  margin-top: 10px;
   background: #6d6d6d;
   display: flex;
   padding: 5px 10px;
+  border-radius: 10px;
+  color: #ffffff;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const CopyButton = styled.div`
+  position: absolute;
+  left: 500px;
+  margin-top: 15px;
+  display: flex;
   border-radius: 10px;
   color: #ffffff;
   align-items: center;
