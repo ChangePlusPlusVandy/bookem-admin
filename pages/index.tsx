@@ -1,17 +1,19 @@
 import { signOut } from 'next-auth/react';
-import styled from 'styled-components';
+import MainDashboard from '@/components/Home/MainDashboard';
+import React from 'react';
 
-const MainContainer = styled.div`
-  width: 100%;
-  display: flex;
-`;
+const userData = {
+  name: 'Carol He',
+  hoursVolunteered: 10,
+  booksShared: 5,
+  dollarsDonated: 100,
+};
 
 const HomePage = () => {
   return (
-    <MainContainer>
-      <div>You have signed in</div>
-      <button onClick={() => signOut()}>Sign out</button>
-    </MainContainer>
+    <>
+      <MainDashboard userData={userData} />
+    </>
   );
 };
 
