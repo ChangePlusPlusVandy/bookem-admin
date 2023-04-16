@@ -41,7 +41,7 @@ const Event = ({ event }: { event: QueriedVolunteerEventData }) => {
           {isCopied ? (
             <Image
               src="/event/check-mark.png"
-              alt="Copy link icon"
+              alt="Check mark icon"
               width="25"
               height="25"
             />
