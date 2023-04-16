@@ -8,14 +8,13 @@ export const ImageContainer = styled.div`
   height: 100px;
   border-radius: 100%;
   overflow: hidden;
-  background-color: white;
   margin: auto;
 `;
 
 export const Name = styled.div`
   margin: auto;
   text-align: center;
-  color: white;
+  color: ${props => props.theme.colors.BOOKEM_BLACK};
   font-style: normal;
   font-weight: 400;
   font-size: 20px;

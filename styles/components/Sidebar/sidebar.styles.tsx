@@ -11,14 +11,31 @@ export const Container = styled.div`
   text-align: center;
   justify-content: space-between;
   width: 120px;
-  background-color: #6d6d6d;
+  background: ${props => props.theme.colors.BOOKEM_LIGHT_GRAY};
 `;
 
 /**
  * Container of icon
  */
+
+export const IconText = styled.span<{ color: string }>`
+  color: ${props => props.color};
+  font-family: ${props => props.theme.fonts.PRIMARY};
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 24px;
+`;
 export const IconContainer = styled.div`
   padding-top: 20px;
+`;
+
+export const IconFlexBox = styled.div`
+  display: flex;
+  align-items: center;
+
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 /**
