@@ -15,7 +15,6 @@ import {
   CopyButton,
 } from '@/styles/components/Event/event.styles';
 import EditEventPopupWindowForm from '../Forms/EditEventPopupWindowForm';
-import { set } from 'mongoose';
 
 /**
  * Event Detail
