@@ -1,12 +1,13 @@
 import EventTable from '@/components/table/EventTable';
+import { PageTitle, PageLayout } from '@/styles/table.styles';
 import React from 'react';
 
 const program = () => {
   return (
-    <>
-      <div>program</div>
+    <PageLayout>
+      <PageTitle>Program Management</PageTitle>
       <EventTable />
-    </>
+    </PageLayout>
   );
 };
 
