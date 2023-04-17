@@ -1,4 +1,5 @@
 export const convertToDate = (str: string) => {
+  if (str === '') return str;
   const date = new Date(str);
   return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear();
 };
@@ -19,5 +20,7 @@ export const getTime = (str: string) => {
     }
   }
 
-  return hours + ':' + date.getMinutes().toString() + ' ' + ampm;
+  const minuteStr = String(date.getMinutes()).padStart(2, '0');
+
+  return hours + ':' + minuteStr + ' ' + ampm;
 };

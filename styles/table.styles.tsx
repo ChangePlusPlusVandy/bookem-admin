@@ -1,6 +1,17 @@
 import { Table, Typography } from 'antd';
 import styled from 'styled-components';
 
+export const PageLayout = styled.div`
+  height: 100vh;
+  overflow: hidden;
+  padding: 0 60px;
+`;
+
+export const PageTitle = styled.p`
+  font-size: 40px;
+  line-height: 48px;
+`;
+
 export const SearchContainter = styled.div`
   display: flex;
   margin-left: 50px;
