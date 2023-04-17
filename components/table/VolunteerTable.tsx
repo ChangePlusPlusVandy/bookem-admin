@@ -10,7 +10,7 @@ import {
   StyledTable,
   StyledTypography,
   TableContainer,
-} from '@/styles/volunteerTable.styles';
+} from '@/styles/table.styles';
 import { ObjectId } from 'mongodb';
 
 // TODO: extract to utils/types in the future

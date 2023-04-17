@@ -28,3 +28,9 @@ export const BottomRow = styled.div`
   height: 30px;
   border-radius: 10px;
 `;
+
+export const TableButton = styled.div`
+  &:hover {
+    cursor: pointer;
+  }
+`;
