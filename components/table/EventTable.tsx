@@ -10,9 +10,11 @@ import {
 import {
   SearchContainter,
   StyledTable,
+  TableButton,
   TableContainer,
-} from '@/styles/volunteerTable.styles';
+} from '@/styles/table.styles';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ObjectId } from 'mongodb';
 
 interface EventRowData {
@@ -137,9 +139,27 @@ const EventTable = () => {
           <Input.Search
             placeholder="Search "
             onSearch={onTableSearch}
-            style={{ width: 800 }}
+            style={{ width: 800, marginRight: 20 }}
             allowClear
           />
+          <TableButton
+            onClick={() => {
+              alert('TODO: open create event modal');
+            }}>
+            <Image
+              src="/table/addbutton.png"
+              alt=""
+              width={32}
+              height={32}
+              style={{ marginRight: 20 }}
+            />
+          </TableButton>
+          <TableButton
+            onClick={() => {
+              alert('TODO: redirect to tags page');
+            }}>
+            <Image src="/table/tagsbutton.png" alt="" width={32} height={32} />
+          </TableButton>
           <Button
             onClick={handleExport}
             style={{
