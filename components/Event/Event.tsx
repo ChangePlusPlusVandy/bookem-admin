@@ -12,6 +12,7 @@ import {
   MiddleBox,
   BottomBox,
   EditButton,
+  CopyButton,
 } from '@/styles/components/Event/event.styles';
 import EditEventPopupWindowForm from '../Forms/EditEventPopupWindowForm';
 
@@ -21,9 +22,39 @@ import EditEventPopupWindowForm from '../Forms/EditEventPopupWindowForm';
  */
 const Event = ({ event }: { event: QueriedVolunteerEventData }) => {
   const [showPopup, setShowPopup] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   return (
     <EventBox>
+      <CopyButton
+        onClick={() => {
+          navigator.clipboard.writeText(
+            'bookem-user.vercel.app/event/' + event._id.toString()
+          );
+          setIsCopied(true);
+          setTimeout(() => {
+            setIsCopied(false);
+          }, 1500);
+        }}>
+        <span>
+          {isCopied ? (
+            <Image
+              src="/event/check-mark.png"
+              alt="Check mark icon"
+              width="25"
+              height="25"
+            />
+          ) : (
+            <Image
+              src="/event/copy-link.svg"
+              alt="Copy link icon"
+              width="20"
+              height="20"
+            />
+          )}
+        </span>
+      </CopyButton>
+
       <EditButton onClick={() => setShowPopup(prev => !prev)}>
         <Image
           src="/event/pencil.png"

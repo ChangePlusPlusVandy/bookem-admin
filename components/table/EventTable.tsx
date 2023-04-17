@@ -10,10 +10,13 @@ import {
 import {
   SearchContainter,
   StyledTable,
+  TableButton,
   TableContainer,
-} from '@/styles/volunteerTable.styles';
+} from '@/styles/table.styles';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ObjectId } from 'mongodb';
+import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
 
 interface EventRowData {
   key: number;
@@ -85,6 +88,7 @@ const EventTable = () => {
     '/api/event/',
     fetcher
   );
+  const [showPopup, setShowPopup] = useState(false);
   const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
   const [filterTable, setFilterTable] = useState<EventRowData[]>([]);
   const [isFiltering, setIsFilter] = useState<boolean>(false);
@@ -132,14 +136,30 @@ const EventTable = () => {
   };
   return (
     <>
+      {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
       <div>
         <SearchContainter>
           <Input.Search
             placeholder="Search "
             onSearch={onTableSearch}
-            style={{ width: 800 }}
+            style={{ width: 800, marginRight: 20 }}
             allowClear
           />
+          <TableButton onClick={() => setShowPopup(prev => !prev)}>
+            <Image
+              src="/table/addbutton.png"
+              alt=""
+              width={32}
+              height={32}
+              style={{ marginRight: 20 }}
+            />
+          </TableButton>
+          <TableButton
+            onClick={() => {
+              alert('TODO: redirect to tags page');
+            }}>
+            <Image src="/table/tagsbutton.png" alt="" width={32} height={32} />
+          </TableButton>
           <Button
             onClick={handleExport}
             style={{

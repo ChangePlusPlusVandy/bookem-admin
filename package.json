@@ -19,6 +19,7 @@
     "bcrypt": "^5.1.0",
     "bookem-shared": "github:ChangePlusPlusVandy/bookem-shared",
     "file-saver": "^2.0.5",
+    "moment": "^2.29.4",
     "mongodb": "^4.11.0",
     "mongoose": "^6.7.2",
     "next": "^13.1.1",
