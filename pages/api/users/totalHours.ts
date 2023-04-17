@@ -11,15 +11,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
-  const session = await getSession({ req });
-
-  if (!session) {
-    res.status(401).json({
-      error: 'You are unauthorized to perform this action. Please login first',
-    });
-    return;
-  }
-
   switch (req.method) {
     case 'POST':
     case 'GET':

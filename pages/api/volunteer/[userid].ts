@@ -2,22 +2,25 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import dbConnect from '@/lib/dbConnect';
 
-import { getSession } from 'next-auth/react';
 import Users from 'bookem-shared/src/models/Users';
-import { UserData } from 'bookem-shared/src/types/database';
+import { QueriedUserData } from 'bookem-shared/src/types/database';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
+  const { userid } = req.query;
   switch (req.method) {
     case 'GET':
       // Connect to the database
       await dbConnect();
-
       try {
-        const allUsers = (await Users.find()) as unknown as UserData;
-        res.status(200).json(allUsers);
+        const user = (await Users.findOne({ _id: userid })) as QueriedUserData;
+
+        // if user does not exist, handle
+        if (!user) res.status(400).json({ message: 'User not found' });
+
+        res.status(200).json(user);
       } catch (e) {
         console.error('An error has occurred in index.ts', e);
         res.status(500).json({
