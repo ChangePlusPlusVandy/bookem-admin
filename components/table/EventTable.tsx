@@ -16,6 +16,7 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { ObjectId } from 'mongodb';
+import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
 
 interface EventRowData {
   key: number;
@@ -87,6 +88,7 @@ const EventTable = () => {
     '/api/event/',
     fetcher
   );
+  const [showPopup, setShowPopup] = useState(false);
   const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
   const [filterTable, setFilterTable] = useState<EventRowData[]>([]);
   const [isFiltering, setIsFilter] = useState<boolean>(false);
@@ -134,6 +136,7 @@ const EventTable = () => {
   };
   return (
     <>
+      {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
       <div>
         <SearchContainter>
           <Input.Search
@@ -142,10 +145,7 @@ const EventTable = () => {
             style={{ width: 800, marginRight: 20 }}
             allowClear
           />
-          <TableButton
-            onClick={() => {
-              alert('TODO: open create event modal');
-            }}>
+          <TableButton onClick={() => setShowPopup(prev => !prev)}>
             <Image
               src="/table/addbutton.png"
               alt=""
