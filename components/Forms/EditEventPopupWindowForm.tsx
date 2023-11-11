@@ -15,7 +15,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import PopupWindow from '@/components/PopupWindow';
 import {
-  QueriedVolunteerEventData,
+  QueriedVolunteerEventDTO,
   VolunteerEventData,
   VolunteerEventLocation,
 } from 'bookem-shared/src/types/database';
@@ -47,7 +47,7 @@ const EditEventPopupWindowForm = ({
       return data;
     },
   });
-  const [eventData, setEventData] = useState<QueriedVolunteerEventData>();
+  const [eventData, setEventData] = useState<QueriedVolunteerEventDTO>();
   const [locationData, setLocationData] = useState<VolunteerEventLocation>();
   const [startTime, setStartTime] = useState('12:00');
   const [endTime, setEndTime] = useState('12:00');
@@ -135,7 +135,7 @@ const EditEventPopupWindowForm = ({
               placeholder="Event Category (optional)"
               pattern="[A-Za-z]"
               title="Input must be text"
-              defaultValue={eventData?.program.tagName}></FormInput>
+              defaultValue={eventData?.program?.name}></FormInput>
           </InputFlex>
 
           <FormLabel>Logistics</FormLabel>

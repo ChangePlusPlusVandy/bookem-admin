@@ -12,7 +12,7 @@ import useSWR from 'swr';
 import Highlighter from 'react-highlight-words';
 import {
   QueriedTagData,
-  QueriedVolunteerEventData,
+  QueriedVolunteerEventDTO,
 } from 'bookem-shared/src/types/database';
 import {
   SearchContainter,
@@ -40,7 +40,7 @@ type DataIndex = keyof EventRowData;
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 const EventTable = () => {
-  const { data, error, isLoading } = useSWR<QueriedVolunteerEventData[]>(
+  const { data, error, isLoading } = useSWR<QueriedVolunteerEventDTO[]>(
     '/api/event/',
     fetcher
   );
@@ -335,7 +335,7 @@ const EventTable = () => {
   );
 };
 
-const convertEventDataToRowData = (data: QueriedVolunteerEventData[]) => {
+const convertEventDataToRowData = (data: QueriedVolunteerEventDTO[]) => {
   const result = data.map((event, index) => {
     // Convert eventDate into a string date formatted mm/dd/yyyy
     const date = new Date(event.startDate);
