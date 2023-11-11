@@ -5,7 +5,7 @@ import { saveAs } from 'file-saver';
 import useSWR from 'swr';
 import {
   QueriedTagData,
-  QueriedVolunteerEventData,
+  QueriedVolunteerEventDTO,
 } from 'bookem-shared/src/types/database';
 import {
   SearchContainter,
@@ -84,7 +84,7 @@ const columns: any = [
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 const EventTable = () => {
-  const { data, error, isLoading } = useSWR<QueriedVolunteerEventData[]>(
+  const { data, error, isLoading } = useSWR<QueriedVolunteerEventDTO[]>(
     '/api/event/',
     fetcher
   );
@@ -186,7 +186,7 @@ const EventTable = () => {
   );
 };
 
-const convertEventDataToRowData = (data: QueriedVolunteerEventData[]) => {
+const convertEventDataToRowData = (data: QueriedVolunteerEventDTO[]) => {
   const result = data.map((event, index) => {
     // Convert eventDate into a string date formatted mm/dd/yyyy
     const date = new Date(event.startDate);

@@ -1,4 +1,4 @@
-import { QueriedVolunteerEventData } from 'bookem-shared/src/types/database';
+import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
 import React from 'react';
 import {
   EventNameBox,
@@ -9,7 +9,7 @@ import {
  * Contain the Event name and sign up button
  * @param event
  */
-const EventName = ({ event }: { event: QueriedVolunteerEventData }) => {
+const EventName = ({ event }: { event: QueriedVolunteerEventDTO }) => {
   /**
    * Calculate the length of the event volunteers
    * If event.volunteers is undefined, return 0
@@ -23,7 +23,7 @@ const EventName = ({ event }: { event: QueriedVolunteerEventData }) => {
   return (
     <EventNameBox>
       <NameAndSpot>
-        <b>{event.name}</b> ({event.program.tagName}) <br />
+        <b>{event.name}</b> ({event.program?.name}) <br />
         {getEventLength()}/{event.maxSpot} spots filled
       </NameAndSpot>
     </EventNameBox>

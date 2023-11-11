@@ -20,7 +20,6 @@ interface VolunteerRowData {
   firstName: string;
   email: string;
   phone: string;
-  tags: string[];
   id: ObjectId;
 }
 
@@ -240,7 +239,6 @@ const convertUserDataToRowData = (data: QueriedUserData[]) => {
       firstName: user.name,
       email: user.email,
       phone: user.phone,
-      tags: user.tags,
       id: user._id,
     };
   });
