@@ -59,7 +59,7 @@ export default function Volunteer() {
       expirationDate: new Date(),
     },
     events: [],
-    tags: [],
+    programs: [],
     _id: new mongoose.Types.ObjectId(),
     createdAt: new Date(),
     updatedAt: new Date(),
