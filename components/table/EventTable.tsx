@@ -277,31 +277,31 @@ const EventTable = () => {
         sortedInfo.columnKey === 'numVolunteers' ? sortedInfo.order : null,
       ellipsis: true,
     },
-    {
-      // TODO: update filters to contain all possible tags
-      title: 'Tags',
-      dataIndex: 'tags',
-      key: 'tags',
-      render: (_: any, { tags }: any) => (
-        <>
-          {tags.map((tag: QueriedTagData) => {
-            return <Tag key={tag.tagName}>{tag.tagName}</Tag>;
-          })}
-        </>
-      ),
-      filters: [
-        {
-          text: 'RFR',
-          value: 'RFR',
-        },
-        {
-          text: 'RIF',
-          value: 'RIF',
-        },
-      ],
-      onFilter: (value: string, record: { tags: string }) =>
-        record.tags.includes(value),
-    },
+    // {
+    //   // TODO: update filters to contain all possible tags
+    //   title: 'Tags',
+    //   dataIndex: 'tags',
+    //   key: 'tags',
+    //   render: (_: any, { tags }: any) => (
+    //     <>
+    //       {tags.map((tag: QueriedTagData) => {
+    //         return <Tag key={tag.tagName}>{tag.tagName}</Tag>;
+    //       })}
+    //     </>
+    //   ),
+    //   filters: [
+    //     {
+    //       text: 'RFR',
+    //       value: 'RFR',
+    //     },
+    //     {
+    //       text: 'RIF',
+    //       value: 'RIF',
+    //     },
+    //   ],
+    //   onFilter: (value: string, record: { tags: string }) =>
+    //     record.tags.includes(value),
+    // },
     {
       title: 'View',
       dataIndex: 'view',
