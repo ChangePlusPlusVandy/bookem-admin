@@ -20,7 +20,6 @@ interface VolunteerRowData {
   firstName: string;
   email: string;
   phone: string;
-  tags: string[];
   id: ObjectId;
 }
 
@@ -50,29 +49,29 @@ const columns: any = [
     title: 'Tags',
     dataIndex: 'tags',
     key: 'tags',
-    render: (_: any, { tags }: any) => (
-      <>
-        {tags.map((tag: string) => {
-          // TODO: add documentation for this
-          try {
-            let color = 'green';
-            if (tag.toLowerCase() === 'rfr') {
-              color = 'blue';
-            }
-            if (tag === 'rif') {
-              color = 'volcano';
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          } catch (e: any) {
-            console.log('Error loading tags: ' + e.what());
-          }
-        })}
-      </>
-    ),
+    // render: (_: any, { tags }: any) => (
+    //   <>
+    //     {tags.map((tag: string) => {
+    //       // TODO: add documentation for this
+    //       try {
+    //         let color = 'green';
+    //         if (tag.toLowerCase() === 'rfr') {
+    //           color = 'blue';
+    //         }
+    //         if (tag === 'rif') {
+    //           color = 'volcano';
+    //         }
+    //         return (
+    //           <Tag color={color} key={tag}>
+    //             {tag.toUpperCase()}
+    //           </Tag>
+    //         );
+    //       } catch (e: any) {
+    //         console.log('Error loading tags: ' + e.what());
+    //       }
+    //     })}
+    //   </>
+    // ),
     filters: [
       {
         text: 'RFR',
@@ -240,7 +239,6 @@ const convertUserDataToRowData = (data: QueriedUserData[]) => {
       firstName: user.name,
       email: user.email,
       phone: user.phone,
-      tags: user.tags,
       id: user._id,
     };
   });
