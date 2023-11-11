@@ -24,3 +24,16 @@ export const getTime = (str: string) => {
 
   return hours + ':' + minuteStr + ' ' + ampm;
 };
+
+/**
+ * Fetch data in given route
+ * @param route Route name
+ * @returns a Promise that resolves with the parsed JSON response data from the server
+ */
+export const fetchData = async (route: string) => {
+  const res = await fetch(route);
+  if (!res.ok) {
+    throw new Error('An error has occurred while fetching: ' + res.statusText);
+  }
+  return await res.json();
+};
