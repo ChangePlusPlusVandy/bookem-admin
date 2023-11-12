@@ -1,3 +1,7 @@
+export interface RatioProp {
+  ratio: number;
+}
+
 export const convertToDate = (str: string) => {
   if (str === '') return str;
   const date = new Date(str);

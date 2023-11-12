@@ -4,7 +4,7 @@ import TotalVolunteers from '@/components/Home/TotalVolunteers';
 import TotalEvents from '@/components/Home/TotalEvents';
 import TotalHours from '@/components/Home/TotalHours';
 
-//import UpcomingEvents from '@/components/Home/UpcomingEvents';
+import UpcomingEvents from '@/components/Home/UpcomingEvents';
 //import PastActivity from '@/components/Home/PastActivity';
 import type { MenuProps } from 'antd';
 import { Dropdown, Button, Space } from 'antd';
@@ -20,10 +20,9 @@ import {
   StatsFlex,
   FlexChild,
   Header,
-  StatsNumber,
 } from '@/styles/dashboard.styles';
 
-/*
+
 const handleMenuClick: MenuProps['onClick'] = (e) => {
   console.log('click', e);
 };
@@ -40,7 +39,7 @@ const menuProps = {
   items,
   onClick: handleMenuClick,
 };
-*/
+
 
 /**
  * format main dashboard on home page
@@ -64,7 +63,6 @@ const MainDashboard = ({ userData }: any) => {
               Hello, how's your day?
             </Greeting>
 
-
             <InfoIcon>
               <Image
                 src="/home/info.png"
@@ -78,16 +76,18 @@ const MainDashboard = ({ userData }: any) => {
               {/* Desktop Accomplishments Header */}
               <Header>
                 Here are some quick stats for
-      
-                {/*
+                {/* Adding margin or padding for spacing */}
+                <span style={{ marginRight: '10px' }}></span>
                 <Dropdown menu={menuProps}>
+                  {/* font size of button remains to be fixed */}
+                  {/* also the functionality of the button remains to be added */}
                   <Button>
                     <Space>
                       Button
                       <DownOutlined />
                     </Space>
                   </Button>
-                </Dropdown>*/}
+                </Dropdown>
               </Header>
 
               <StatsFlex>
@@ -113,8 +113,8 @@ const MainDashboard = ({ userData }: any) => {
             <div>
               <Header>Bookmarked events</Header>
               {/* TODO: add a filter icon on the right */}
-
-              {/*<UpcomingEvents />*/}
+              {/*<Bookmarked events />*/}
+              
             </div>
 
 
@@ -122,7 +122,8 @@ const MainDashboard = ({ userData }: any) => {
           </Container>
 
           {/* Desktop PastActivity is shown on the right side of main dashboard*/}
-          {/*<PastActivity />*/}
+          <UpcomingEvents />
+          
         </DashboardLayout>
       )}
     </>

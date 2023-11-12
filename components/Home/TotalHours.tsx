@@ -11,7 +11,7 @@ const MyComponent = () => {
   useEffect(() => {
     const getCount = async () => {
       try {
-        const response = await fetchData('/api/admin/totalHours'); // Use the correct route
+        const response = await fetchData('/api/admin/adminStats?type=volunteerHours'); // Use the correct route
         setTotalHours(response.totalHours);
       } catch (err) {
         setError(err.message);
