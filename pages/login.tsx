@@ -107,7 +107,7 @@ const LoginPage = () => {
           {errors.password && <span>Password is required</span>}
           {errorMessage && <span>{errorMessage}</span>}
 
-          <LoginOptionsContainer>
+          {/* <LoginOptionsContainer>
             <LoginOptionsText>Or log in with</LoginOptionsText>
             <LoginOptionsRow>
               <Image
@@ -130,7 +130,7 @@ const LoginPage = () => {
               />
               <Image src="/login/AppleLogo.png" alt="" width={32} height={32} />
             </LoginOptionsRow>
-          </LoginOptionsContainer>
+          </LoginOptionsContainer> */}
 
           <SubmitButton form="loginForm" type="submit" value="log in" />
         </RightContainer>
