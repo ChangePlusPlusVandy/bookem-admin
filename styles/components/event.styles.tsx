@@ -33,7 +33,7 @@ export const FormInput = styled.input`
   border-radius: 10px;
   height: 25px;
   width: 200px;
-  padding: 5px;
+  padding: 10px;
 `;
 
 export const InputFlex = styled.div`
@@ -47,6 +47,7 @@ export const ShortFormInput = styled.input`
   height: 25px;
   width: 35px;
   text-align: center;
+  padding: 10px;
 `;
 
 export const LongFormInput = styled.input`
@@ -54,6 +55,7 @@ export const LongFormInput = styled.input`
   border-radius: 10px;
   height: 25px;
   width: 410px;
+  padding: 10px;
 `;
 
 export const LargeFormInput = styled.textarea`

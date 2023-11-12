@@ -92,6 +92,7 @@ const EventTable = () => {
   const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
   const [filterTable, setFilterTable] = useState<EventRowData[]>([]);
   const [isFiltering, setIsFilter] = useState<boolean>(false);
+  
 
   useEffect(() => {
     if (!isLoading && data) {

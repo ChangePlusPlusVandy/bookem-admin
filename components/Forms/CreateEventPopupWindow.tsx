@@ -10,7 +10,7 @@ import {
   CreateEventForm,
   FormHeader,
   CreateEventContainer,
-} from '@/styles/components/program.styles';
+} from '@/styles/components/event.styles';
 import {
   SubmitButton,
   ButtonCenter,
