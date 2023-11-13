@@ -27,7 +27,6 @@ const columns: any = [
     title: 'Program Name',
     dataIndex: 'programName',
     key: 'programName',
-
   },
   {
     title: 'Description',
@@ -45,7 +44,6 @@ const ProgramTable = () => {
   const [filterTable, setFilterTable] = useState<ProgramRowData[]>([]);
   const [isFiltering, setIsFilter] = useState<boolean>(false);
 
-  
   return (
     <>
       {showPopUp && <CreateProgramPopupWindow setShowPopup={setShowPopUp} />}
