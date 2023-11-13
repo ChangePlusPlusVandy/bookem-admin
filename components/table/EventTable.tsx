@@ -309,8 +309,7 @@ const EventTable = () => {
       render: (_: any, { id, eventName }: EventRowData) => (
         <>
           <Link key={eventName} href={`/event/${id}`}>
-            [button]
-            {/* want to insert a button icon, this is a placeholder */}
+            See more
           </Link>
         </>
       ),

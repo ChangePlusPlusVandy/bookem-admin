@@ -325,8 +325,7 @@ const VolunteerTable = () => {
       key: 'view',
       render: (_: any, { id, email }: VolunteerRowData) => (
         <Link key={email} href={`/volunteer/${id}`}>
-          [button]
-          {/* want to insert a button icon, this is a placeholder */}
+          See more
         </Link>
       ),
     },
