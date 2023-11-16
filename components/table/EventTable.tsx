@@ -322,6 +322,35 @@ const EventTable = () => {
   return (
     <>
       {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
+      <div>
+        <SearchContainter>
+          <TableButton onClick={() => setShowPopup(prev => !prev)}>
+            <Image
+              src="/table/addbutton.png"
+              alt=""
+              width={32}
+              height={32}
+              style={{ marginRight: 20 }}
+            />
+          </TableButton>
+          <TableButton
+            onClick={() => {
+              alert('TODO: redirect to tags page');
+            }}>
+            <Image src="/table/tagsbutton.png" alt="" width={32} height={32} />
+          </TableButton>
+          <Button
+            onClick={handleExport}
+            style={{
+              width: 250,
+              marginLeft: 90,
+              backgroundColor: 'darkgray',
+              color: 'whitesmoke',
+            }}>
+            Export
+          </Button>
+        </SearchContainter>
+      </div>
       <TableContainer>
         <div id="table-container">
           <Table

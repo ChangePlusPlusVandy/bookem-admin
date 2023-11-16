@@ -14,7 +14,7 @@ export const PageTitle = styled.p`
 
 export const SearchContainter = styled.div`
   display: flex;
-  margin-left: 50px;
+  margin-left: 1000px;
 `;
 
 export const TableContainer = styled.div`
