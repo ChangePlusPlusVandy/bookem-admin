@@ -15,6 +15,7 @@ import {
   PasswordEye,
   PasswordWrapper,
   RightContainer,
+  ErrorMessage,
 } from '@/styles/login.styles';
 import LeftDisplay from '@/components/LeftDisplay';
 import { BOOKEM_THEME } from '@/utils/constants';
@@ -36,7 +37,8 @@ const LoginPage = () => {
     console.log('logging in');
 
     const res = await signIn('credentials', {
-      redirect: true,
+      // redirect: true,
+      redirect: false,
       email: data.email,
       password: data.password,
     });
@@ -47,6 +49,9 @@ const LoginPage = () => {
     if (res?.status === 401) {
       // If login is unsuccessful, display error message.
       setErrorMessage('Ooops! Incorrect email or password');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 1000);
     } else if (res?.status === 200) {
       // If login is successful, redirect to home page.
       window.location.href = '/';
@@ -69,7 +74,7 @@ const LoginPage = () => {
             onSubmit={handleSubmit(data => handleLogin(data))}>
             <LoginInput
               {...register('email', { required: true })}
-              value="test_admin@bookem.org"
+              type="email"
               placeholder="Email or username"
             />
 
@@ -100,12 +105,13 @@ const LoginPage = () => {
                 )}
               </PasswordEye>
             </PasswordWrapper>
+            {errors.email && <ErrorMessage>Email is required</ErrorMessage>}
+            {errors.password && (
+              <ErrorMessage>Password is required</ErrorMessage>
+            )}
+            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
           </LoginForm>
           <ForgotPassword>Forgot password?</ForgotPassword>
-
-          {errors.email && <span>Email is required</span>}
-          {errors.password && <span>Password is required</span>}
-          {errorMessage && <span>{errorMessage}</span>}
 
           {/* <LoginOptionsContainer>
             <LoginOptionsText>Or log in with</LoginOptionsText>
@@ -135,20 +141,6 @@ const LoginPage = () => {
           <SubmitButton form="loginForm" type="submit" value="log in" />
         </RightContainer>
       </Container>
-      {/* <div>Admin Log In</div>
-
-      <form onSubmit={handleSubmit(data => handleLogin(data))}>
-        <label>Email: </label>
-        <input
-          {...register('email', { required: true })}
-          value="test_admin@bookem.org"
-        />
-        <label>Password: </label>
-        <input {...register('password', { required: true })} type="password" />
-        {errors.email && <span>Email is required</span>}
-        {errors.password && <span>Password is required</span>}
-        <input type="submit" />
-      </form> */}
     </>
   );
 };

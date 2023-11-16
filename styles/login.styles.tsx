@@ -48,6 +48,10 @@ export const LoginInput = styled.input`
   color: ${props => props.theme.colors.BOOKEM_BLACK};
 `;
 
+export const ErrorMessage = styled.span`
+  color: ${props => props.theme.colors.BOOKEM_RED};
+`;
+
 export const LoginForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -108,6 +112,7 @@ export const SubmitButton = styled.input`
   border: solid 1px ${props => props.theme.colors.BOOKEM_BLACK};
   padding: 12px 35px;
   border-radius: 14px;
+  transition: background-color 0.5s ease;
   &:hover {
     background-color: ${props => props.theme.colors.BOOKEM_BLACK};
     color: ${props => props.theme.colors.WHITE};
