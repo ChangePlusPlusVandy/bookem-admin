@@ -1,5 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Input, Space, Tag } from 'antd';
+import React, { useState, useEffect, useRef } from 'react';
+import type { TableProps } from 'antd';
+import { Button, Space, Table, Input, Tag, InputRef } from 'antd';
+import type {
+  ColumnType,
+  FilterValue,
+  SorterResult,
+} from 'antd/es/table/interface';
+import Highlighter from 'react-highlight-words';
+import { SearchOutlined } from '@ant-design/icons';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import useSWR from 'swr';
@@ -13,88 +21,20 @@ import {
 } from '@/styles/table.styles';
 import { ObjectId } from 'mongodb';
 import Link from 'next/link';
+import type { FilterConfirmProps } from 'antd/es/table/interface';
+import { clear } from 'console';
 
 // TODO: extract to utils/types in the future
 interface VolunteerRowData {
   key: number;
-  firstName: string;
+  name: string;
   email: string;
   phone: string;
+  // tags: string[];
   id: ObjectId;
 }
 
-// TODO: extract to utils/constants in the future
-const columns: any = [
-  {
-    title: 'First Name',
-    dataIndex: 'firstName',
-    key: 'firstName',
-  },
-  {
-    title: 'Last Name',
-    dataIndex: 'lastName',
-    key: 'lastName',
-  },
-  {
-    title: 'Phone',
-    dataIndex: 'phone',
-    key: 'phone',
-  },
-  {
-    title: 'Email',
-    dataIndex: 'email',
-    key: 'email',
-  },
-  {
-    title: 'Tags',
-    dataIndex: 'tags',
-    key: 'tags',
-    // render: (_: any, { tags }: any) => (
-    //   <>
-    //     {tags.map((tag: string) => {
-    //       // TODO: add documentation for this
-    //       try {
-    //         let color = 'green';
-    //         if (tag.toLowerCase() === 'rfr') {
-    //           color = 'blue';
-    //         }
-    //         if (tag === 'rif') {
-    //           color = 'volcano';
-    //         }
-    //         return (
-    //           <Tag color={color} key={tag}>
-    //             {tag.toUpperCase()}
-    //           </Tag>
-    //         );
-    //       } catch (e: any) {
-    //         console.log('Error loading tags: ' + e.what());
-    //       }
-    //     })}
-    //   </>
-    // ),
-    filters: [
-      {
-        text: 'RFR',
-        value: 'RFR',
-      },
-      {
-        text: 'RIF',
-        value: 'RIF',
-      },
-    ],
-    onFilter: (value: string, record: { tags: string }) =>
-      record.tags.includes(value),
-  },
-  {
-    dataIndex: 'seeMore',
-    key: 'seeMore',
-    render: (_: any, { id, email }: VolunteerRowData) => (
-      <Link key={email} href={`/volunteer/${id}`}>
-        See more
-      </Link>
-    ),
-  },
-];
+type DataIndex = keyof VolunteerRowData;
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
@@ -109,6 +49,147 @@ const VolunteerTable = () => {
   const [totalVolunteers, setTotalVolunteers] = useState(dataForTable.length);
   const [hours, setHours] = useState<number>();
   const [isFiltering, setIsFilter] = useState<boolean>(false);
+  const [filteredInfo, setFilteredInfo] = useState<
+    Record<string, FilterValue | null>
+  >({});
+  const [sortedInfo, setSortedInfo] = useState<SorterResult<VolunteerRowData>>(
+    {}
+  );
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const searchInput = useRef<InputRef>(null);
+
+  const handleChange: TableProps<VolunteerRowData>['onChange'] = (
+    pagination,
+    filters,
+    sorter
+  ) => {
+    setFilteredInfo(filters);
+    setSortedInfo(sorter as SorterResult<VolunteerRowData>);
+  };
+
+  const handleSearch = (
+    selectedKeys: string[],
+    confirm: (param?: FilterConfirmProps) => void,
+    dataIndex: DataIndex
+  ) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters: () => void) => {
+    clearFilters();
+    setSearchText('');
+  };
+
+  // Function to get column search properties for VolunteerRowData
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): ColumnType<VolunteerRowData> => ({
+    // Configuration for the filter dropdown
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      // Custom filter dropdown UI
+      <div style={{ padding: 8 }} onKeyDown={e => e.stopPropagation()}>
+        {/* Input for searching */}
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={e =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            handleSearch(selectedKeys as string[], confirm, dataIndex)
+          }
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+        {/* Buttons for search, reset, filter, and close */}
+        <Space>
+          <Button
+            type="primary"
+            onClick={() =>
+              handleSearch(selectedKeys as string[], confirm, dataIndex)
+            }
+            icon={<SearchOutlined rev={undefined} />}
+            size="small"
+            style={{ width: 90 }}>
+            Search
+          </Button>
+          <Button
+            onClick={() => {
+              clearFilters && handleReset(clearFilters);
+            }}
+            size="small"
+            style={{ width: 90 }}>
+            Reset
+          </Button>
+          {/* Filter button with logic to set search parameters */}
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({ closeDropdown: false });
+              setSearchText((selectedKeys as string[])[0]);
+              setSearchedColumn(dataIndex);
+            }}>
+            Filter
+          </Button>
+          {/* Close button for the filter dropdown */}
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}>
+            Close
+          </Button>
+        </Space>
+      </div>
+    ),
+    // Configuration for the filter icon
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined
+        style={{ color: filtered ? '#1677ff' : undefined }}
+        rev={undefined}
+      />
+    ),
+    // Filtering logic applied on each record
+    onFilter: (value, record) =>
+      record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes((value as string).toLowerCase()),
+    // Callback when the filter dropdown visibility changes
+    onFilterDropdownOpenChange: visible => {
+      // Select the search input when the filter dropdown opens
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    // Render function to highlight search results
+    render: text =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  const clearFilters = () => {
+    setFilteredInfo({});
+  };
 
   useEffect(() => {
     if (!isLoading && totalHours) {
@@ -188,31 +269,98 @@ const VolunteerTable = () => {
     saveAs(blob, 'volunteers.xlsx');
   };
 
+  // TODO: extract to utils/constants in the future
+  const columns: any = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      onFilter: (value: string, record: any) => record.name.includes(value),
+      ellipsis: true,
+      ...getColumnSearchProps('name'),
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      ...getColumnSearchProps('email'),
+    },
+    {
+      title: 'Phone',
+      dataIndex: 'phone',
+      key: 'phone',
+      ...getColumnSearchProps('phone'),
+    },
+    // {
+    //   title: 'Tags',
+    //   dataIndex: 'tags',
+    //   key: 'tags',
+    //   render: (_: any, { tags }: any) => (
+    //     <>
+    //       {tags.map((tag: string) => {
+    //         // TODO: add documentation for this
+    //         try {
+    //           let color = 'green';
+    //           if (tag.toLowerCase() === 'rfr') {
+    //             color = 'blue';
+    //           }
+    //           if (tag === 'rif') {
+    //             color = 'volcano';
+    //           }
+    //           return (
+    //             <Tag color={color} key={tag}>
+    //               {tag.toUpperCase()}
+    //             </Tag>
+    //           );
+    //         } catch (e: any) {
+    //           console.log('Error loading tags: ' + e.what());
+    //         }
+    //       })}
+    //     </>
+    //   ),
+    //   filters: [
+    //     {
+    //       text: 'RFR',
+    //       value: 'RFR',
+    //     },
+    //     {
+    //       text: 'RIF',
+    //       value: 'RIF',
+    //     },
+    //   ],
+    //   onFilter: (value: string, record: { tags: string }) =>
+    //     record.tags.includes(value),
+    // },
+    {
+      title: 'View',
+      dataIndex: 'view',
+      key: 'view',
+      render: (_: any, { id, email }: VolunteerRowData) => (
+        <Link key={email} href={`/volunteer/${id}`}>
+          See more
+        </Link>
+      ),
+    },
+  ];
+
   return (
     <>
-      <SearchContainter>
-        <Input.Search
-          placeholder="Search "
-          onSearch={onTableSearch}
-          style={{ width: 800 }}
-          allowClear
-        />
+      {/* <Button onClick={clearFilters}>Clear filters</Button> */}
+      <TableContainer>
         <Button
           onClick={handleExport}
           style={{
             width: 250,
-            marginLeft: 90,
+            float: 'right',
             backgroundColor: 'darkgray',
             color: 'whitesmoke',
           }}>
           Export
         </Button>
-      </SearchContainter>
-
-      <TableContainer>
         <div id="table-container">
-          <StyledTable
+          <Table
             dataSource={isFiltering ? filterTable : dataForTable}
+            onChange={handleChange}
             columns={columns}
             pagination={false}
             scroll={{ y: 550 }}
@@ -236,9 +384,10 @@ const convertUserDataToRowData = (data: QueriedUserData[]) => {
   const result = data.map((user, index) => {
     return {
       key: index,
-      firstName: user.name,
+      name: user.name,
       email: user.email,
       phone: user.phone,
+      // tags: user.tags,
       id: user._id,
     };
   });
