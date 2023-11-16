@@ -5,7 +5,7 @@ import Image from 'next/image';
  * Container for upcoming activities
  */
 export const EventsContainer = styled.div`
-  background-color: #D9D9D9;
+  background-color: #d9d9d9;
   width: 24vw;
   height: 100vh;
   overflow-y: scroll;
