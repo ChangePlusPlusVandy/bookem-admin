@@ -347,6 +347,16 @@ const VolunteerTable = () => {
     <>
       {/* <Button onClick={clearFilters}>Clear filters</Button> */}
       <TableContainer>
+        <Button
+          onClick={handleExport}
+          style={{
+            width: 250,
+            float: 'right',
+            backgroundColor: 'darkgray',
+            color: 'whitesmoke',
+          }}>
+          Export
+        </Button>
         <div id="table-container">
           <Table
             dataSource={isFiltering ? filterTable : dataForTable}
