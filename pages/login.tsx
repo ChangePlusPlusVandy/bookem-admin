@@ -49,9 +49,6 @@ const LoginPage = () => {
     if (res?.status === 401) {
       // If login is unsuccessful, display error message.
       setErrorMessage('Ooops! Incorrect email or password');
-      setTimeout(() => {
-        setErrorMessage('');
-      }, 1000);
     } else if (res?.status === 200) {
       // If login is successful, redirect to home page.
       window.location.href = '/';
