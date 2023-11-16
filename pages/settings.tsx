@@ -8,10 +8,12 @@ const MainContainer = styled.div`
 `;
 
 const settings = () => {
-  return <MainContainer>
-    <div>You have signed in</div>
-    <button onClick={() => signOut()}>Sign out</button>
-  </MainContainer>
+  return (
+    <MainContainer>
+      <div>You have signed in</div>
+      <button onClick={() => signOut()}>Sign out</button>
+    </MainContainer>
+  );
 };
 
 export default settings;
