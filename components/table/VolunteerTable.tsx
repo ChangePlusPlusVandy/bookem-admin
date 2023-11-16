@@ -83,9 +83,11 @@ const VolunteerTable = () => {
     setSearchText('');
   };
 
+  // Function to get column search properties for VolunteerRowData
   const getColumnSearchProps = (
     dataIndex: DataIndex
   ): ColumnType<VolunteerRowData> => ({
+    // Configuration for the filter dropdown
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -93,7 +95,9 @@ const VolunteerTable = () => {
       clearFilters,
       close,
     }) => (
+      // Custom filter dropdown UI
       <div style={{ padding: 8 }} onKeyDown={e => e.stopPropagation()}>
+        {/* Input for searching */}
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
@@ -106,6 +110,7 @@ const VolunteerTable = () => {
           }
           style={{ marginBottom: 8, display: 'block' }}
         />
+        {/* Buttons for search, reset, filter, and close */}
         <Space>
           <Button
             type="primary"
@@ -125,6 +130,7 @@ const VolunteerTable = () => {
             style={{ width: 90 }}>
             Reset
           </Button>
+          {/* Filter button with logic to set search parameters */}
           <Button
             type="link"
             size="small"
@@ -135,33 +141,39 @@ const VolunteerTable = () => {
             }}>
             Filter
           </Button>
+          {/* Close button for the filter dropdown */}
           <Button
             type="link"
             size="small"
             onClick={() => {
               close();
             }}>
-            close
+            Close
           </Button>
         </Space>
       </div>
     ),
+    // Configuration for the filter icon
     filterIcon: (filtered: boolean) => (
       <SearchOutlined
         style={{ color: filtered ? '#1677ff' : undefined }}
         rev={undefined}
       />
     ),
+    // Filtering logic applied on each record
     onFilter: (value, record) =>
       record[dataIndex]
         .toString()
         .toLowerCase()
         .includes((value as string).toLowerCase()),
+    // Callback when the filter dropdown visibility changes
     onFilterDropdownOpenChange: visible => {
+      // Select the search input when the filter dropdown opens
       if (visible) {
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },
+    // Render function to highlight search results
     render: text =>
       searchedColumn === dataIndex ? (
         <Highlighter
@@ -333,7 +345,7 @@ const VolunteerTable = () => {
 
   return (
     <>
-      <Button onClick={clearFilters}>Clear filters</Button>
+      {/* <Button onClick={clearFilters}>Clear filters</Button> */}
       <TableContainer>
         <div id="table-container">
           <Table

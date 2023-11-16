@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button, Input, Space, Tag, Table, TableProps, InputRef } from 'antd';
 import type {
   ColumnType,
+  ColumnsType,
   FilterValue,
   SorterResult,
 } from 'antd/es/table/interface';
@@ -33,6 +34,8 @@ interface EventRowData {
   numVolunteers: number;
   tags: QueriedTagData[];
   id: ObjectId;
+  title: string;
+  dataIndex: string;
 }
 
 type DataIndex = keyof EventRowData;
@@ -75,9 +78,16 @@ const EventTable = () => {
     setSearchedColumn(dataIndex);
   };
 
+  /**
+   * Documentation: https://ant.design/components/table#components-table-demo-custom-filter-panel
+   * @param dataIndex
+   * @returns
+   */
+  // Function to get column search properties
   const getColumnSearchProps = (
     dataIndex: DataIndex
   ): ColumnType<EventRowData> => ({
+    // Filter dropdown configuration
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -85,7 +95,9 @@ const EventTable = () => {
       clearFilters,
       close,
     }) => (
+      // Custom filter dropdown UI
       <div style={{ padding: 8 }} onKeyDown={e => e.stopPropagation()}>
+        {/* Input for searching */}
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
@@ -98,6 +110,7 @@ const EventTable = () => {
           }
           style={{ marginBottom: 8, display: 'block' }}
         />
+        {/* Buttons for search, reset, and filter */}
         <Space>
           <Button
             type="primary"
@@ -115,6 +128,7 @@ const EventTable = () => {
             style={{ width: 90 }}>
             Reset
           </Button>
+          {/* Filter and close buttons */}
           <Button
             type="link"
             size="small"
@@ -131,27 +145,32 @@ const EventTable = () => {
             onClick={() => {
               close();
             }}>
-            close
+            Close
           </Button>
         </Space>
       </div>
     ),
+    // Filter icon configuration
     filterIcon: (filtered: boolean) => (
       <SearchOutlined
         style={{ color: filtered ? '#1677ff' : undefined }}
         rev={undefined}
       />
     ),
+    // Filter function to apply on each record
     onFilter: (value, record) =>
       record[dataIndex]
         .toString()
         .toLowerCase()
         .includes((value as string).toLowerCase()),
+    // Callback when filter dropdown visibility changes
     onFilterDropdownOpenChange: visible => {
+      // Select the search input when the filter dropdown opens
       if (visible) {
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },
+    // Render function to highlight search results
     render: text =>
       searchedColumn === dataIndex ? (
         <Highlighter
@@ -216,72 +235,58 @@ const EventTable = () => {
     saveAs(blob, 'events.xlsx');
   };
 
-  const columns: any = [
+  // Define columns for the Ant Design table
+  const columns: ColumnsType<EventRowData> = [
     {
+      // Column for 'Event Name'
       title: 'Event Name',
       dataIndex: 'eventName',
       key: 'eventName',
+      // Apply custom search properties using getColumnSearchProps
       ...getColumnSearchProps('eventName'),
+      // Example: Uncomment the following lines to add filters
       // filters: [
-      //   {
-      //     text: 'Office work',
-      //     value: 'Office work',
-      //   },
-      //   {
-      //     text: 'Distribute books',
-      //     value: 'Distribute books',
-      //   },
-      //   {
-      //     text: 'Interactive reading',
-      //     value: 'Interactive reading',
-      //   },
-      //   {
-      //     text: 'Book sort, clean, process',
-      //     value: 'Book sort, clean, process',
-      //   },
-      //   {
-      //     text: 'Book drive',
-      //     value: 'Book drive',
-      //   },
-      //   {
-      //     text: 'Reading role model',
-      //     value: 'Reading role model',
-      //   },
-      //   {
-      //     text: 'Book bus',
-      //     value: 'Book bus',
-      //   },
+      //   { text: 'Office work', value: 'Office work' },
+      //   { text: 'Distribute books', value: 'Distribute books' },
+      //   // Add more filter options as needed
       // ],
       // onFilter: (value: string, record: { eventName: string }) =>
       //   record.eventName.includes(value),
     },
     {
+      // Column for 'Date'
       title: 'Date',
       dataIndex: 'date',
       key: 'date',
+      // Custom sorter based on date values
       sorter: (a: EventRowData, b: EventRowData) => {
         const aDate = new Date(a.date);
         const bDate = new Date(b.date);
         return aDate.getTime() - bDate.getTime();
       },
+      // Configuring the sort order based on the 'date' column
       sortOrder: sortedInfo.columnKey === 'date' ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
+      // Column for '# Of Volunteers'
       title: '# Of Volunteers',
       dataIndex: 'numVolunteers',
       key: 'numVolunteers',
+      // Custom sorter based on the number of volunteers
       sorter: (a: EventRowData, b: EventRowData) =>
         a.numVolunteers - b.numVolunteers,
+      // Configuring the sort order based on the 'numVolunteers' column
       sortOrder:
         sortedInfo.columnKey === 'numVolunteers' ? sortedInfo.order : null,
       ellipsis: true,
     },
+    // Example: Uncomment the following block to add a 'Tags' column
     // {
-    //   // TODO: update filters to contain all possible tags
     //   title: 'Tags',
     //   dataIndex: 'tags',
     //   key: 'tags',
+    //   // Render function to display tags using Ant Design Tag component
     //   render: (_: any, { tags }: any) => (
     //     <>
     //       {tags.map((tag: QueriedTagData) => {
@@ -289,23 +294,21 @@ const EventTable = () => {
     //       })}
     //     </>
     //   ),
-    //   filters: [
-    //     {
-    //       text: 'RFR',
-    //       value: 'RFR',
-    //     },
-    //     {
-    //       text: 'RIF',
-    //       value: 'RIF',
-    //     },
-    //   ],
-    //   onFilter: (value: string, record: { tags: string }) =>
-    //     record.tags.includes(value),
+    //   // Example: Uncomment the following lines to add filters
+    //   // filters: [
+    //   //   { text: 'RFR', value: 'RFR' },
+    //   //   { text: 'RIF', value: 'RIF' },
+    //   //   // Add more filter options as needed
+    //   // ],
+    //   // onFilter: (value: string, record: { tags: string }) =>
+    //   //   record.tags.includes(value),
     // },
     {
+      // Column for 'View' with a link to see more details
       title: 'View',
       dataIndex: 'view',
       key: 'view',
+      // Render function to display a link to the detailed view of the event
       render: (_: any, { id, eventName }: EventRowData) => (
         <>
           <Link key={eventName} href={`/event/${id}`}>
@@ -349,6 +352,8 @@ const convertEventDataToRowData = (data: QueriedVolunteerEventDTO[]) => {
 
     return {
       key: index,
+      title: event.name,
+      dataIndex: event.name,
       eventName: event.name,
       date: stringDate,
       numVolunteers: event.volunteers.length,
