@@ -89,7 +89,7 @@ const MainDashboard: React.FC = () => {
   return (
     <DashboardLayout>
       <Container>
-        <Greeting>Hello {userName}, how's your day?</Greeting>
+        <Greeting>Hello {userName}, how&apos;s your day?</Greeting>
 
         <InfoIcon>
           <Image src="/home/info.png" alt="Info icon" width="44" height="44" />
