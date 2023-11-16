@@ -31,13 +31,11 @@ async function handleAllStats(
     const volunteerHours = await aggregateHours(VolunteerLogs);
     const eventCount = await countDocuments(VolunteerEvents);
 
-    res
-      .status(200)
-      .json({
-        userCount: userCount.count,
-        volunteerHours: volunteerHours.totalHours,
-        eventCount: eventCount.count,
-      });
+    res.status(200).json({
+      userCount: userCount.count,
+      volunteerHours: volunteerHours.totalHours,
+      eventCount: eventCount.count,
+    });
   } catch (e) {
     console.error('An error has occurred:', e);
     res.status(500).json({ error: 'Error fetching all stats' });

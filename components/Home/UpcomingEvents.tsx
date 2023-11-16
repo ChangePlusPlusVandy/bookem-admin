@@ -16,7 +16,7 @@ import {
  * Container for all event cards
  */
 const Container = styled.div`
-  background: #D9D9D9;
+  background: #d9d9d9;
   padding: 35px;
   border-radius: 10px;
   white-space: nowrap;
@@ -50,7 +50,7 @@ const PastActivity = ({}: any) => {
             {/* if PastEvents aren't loading in yet, component will display "Please Wait..." */}
             <Suspense fallback={<Header>Please Wait...</Header>}>
               {events.map(event => (
-              // Iterate through events to and pass data to EventCard
+                // Iterate through events to and pass data to EventCard
                 <EventCard
                   key={event._id.toString()}
                   eventData={event}
@@ -59,7 +59,7 @@ const PastActivity = ({}: any) => {
                 />
               ))}
             </Suspense>
-          </Events>          
+          </Events>
         </EventsContainer>
       )}
     </>
