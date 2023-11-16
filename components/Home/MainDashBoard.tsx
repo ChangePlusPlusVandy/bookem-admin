@@ -27,13 +27,17 @@ interface Stats {
 // Main dashboard component
 const MainDashboard: React.FC = () => {
   // State for storing statistics
-  const [stats, setStats] = useState<Stats>({ userCount: 0, volunteerHours: 0, eventCount: 0 });
+  const [stats, setStats] = useState<Stats>({
+    userCount: 0,
+    volunteerHours: 0,
+    eventCount: 0,
+  });
 
   // State for storing the user's name
   const [userName, setUserName] = useState<string>('there');
 
   // Function to handle menu clicks (Ant Design specific)
-  const handleMenuClick: MenuProps['onClick'] = (e) => {
+  const handleMenuClick: MenuProps['onClick'] = e => {
     console.log('click', e);
   };
 
@@ -109,7 +113,7 @@ const MainDashboard: React.FC = () => {
             <StatsNumber>{stats.userCount}</StatsNumber>
             <StatsDescription>total volunteers</StatsDescription>
           </FlexChild>
-          
+
           <FlexChild>
             <StatsNumber>{stats.volunteerHours}</StatsNumber>
             <StatsDescription>total volunteer hours</StatsDescription>

@@ -8,7 +8,10 @@ interface UserDoc extends Document {
   firstName: string;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const session = await getSession({ req });
 
   if (!session || !session.user) {
@@ -17,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     await dbConnect();
-    const user = await Admins.findById(session.user._id) as UserDoc | null;
+    const user = (await Admins.findById(session.user._id)) as UserDoc | null;
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
