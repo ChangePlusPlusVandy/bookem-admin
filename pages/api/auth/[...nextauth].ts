@@ -90,7 +90,6 @@ export const authOptions = {
         session.user.status = token.status;
       }
 
-      console.log(session?.user);
       return session;
     },
 
