@@ -25,3 +25,7 @@ export interface Stats {
   volunteerHours: number;
   eventCount: number;
 }
+
+export interface RatioProp {
+  ratio: number;
+}
