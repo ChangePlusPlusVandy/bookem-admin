@@ -16,12 +16,7 @@ import {
   StatsNumber,
 } from '@/styles/dashboard.styles';
 import { useSession } from 'next-auth/react';
-
-interface Stats {
-  userCount: number;
-  volunteerHours: number;
-  eventCount: number;
-}
+import { Stats } from '@/utils/types';
 
 // Main dashboard component
 const MainDashboard: React.FC = () => {
