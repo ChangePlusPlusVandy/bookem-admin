@@ -3,8 +3,6 @@ import Image from 'next/image';
 
 import UpcomingEvents from '@/components/Home/UpcomingEvents';
 import type { MenuProps } from 'antd';
-import { Dropdown, Button, Space } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
 
 import {
   Container,
@@ -17,6 +15,7 @@ import {
   Header,
   StatsNumber,
 } from '@/styles/dashboard.styles';
+import { useSession } from 'next-auth/react';
 
 interface Stats {
   userCount: number;
@@ -33,8 +32,11 @@ const MainDashboard: React.FC = () => {
     eventCount: 0,
   });
 
+  const session = useSession();
+  const user = session.data?.user;
+
   // State for storing the user's name
-  const [userName, setUserName] = useState<string>('there');
+  const [userName, setUserName] = useState<string>('');
 
   // Function to handle menu clicks (Ant Design specific)
   const handleMenuClick: MenuProps['onClick'] = e => {
@@ -54,20 +56,6 @@ const MainDashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    // Fetch the user's name from the server
-    const fetchUserName = async () => {
-      try {
-        const res = await fetch('/api/admin/name');
-        if (!res.ok) {
-          throw new Error('Failed to fetch user name');
-        }
-        const data = await res.json();
-        setUserName(data.name);
-      } catch (error) {
-        console.error('Error fetching user name:', error);
-      }
-    };
-
     // Fetch the dashboard statistics from the server
     const fetchStats = async () => {
       try {
@@ -81,10 +69,9 @@ const MainDashboard: React.FC = () => {
         console.error('Error fetching stats:', error);
       }
     };
-
-    fetchUserName();
+    if (user) setUserName(user.name);
     fetchStats();
-  }, []);
+  }, [user]);
 
   return (
     <DashboardLayout>
@@ -98,14 +85,14 @@ const MainDashboard: React.FC = () => {
         <Header>
           Here are some quick stats for
           <span style={{ marginRight: '10px' }}></span>
-          <Dropdown menu={menuProps}>
+          {/* <Dropdown menu={menuProps}>
             <Button>
               <Space>
                 Button
                 <DownOutlined />
               </Space>
             </Button>
-          </Dropdown>
+          </Dropdown> */}
         </Header>
 
         <StatsFlex>

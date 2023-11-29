@@ -1,17 +1,10 @@
 import { signOut } from 'next-auth/react';
 import MainDashboard from '@/components/Home/MainDashBoard';
 
-const userData = {
-  name: 'Carol He',
-  totalVolunteers: 10,
-  totalVolunteerHours: 5,
-  totalEvents: 100,
-};
-
 const HomePage = () => {
   return (
     <>
-      <MainDashboard userData={userData} />
+      <MainDashboard />
     </>
   );
 };
