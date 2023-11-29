@@ -29,7 +29,7 @@ const Container = styled.div`
 `;
 
 // vertical list of sample PastEvents
-const PastActivity = ({}: any) => {
+const UpcomingEvents = ({}: any) => {
   const [events, setEvents] = useState<QueriedVolunteerEventData[]>();
   const [error, setError] = useState<Error>();
   // Fetch upcoming events when rendered
@@ -66,4 +66,4 @@ const PastActivity = ({}: any) => {
   );
 };
 
-export default PastActivity;
+export default UpcomingEvents;

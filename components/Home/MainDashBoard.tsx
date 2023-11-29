@@ -59,7 +59,7 @@ const MainDashboard: React.FC = () => {
     // Fetch the dashboard statistics from the server
     const fetchStats = async () => {
       try {
-        const response = await fetch('/api/admin/adminStats');
+        const response = await fetch('/api/admin/stats');
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
