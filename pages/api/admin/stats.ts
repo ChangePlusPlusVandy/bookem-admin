@@ -3,13 +3,10 @@ import dbConnect from '@/lib/dbConnect';
 import Users from 'bookem-shared/src/models/Users';
 import VolunteerLogs from 'bookem-shared/src/models/VolunteerLogs';
 import VolunteerEvents from 'bookem-shared/src/models/VolunteerEvents';
+import { Stats } from '@/utils/types';
 
 type ModelType = typeof Users | typeof VolunteerLogs | typeof VolunteerEvents;
-interface Stats {
-  userCount: number;
-  volunteerHours: number;
-  eventCount: number;
-}
+
 interface Error {
   error: string;
 }
