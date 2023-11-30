@@ -17,6 +17,8 @@ jest.mock('next-auth/react', () => {
     }),
   };
 });
+
+// Mock useRouter hook
 jest.mock('next/router', () => {
   const originalModule = jest.requireActual('next/router');
   const mockRouter = {
