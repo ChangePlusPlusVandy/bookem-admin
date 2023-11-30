@@ -11,6 +11,7 @@ import {
   Header,
   Events,
 } from '@/styles/components/upcomingEvents.styles';
+import { useRouter } from 'next/router';
 
 /**
  * Container for all event cards
@@ -32,6 +33,7 @@ const Container = styled.div`
 const UpcomingEvents = ({}: any) => {
   const [events, setEvents] = useState<QueriedVolunteerEventData[]>();
   const [error, setError] = useState<Error>();
+  const router = useRouter();
   // Fetch upcoming events when rendered
   useEffect(() => {
     fetchData('/api/events/upcoming')
@@ -60,6 +62,7 @@ const UpcomingEvents = ({}: any) => {
               ))}
             </Suspense>
           </Events>
+          <button onClick={() => router.push('/program')}>Show More</button>
         </EventsContainer>
       )}
     </>

@@ -22,7 +22,9 @@ export default async function handler(
         // Select all events where eventDate > today order by progamDate ascending
         const events = await VolunteerEvents.find({
           eventDate: { $gt: new Date() },
-        }).sort({ eventDate: 1 });
+        })
+          .sort({ eventDate: 1 })
+          .limit(5);
 
         return res.status(200).json(events);
       } catch (error) {
