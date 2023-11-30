@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import HomePage from '@/pages/index';
-import { useSession } from 'next-auth/react';
 
 // Mock the useSession hook
 jest.mock('next-auth/react', () => {
@@ -15,6 +14,19 @@ jest.mock('next-auth/react', () => {
     ...originalModule,
     useSession: jest.fn(() => {
       return { data: mockSession, status: 'authenticated' }; // return type is [] in v3 but changed to {} in v4
+    }),
+  };
+});
+jest.mock('next/router', () => {
+  const originalModule = jest.requireActual('next/router');
+  const mockRouter = {
+    push: (str: string) => {},
+  };
+  return {
+    __esModule: true,
+    ...originalModule,
+    useRouter: jest.fn(() => {
+      return mockRouter;
     }),
   };
 });
