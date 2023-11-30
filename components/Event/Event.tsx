@@ -13,6 +13,9 @@ import {
   BottomBox,
   EditButton,
   CopyButton,
+  EventName,
+  SpotsFilled,
+  TextContainer,
 } from '@/styles/components/Event/event.styles';
 import EditEventPopupWindowForm from '../Forms/EditEventPopupWindowForm';
 
@@ -55,26 +58,24 @@ const Event = ({ event }: { event: QueriedVolunteerEventData }) => {
         </span>
       </CopyButton>
 
-      <EditButton onClick={() => setShowPopup(prev => !prev)}>
-        <Image
-          src="/event/pencil.png"
-          alt="Pencil icon"
-          width="20"
-          height="20"
-        />
-        Edit
-      </EditButton>
-
-      {/* edit button */}
-      {showPopup && <EditEventPopupWindowForm setShowPopup={setShowPopup} />}
 
       <Header />
 
       {/* Book Icon and Event name */}
       <MiddleBox>
-        <BookIcon />
-        {/* <EventName event={event} /> */}
+        <BookIcon/>
+        <TextContainer> 
+          <EventName> {event.name}  </EventName> 
+          <SpotsFilled> {event.volunteers.length} / {event.maxSpot} spots filled</SpotsFilled>
+          <EditButton onClick={() => setShowPopup(prev => !prev)}>
+            Edit
+          </EditButton>
+        </TextContainer>
+        
       </MiddleBox>
+
+      {/* edit button */}
+      {showPopup && <EditEventPopupWindowForm setShowPopup={setShowPopup} />}
 
       {/* Time and Place of the event */}
       <TimeAndPlace eventDate={event.startDate} location={event.location} />
