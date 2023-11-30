@@ -1,7 +1,5 @@
 import React, { Suspense, useEffect, useState } from 'react';
-import mongoose from 'mongoose';
 
-import styled from 'styled-components';
 const EventCard = React.lazy(() => import('@/components/shared/EventCard')); // implement lazy loading
 import { QueriedVolunteerEventData } from 'bookem-shared/src/types/database';
 import { fetchData } from '@/utils/utils';
@@ -12,22 +10,6 @@ import {
   Events,
 } from '@/styles/components/upcomingEvents.styles';
 import { useRouter } from 'next/router';
-
-/**
- * Container for all event cards
- */
-const Container = styled.div`
-  background: #d9d9d9;
-  padding: 35px;
-  border-radius: 10px;
-  white-space: nowrap;
-  overflow-x: auto;
-  display: flex;
-
-  @media (max-width: 767px) {
-    padding: 0px;
-  }
-`;
 
 // vertical list of sample PastEvents
 const UpcomingEvents = ({}: any) => {
