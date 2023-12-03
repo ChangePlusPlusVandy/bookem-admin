@@ -20,6 +20,8 @@ interface ProgramRowData {
   key: number;
   programName: string;
   programDesc: string;
+  programEvent: string;
+  programVolunteer: string;
 }
 
 type DataIndex = keyof ProgramRowData;
@@ -27,8 +29,20 @@ type DataIndex = keyof ProgramRowData;
 const ProgramTable = () => {
   const [showPopUp, setShowPopUp] = useState(false);
   const [dataForTable, setDataForTable] = useState<ProgramRowData[]>([
-    { key: 1, programName: 'test', programDesc: 'test program' },
-    { key: 2, programName: 'test 2', programDesc: 'test program 2' },
+    {
+      key: 1,
+      programName: 'test',
+      programDesc: 'test program',
+      programEvent: 'test programEvent',
+      programVolunteer: 'Harry',
+    },
+    {
+      key: 2,
+      programName: 'test 2',
+      programDesc: 'test program 2',
+      programEvent: 'test programEvent 2',
+      programVolunteer: 'Jessie',
+    },
   ]);
   const [filterTable, setFilterTable] = useState<ProgramRowData[]>([]);
   const [isFiltering, setIsFilter] = useState<boolean>(false);
@@ -153,6 +167,16 @@ const ProgramTable = () => {
       dataIndex: 'programDesc',
       key: 'programDesc',
     },
+    {
+      title: 'Events',
+      dataIndex: 'programEvent',
+      key: 'programEvent',
+    },
+    {
+      title: 'Volunteers',
+      dataIndex: 'programVolunteer',
+      key: 'programVolunteer',
+    },
   ];
 
   return (
@@ -160,19 +184,13 @@ const ProgramTable = () => {
       {showPopUp && <CreateProgramPopupWindow setShowPopup={setShowPopUp} />}
       <div>
         <SearchContainter>
-          <Input.Search
-            placeholder="Search "
-            // onSearch={onTableSearch}
-            style={{ width: 800, marginRight: 20 }}
-            allowClear
-          />
           <TableButton onClick={() => setShowPopUp(prev => !prev)}>
             <Image
               src="/table/addbutton.png"
               alt=""
               width={32}
               height={32}
-              style={{ marginRight: 20 }}
+              style={{ marginLeft: 150 }}
             />
           </TableButton>
         </SearchContainter>
