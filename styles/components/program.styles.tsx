@@ -36,9 +36,14 @@ export const FormInput = styled.input`
   padding: 5px;
 `;
 
-export const InputFlex = styled.div`
+export const InputRowFlex = styled.div`
   display: flex;
   flex-direction: row;
+`;
+
+export const InputColumnFlex = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 export const ShortFormInput = styled.input`

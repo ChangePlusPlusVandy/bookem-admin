@@ -4,7 +4,8 @@ import {
   ShortFormInput,
   LongFormInput,
   LargeFormInput,
-  InputFlex,
+  InputRowFlex,
+  InputColumnFlex,
   FormInput,
   FormLabel,
   CreateEventForm,
@@ -39,27 +40,33 @@ const CreateEventPopupWindow = ({
     <PopupWindow hidePopup={() => setShowPopup(false)}>
       <CreateEventContainer>
         <CreateEventForm>
-          <FormHeader>Create Event</FormHeader>
+          <FormHeader>Create new events</FormHeader>
 
-          <FormLabel>Event Name</FormLabel>
-          <InputFlex>
-            <FormInput
-              // {...register('name')}
-              type="text"
-              placeholder="Event Name"
-              pattern="[A-Za-z]"
-              title="Input must be text"></FormInput>
-            <FormInput
-              // {...register('program')}
-              type="text"
-              placeholder="Event Category (optional)"
-              pattern="[A-Za-z]"
-              title="Input must be text"></FormInput>
-          </InputFlex>
+          <InputRowFlex>
+            <InputColumnFlex>
+              <FormLabel>Event Name</FormLabel>
+              <FormInput
+                // {...register('name')}
+                type="text"
+                placeholder="Event Name"
+                pattern="[A-Za-z]"
+                title="Input must be text"></FormInput>
+            </InputColumnFlex>
 
+            <InputColumnFlex>
+              <FormLabel>Event Category (Optional)</FormLabel>
+              <FormInput
+                // {...register('program')}
+                type="text"
+                placeholder="Category"
+                pattern="[A-Za-z]"
+                title="Input must be text"></FormInput>
+            </InputColumnFlex>
+          </InputRowFlex>
+          
           <FormLabel>Logistics</FormLabel>
           <RangePicker />
-          <InputFlex>
+          <InputRowFlex>
             <TimePicker
               use12Hours
               format="h:mm a"
@@ -84,9 +91,9 @@ const CreateEventPopupWindow = ({
                 console.log(endTime);
               }}
             />
-          </InputFlex>
+          </InputRowFlex>
 
-          <InputFlex>
+          <InputRowFlex>
             <ShortFormInput
               // {...register('maxSpot')}
               type="text"
@@ -96,7 +103,7 @@ const CreateEventPopupWindow = ({
               // defaultValue={eventData?.maxSpot}
             ></ShortFormInput>
             <FormLogistics>max spots</FormLogistics>
-          </InputFlex>
+          </InputRowFlex>
 
           <FormLabel>Address</FormLabel>
           <LongFormInput
@@ -107,7 +114,7 @@ const CreateEventPopupWindow = ({
             title="Input must be in address format"
             // defaultValue={locationData?.street}
           ></LongFormInput>
-          <InputFlex>
+          <InputRowFlex>
             <FormInput
               // {...register('city')}
               type="text"
@@ -124,7 +131,7 @@ const CreateEventPopupWindow = ({
               title="Input must be a valid state"
               // defaultValue={locationData?.state}
             ></FormInput>
-          </InputFlex>
+          </InputRowFlex>
           <FormInput
             // {...register('zip')}
             type="text"
