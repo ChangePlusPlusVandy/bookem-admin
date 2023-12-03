@@ -88,9 +88,9 @@ export const authOptions = {
       if (session?.user) {
         session.user._id = token.uid;
         session.user.status = token.status;
+        session.user.name = token.name;
       }
 
-      console.log(session?.user);
       return session;
     },
 
@@ -103,6 +103,7 @@ export const authOptions = {
     async jwt({ token, user }: { token: JWT; user?: QueriedAdminData | any }) {
       if (user) {
         token.uid = user._id;
+        token.name = user.firstName + ' ' + user.lastName;
         token.status = user.status;
       }
       return token;
