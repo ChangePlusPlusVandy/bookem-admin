@@ -16,6 +16,8 @@ import {
   EventName,
   SpotsFilled,
   TextContainer,
+  SeeSignUpButton,
+  ButtonContainer,
 } from '@/styles/components/Event/event.styles';
 import EditEventPopupWindowForm from '../Forms/EditEventPopupWindowForm';
 
@@ -67,11 +69,14 @@ const Event = ({ event }: { event: QueriedVolunteerEventData }) => {
         <TextContainer> 
           <EventName> {event.name}  </EventName> 
           <SpotsFilled> {event.volunteers.length} / {event.maxSpot} spots filled</SpotsFilled>
-          <EditButton onClick={() => setShowPopup(prev => !prev)}>
-            Edit
-          </EditButton>
+          <ButtonContainer> 
+            <EditButton onClick={() => setShowPopup(prev => !prev)}>
+              Edit
+            </EditButton>
+            <SeeSignUpButton> See sign-Ups </SeeSignUpButton>
+            <Image src="/event/bookmarks.png" alt="" width={50} height={50} />
+          </ButtonContainer>
         </TextContainer>
-        
       </MiddleBox>
 
       {/* edit button */}

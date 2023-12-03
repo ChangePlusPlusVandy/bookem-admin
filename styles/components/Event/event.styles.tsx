@@ -35,6 +35,7 @@ export const SpotsFilled = styled.div`
   display: flex;
   margin-top: 30px;
   margin-left: 50px;
+  margin-bottom: 30px;
   font-size: 25px;  
 `;
 
@@ -54,21 +55,46 @@ export const BottomBox = styled.div`
   margin-top: 51px;
 `;
 
+export const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px; 
+`;
+
 /**
  * Button for editing events
  */
 export const EditButton = styled.div`
-  margin-left: 50px;
-  margin-top: 30px;
+  margin-left: 40px;
   background: #6d6d6d;
   display: flex;
-  /* padding: 10px 10px; */
   width: 150px;
   height: 60px;
   font-size: 20px;
   justify-content: center; 
   border-radius: 10px;
   color: #ffffff;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+/**
+ * Button for viewing sign-ups
+ */
+export const SeeSignUpButton = styled.div`
+  margin-left: 30px;
+  margin-right: 30px;
+  background: #dad8d8;
+  display: flex;
+  width: 150px;
+  height: 60px;
+  font-size: 20px;
+  justify-content: center; 
+  border-radius: 10px;
+  color: #030303;
   align-items: center;
 
   &:hover {
