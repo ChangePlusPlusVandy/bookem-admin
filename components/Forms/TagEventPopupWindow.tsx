@@ -77,7 +77,7 @@ const TagEventPopupWindow = ({
                 width="20"
                 height="20"
               />
-              <SearchInput />
+              <SearchInput placeholder="Enter tag name here..." />
               <Image
                 src="/./event/CheckSubmit.png"
                 alt="submit tag"

@@ -327,7 +327,7 @@ const EventTable = () => {
       {showPopupTag && <TagEventPopupWindow setShowPopup={setShowPopupTag} />}
       <div>
         <SearchContainter>
-          <TableButton >
+          <TableButton>
             <Image
               onClick={() => setShowPopup(prev => !prev)}
               src="/table/addbutton.png"
@@ -338,10 +338,16 @@ const EventTable = () => {
             />
           </TableButton>
           <TableButton>
-            <Image onClick={() => {
-              setShowPopup(false);
-              setShowPopupTag(prev => !prev);
-            }} src="/table/tagsbutton.png" alt="" width={32} height={32} />
+            <Image
+              onClick={() => {
+                setShowPopup(false);
+                setShowPopupTag(prev => !prev);
+              }}
+              src="/table/tagsbutton.png"
+              alt=""
+              width={32}
+              height={32}
+            />
           </TableButton>
           <Button
             onClick={handleExport}

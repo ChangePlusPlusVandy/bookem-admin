@@ -94,7 +94,11 @@ export const SearchContainer = styled.div`
   width: 100%;
 `;
 
-export const SearchInput = styled.input`
+interface SearchInputProps {
+  placeholder?: string;
+}
+
+export const SearchInput = styled.input<SearchInputProps>`
   border-radius: 15px;
   border: 0;
   height: 45px;
