@@ -25,6 +25,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ObjectId } from 'mongodb';
 import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
+import TagEventPopupWindow from '../Forms/TagEventPopupWindow';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 
 interface EventRowData {
@@ -48,6 +49,7 @@ const EventTable = () => {
     fetcher
   );
   const [showPopup, setShowPopup] = useState(false);
+  const [showPopupTag, setShowPopupTag] = useState(false);
   const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
   const [isFiltering, setIsFilter] = useState<boolean>(false);
   const [filterTable, setFilterTable] = useState<EventRowData[]>([]);
@@ -322,10 +324,12 @@ const EventTable = () => {
   return (
     <>
       {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
+      {showPopupTag && <TagEventPopupWindow setShowPopup={setShowPopupTag} />}
       <div>
         <SearchContainter>
-          <TableButton onClick={() => setShowPopup(prev => !prev)}>
+          <TableButton >
             <Image
+              onClick={() => setShowPopup(prev => !prev)}
               src="/table/addbutton.png"
               alt=""
               width={32}
@@ -333,11 +337,11 @@ const EventTable = () => {
               style={{ marginRight: 20 }}
             />
           </TableButton>
-          <TableButton
-            onClick={() => {
-              alert('TODO: redirect to tags page');
-            }}>
-            <Image src="/table/tagsbutton.png" alt="" width={32} height={32} />
+          <TableButton>
+            <Image onClick={() => {
+              setShowPopup(false);
+              setShowPopupTag(prev => !prev);
+            }} src="/table/tagsbutton.png" alt="" width={32} height={32} />
           </TableButton>
           <Button
             onClick={handleExport}
