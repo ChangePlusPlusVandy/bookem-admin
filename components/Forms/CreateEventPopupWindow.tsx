@@ -16,25 +16,60 @@ import {
   SubmitButton,
   ButtonCenter,
 } from '@/styles/components/windowFlow.styles';
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import PopupWindow from '@/components/PopupWindow';
-import Dayjs from 'dayjs';
+
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+import moment, { Moment } from 'moment';
 import { DatePicker, TimePicker } from 'antd';
 import { useForm } from 'react-hook-form';
+import type { DatePickerProps, GetProps } from 'antd';
+import { database } from 'bookem-shared';
+
+type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
+dayjs.extend(customParseFormat);
 
 const CreateEventPopupWindow = ({
   setShowPopup,
 }: {
   setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+
+
+
+  const [eventName, setEventName] = useState<string>('');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
+  const [eventCategory, setEventCategory] = useState<string>('');
+  const [maxSpot, setMaxSpot] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
+  const [city, setCity] = useState<string>('');
+  const [state, setState] = useState<string>('');
+  const [zip, setZip] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+
   const { RangePicker } = DatePicker;
 
-  const [startTime, setStartTime] = useState('12:00');
-  const [endTime, setEndTime] = useState('12:00');
+  const handleSubmit = () => {
+    console.log(startDate);
+  };
 
-  const { handleSubmit } = useForm({});
+  const handleRangeChange = (
+    value: DatePickerProps['value'] | RangePickerProps['value'],
+    dateString: [string, string] | string,
+  ) => {
+    setStartDate(dateString[0]);
+    setEndDate(dateString[1]);
+  };
 
-  const onSubmit = (data: any) => {};
+  const handleStartTimeChange = (time: Dayjs | null, timeString: string) => {
+    console.log(time, timeString);
+  };
 
   return (
     <PopupWindow hidePopup={() => setShowPopup(false)}>
@@ -50,7 +85,9 @@ const CreateEventPopupWindow = ({
                 type="text"
                 placeholder="Event Name"
                 pattern="[A-Za-z]"
-                title="Input must be text"></FormInput>
+                title="Input must be text"
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setEventName(e.target.value)}
+              ></FormInput>
             </InputColumnFlex>
 
             <InputColumnFlex>
@@ -60,29 +97,30 @@ const CreateEventPopupWindow = ({
                 type="text"
                 placeholder="Category"
                 pattern="[A-Za-z]"
-                title="Input must be text"></FormInput>
+                title="Input must be text"
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setEventCategory(e.target.value)}
+                ></FormInput>
             </InputColumnFlex>
           </InputRowFlex>
           
           <FormLabel>Logistics</FormLabel>
-          <RangePicker />
+
+          <RangePicker onChange={handleRangeChange} />
           <InputRowFlex>
             <TimePicker
               use12Hours
               format="h:mm a"
-              defaultValue={Dayjs(
+              defaultValue={dayjs(
                 // Dayjs(eventData?.startDate.getTime()),
                 'HH:mm'
               )}
-              onChange={(value, startTime) => {
-                setStartTime(startTime);
-                console.log(startTime);
-              }}
+              onChange={handleStartTimeChange}
+              
             />
             <TimePicker
               use12Hours
               format="h:mm a"
-              defaultValue={Dayjs(
+              defaultValue={dayjs(
                 // Dayjs(eventData?.startDate.getTime()),
                 'HH:mm'
               )}
@@ -100,7 +138,7 @@ const CreateEventPopupWindow = ({
               placeholder="#"
               pattern="^[0-9]*$"
               title="Input must be a whole number"
-              // defaultValue={eventData?.maxSpot}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setMaxSpot(e.target.value)}
             ></ShortFormInput>
             <FormLogistics>max spots</FormLogistics>
           </InputRowFlex>
@@ -112,6 +150,7 @@ const CreateEventPopupWindow = ({
             placeholder="Street"
             pattern="[A-Za-z0-9]"
             title="Input must be in address format"
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}
             // defaultValue={locationData?.street}
           ></LongFormInput>
           <InputRowFlex>
@@ -166,8 +205,9 @@ const CreateEventPopupWindow = ({
             title="Input must be a valid email address"
             // defaultValue={eventData?.email}
           ></FormInput>
+
           <ButtonCenter>
-            <SubmitButton onClick={handleSubmit(onSubmit)}>Create</SubmitButton>
+            <SubmitButton onClick={handleSubmit}>Create</SubmitButton>
           </ButtonCenter>
         </CreateEventForm>
       </CreateEventContainer>
