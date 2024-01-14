@@ -39,45 +39,43 @@ const TagEventPopupWindow = ({
 }) => {
   const { handleSubmit } = useForm({});
   const onSubmit = (data: any) => {};
-  const [showInfo, setShowInfo]  = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
 
   return (
     <PopupWindow hidePopup={() => setShowPopup(false)}>
       <TagEventContainer>
         <TagEventHeader>Manage tags</TagEventHeader>
         <TagBodyContainer>
-          {showInfo && (            
-          <TagInfoContainer>
-            <InfoTextBox>
-              <InfoHeader>Tips</InfoHeader>
-              <InfoSubheader>How to use this page?</InfoSubheader>
-              <InfoList>
-                <InfoListItem>Tags are categories of events.</InfoListItem>
-                <InfoListItem>
-                  To create new tags: enter tag names and click check mark.
-                </InfoListItem>
-                <InfoListItem>
-                  To edit existing tags: double click a tag and modify.
-                </InfoListItem>
-                <InfoListItem>
-                  To delete a tag: hover over a tag and click the trash icon.
-                </InfoListItem>
-              </InfoList>
-            </InfoTextBox>
-          </TagInfoContainer>
-
-            )}
-          
+          {showInfo && (
+            <TagInfoContainer>
+              <InfoTextBox>
+                <InfoHeader>Tips</InfoHeader>
+                <InfoSubheader>How to use this page?</InfoSubheader>
+                <InfoList>
+                  <InfoListItem>Tags are categories of events.</InfoListItem>
+                  <InfoListItem>
+                    To create new tags: enter tag names and click check mark.
+                  </InfoListItem>
+                  <InfoListItem>
+                    To edit existing tags: double click a tag and modify.
+                  </InfoListItem>
+                  <InfoListItem>
+                    To delete a tag: hover over a tag and click the trash icon.
+                  </InfoListItem>
+                </InfoList>
+              </InfoTextBox>
+            </TagInfoContainer>
+          )}
 
           <MiddleContainer>
             <SearchContainer>
               <Image
-                onClick = {() => setShowInfo(showInfo => !showInfo)}
+                onMouseOver={() => setShowInfo(true)}
+                onMouseLeave={() => setShowInfo(false)}
                 src="/./event/Info.png"
                 alt="info button"
                 width="20"
                 height="20"
-                style = {{cursor: "pointer"}}
               />
               <SearchInput />
               <Image
