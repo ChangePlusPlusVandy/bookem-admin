@@ -74,7 +74,7 @@ export const MiddleContainer = styled.div`
   flex-direction: column;
   align-items: start;
   /* background-color: aquamarine; */
-  height: 100%;
+  height: 90%;
   width: 50%;
 `;
 
@@ -117,9 +117,22 @@ export const EmptyContainer = styled.div`
   background-color: aqua;
 `;
 
+export const SingleTagDelete = styled.div`
+  height: 100%;
+  display: none;
+  cursor: pointer;
+`;
+
 export const SingleTag = styled.div`
-  height: 40px;
+  height: 50px;
+  width: 100%;
   text-align: center;
   align-items: center;
+  justify-content: space-between;
+  display: flex;
+  padding: 10px 20px;
   border-bottom: 1px solid ${props => props.theme.colors.BOOKEM_BLACK};
-`
+  &:hover ${SingleTagDelete} {
+    display: block; // Show SingleTagDelete when SingleTag is hovered */
+  }
+`;

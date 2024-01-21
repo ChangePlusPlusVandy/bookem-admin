@@ -27,6 +27,7 @@ import {
   SearchContainer,
   SearchInput,
   SingleTag,
+  SingleTagDelete,
   TagBodyContainer,
   TagDisplayContainer,
   TagEventContainer,
@@ -43,7 +44,18 @@ const TagEventPopupWindow = ({
   const onSubmit = (data: any) => {};
   const [showInfo, setShowInfo] = useState(false);
 
+  const handleDeleteTag = () => {
+    alert("Delete this tag.");
+  }
+
   const fakeData = [
+    'dog',
+    'cat',
+    'alpaca',
+    'shark',
+    'bookem',
+    'BOOK',
+    'reading book',
     'dog',
     'cat',
     'alpaca',
@@ -101,7 +113,18 @@ const TagEventPopupWindow = ({
             <TagDisplayContainer>
               {fakeData.length > 0 ? (
                 fakeData.map((tag, index) => (
-                  <SingleTag key={index}>{tag}</SingleTag>
+                  <SingleTag key={index}>
+                    {tag}
+                    <SingleTagDelete>
+                      <Image
+                        src="/./event/Trash.png"
+                        alt="delete tag"
+                        height="25"
+                        width="25"
+                        onClick = {handleDeleteTag}
+                      />
+                    </SingleTagDelete>
+                  </SingleTag>
                 ))
               ) : (
                 <EmptyContainer>
