@@ -2,12 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button, Input, Space, Tag, Table, TableProps, InputRef } from 'antd';
 import type {
   ColumnType,
-  ColumnsType,
   FilterValue,
   SorterResult,
 } from 'antd/es/table/interface';
 import {
+  PlusOutlined,
   SearchOutlined,
+  MinusOutlined,
   ArrowRightOutlined,
   UserOutlined,
 } from '@ant-design/icons';
@@ -15,18 +16,9 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import useSWR from 'swr';
 import Highlighter from 'react-highlight-words';
-import {
-  QueriedTagData,
-  QueriedVolunteerEventDTO,
-} from 'bookem-shared/src/types/database';
-import {
-  SearchContainter,
-  StyledTable,
-  TableButton,
-  TableContainer,
-} from '@/styles/table.styles';
+import { QueriedAdminData } from 'bookem-shared/src/types/database';
+import { SearchContainter, TableContainer } from '@/styles/table.styles';
 import Link from 'next/link';
-import Image from 'next/image';
 import { ObjectId } from 'mongodb';
 import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
@@ -38,6 +30,7 @@ interface AdminRowData {
   email: string;
   phone: string;
   role: string;
+  id: ObjectId;
 }
 
 type DataIndex = keyof AdminRowData;
@@ -45,8 +38,8 @@ type DataIndex = keyof AdminRowData;
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 const AdminTable = () => {
-  const { data, error, isLoading } = useSWR<QueriedVolunteerEventDTO[]>(
-    '/api/event/',
+  const { data, error, isLoading } = useSWR<QueriedAdminData[]>(
+    '/api/admin/',
     fetcher
   );
   const [showPopup, setShowPopup] = useState(false);
@@ -197,7 +190,7 @@ const AdminTable = () => {
 
   useEffect(() => {
     if (!isLoading && data) {
-      setDataForTable(convertEventDataToRowData(data));
+      setDataForTable(convertAdminDataToRowData(data));
     }
   }, [data, isLoading]);
 
@@ -238,7 +231,7 @@ const AdminTable = () => {
   };
 
   // Define columns for the Ant Design table
-  const columns: ColumnsType<AdminRowData> = [
+  const columns: any = [
     {
       title: 'First Name',
       dataIndex: 'firstName',
@@ -270,7 +263,17 @@ const AdminTable = () => {
       key: 'x',
       render: () => (
         <a>
-          <ArrowRightOutlined rev={undefined} />
+          <Button
+            icon={<ArrowRightOutlined rev={undefined} />}
+            onClick={() => {}}
+            style={{
+              width: 30,
+              borderRadius: 70,
+              marginLeft: 30,
+              backgroundColor: 'white',
+              color: 'black',
+              borderColor: 'black',
+            }}></Button>
         </a>
       ),
     },
@@ -279,21 +282,48 @@ const AdminTable = () => {
   return (
     <>
       {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
-      <div>
-        <SearchContainter>
-          <Button
-            icon={<UserOutlined rev={undefined} />}
-            onClick={() => {}}
-            style={{
-              width: 250,
-              marginLeft: 90,
-              backgroundColor: 'darkgray',
-              color: 'whitesmoke',
-            }}>
-            Your Account
-          </Button>
-        </SearchContainter>
-      </div>
+
+      <SearchContainter style={{ marginLeft: 0 }}>
+        <Input
+          ref={searchInput}
+          placeholder={'Search'}
+          onChange={e => (e.target.value ? [e.target.value] : [])}
+          prefix={<SearchOutlined rev={undefined} />}
+          style={{ width: 1000, display: 'flex' }}
+        />
+        <Button
+          icon={<PlusOutlined rev={undefined} />}
+          onClick={() => {}}
+          style={{
+            width: 50,
+            marginLeft: 10,
+            borderRadius: 100,
+            backgroundColor: 'darkgray',
+            color: 'whitesmoke',
+          }}></Button>
+        <Button
+          icon={<MinusOutlined rev={undefined} />}
+          onClick={() => {}}
+          style={{
+            width: 50,
+            marginLeft: 10,
+            borderRadius: 100,
+            backgroundColor: 'darkgray',
+            color: 'whitesmoke',
+          }}></Button>
+        <Button
+          icon={<UserOutlined rev={undefined} />}
+          onClick={() => {}}
+          style={{
+            width: 250,
+            marginLeft: 10,
+            backgroundColor: 'darkgray',
+            color: 'whitesmoke',
+          }}>
+          Your Account
+        </Button>
+      </SearchContainter>
+
       <TableContainer>
         <div id="table-container">
           <Table
@@ -309,15 +339,30 @@ const AdminTable = () => {
   );
 };
 
-const convertEventDataToRowData = (data: QueriedVolunteerEventDTO[]) => {
-  const result = data.map((event, index) => {
+// const convertEventDataToRowData = (data: QueriedVolunteerEventDTO[]) => {
+//   const result = data.map((event, index) => {
+//     return {
+//       key: index,
+//       firstName: 'Manish',
+//       lastName: 'Acharya',
+//       email: 'manish@gmail.com',
+//       phone: '1234567890',
+//       role: 'Super Admin',
+//     };
+//   });
+//   return result;
+// };
+
+const convertAdminDataToRowData = (data: QueriedAdminData[]) => {
+  const result = data.map((user, index) => {
     return {
       key: index,
-      firstName: 'Manish',
-      lastName: 'Acharya',
-      email: 'manish@gmail.com',
-      phone: '1234567890',
-      role: 'Super Admin',
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone,
+      role: user.status,
+      id: user._id,
     };
   });
   return result;

@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { PageLayout, PageTitle } from '@/styles/table.styles';
 import { Admin } from 'mongodb';
 import AdminTable from '@/components/table/AdminTable';
+import { Button } from 'antd';
+import { LogoutOutlined } from '@ant-design/icons';
 
 const MainContainer = styled.div`
   width: 100%;
@@ -15,9 +17,25 @@ const settings = () => {
     <PageLayout>
       <PageTitle>Admin Management and Settings</PageTitle>
       <AdminTable />
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: 20,
+        }}>
+        <Button
+          icon={<LogoutOutlined rev={undefined} />}
+          onClick={() => signOut()}
+          style={{
+            width: 200,
+            marginLeft: 90,
+            backgroundColor: 'darkgray',
+            color: 'whitesmoke',
+          }}>
+          Log Out
+        </Button>
+      </div>
     </PageLayout>
-    /* <div>You have signed in</div>
-      <button onClick={() => signOut()}>Sign out</button> */
   );
 };
 
