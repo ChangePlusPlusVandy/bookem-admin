@@ -51,7 +51,7 @@ export const EditButton = styled.div<EditButtonProp>`
 
 interface CopyButtonProp {
   onClick: () => void;
-  children?: React.ReactNode; 
+  children?: React.ReactNode;
 }
 export const CopyButton = styled.div<CopyButtonProp>`
   position: absolute;

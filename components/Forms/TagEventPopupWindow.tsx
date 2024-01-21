@@ -49,8 +49,8 @@ const TagEventPopupWindow = ({
   const [filteredTags, setFilteredTags] = useState<string[]>([]);
 
   useEffect(() => {
-    setFilteredTags(fakeData) 
-  }, [])
+    setFilteredTags(fakeData);
+  }, []);
 
   const handleDeleteTag = () => {
     alert('Delete this tag.');
@@ -119,7 +119,7 @@ const TagEventPopupWindow = ({
               <SearchInput
                 placeholder="Enter tag name here..."
                 value={searchQuery}
-                onChange={e => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setSearchQuery(e.target.value);
                   handleSearch(e.target.value);
                 }}
@@ -151,14 +151,14 @@ const TagEventPopupWindow = ({
               ) : (
                 <EmptyContainer>
                   <EmptyContent>
-                  <Image
-                    src="/./event/FolderDashed.png"
-                    alt="no tags"
-                    width="150"
-                    height="150"
-                  />
-                  <EmptyMessage>No tag</EmptyMessage>
-                  <EmptyMessage>Click check mark to create new</EmptyMessage>
+                    <Image
+                      src="/./event/FolderDashed.png"
+                      alt="no tags"
+                      width="150"
+                      height="150"
+                    />
+                    <EmptyMessage>No tag</EmptyMessage>
+                    <EmptyMessage>Click check mark to create new</EmptyMessage>
                   </EmptyContent>
                 </EmptyContainer>
               )}
