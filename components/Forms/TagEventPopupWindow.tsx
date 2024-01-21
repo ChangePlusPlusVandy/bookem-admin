@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PopupWindow from '@/components/PopupWindow';
 import Image from 'next/image';
 // import {
@@ -18,6 +18,8 @@ import {
 import { useForm } from 'react-hook-form';
 import {
   EmptyContainer,
+  EmptyContent,
+  EmptyMessage,
   InfoHeader,
   InfoList,
   InfoListItem,
@@ -43,10 +45,23 @@ const TagEventPopupWindow = ({
   const { handleSubmit } = useForm({});
   const onSubmit = (data: any) => {};
   const [showInfo, setShowInfo] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredTags, setFilteredTags] = useState<string[]>([]);
+
+  useEffect(() => {
+    setFilteredTags(fakeData) 
+  }, [])
 
   const handleDeleteTag = () => {
-    alert("Delete this tag.");
-  }
+    alert('Delete this tag.');
+  };
+
+  const handleSearch = (query: string) => {
+    const filtered = fakeData.filter(tag =>
+      tag.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredTags(filtered);
+  };
 
   const fakeData = [
     'dog',
@@ -101,7 +116,14 @@ const TagEventPopupWindow = ({
                 width="20"
                 height="20"
               />
-              <SearchInput placeholder="Enter tag name here..." />
+              <SearchInput
+                placeholder="Enter tag name here..."
+                value={searchQuery}
+                onChange={e => {
+                  setSearchQuery(e.target.value);
+                  handleSearch(e.target.value);
+                }}
+              />
               <Image
                 src="/./event/CheckSubmit.png"
                 alt="submit tag"
@@ -111,8 +133,8 @@ const TagEventPopupWindow = ({
             </SearchContainer>
 
             <TagDisplayContainer>
-              {fakeData.length > 0 ? (
-                fakeData.map((tag, index) => (
+              {filteredTags.length > 0 ? (
+                filteredTags.map((tag, index) => (
                   <SingleTag key={index}>
                     {tag}
                     <SingleTagDelete>
@@ -121,19 +143,23 @@ const TagEventPopupWindow = ({
                         alt="delete tag"
                         height="25"
                         width="25"
-                        onClick = {handleDeleteTag}
+                        onClick={handleDeleteTag}
                       />
                     </SingleTagDelete>
                   </SingleTag>
                 ))
               ) : (
                 <EmptyContainer>
+                  <EmptyContent>
                   <Image
                     src="/./event/FolderDashed.png"
                     alt="no tags"
                     width="150"
                     height="150"
                   />
+                  <EmptyMessage>No tag</EmptyMessage>
+                  <EmptyMessage>Click check mark to create new</EmptyMessage>
+                  </EmptyContent>
                 </EmptyContainer>
               )}
             </TagDisplayContainer>

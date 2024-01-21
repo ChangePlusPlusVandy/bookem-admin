@@ -23,19 +23,17 @@ export const TagBodyContainer = styled.div`
   justify-content: center;
   height: 100%;
   width: 100%;
+  /* background-color: aliceblue; */
 `;
 
 export const TagInfoContainer = styled.div`
-  /* flex-direction: column; */
   display: flex;
   width: 20%;
-  height: 100%;
-  /* background-color: lightsalmon; */
+  max-height: 90%;
   padding: 0 10px;
   position: absolute;
   left: 5%;
-  /* margin-right: 20px; */
-  /* margin-top: 20px; */
+  overflow-y: hidden;
 `;
 
 export const InfoTextBox = styled.div`
@@ -73,15 +71,15 @@ export const MiddleContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
-  /* background-color: aquamarine; */
   height: 90%;
   width: 50%;
 `;
 
 export const TagDisplayContainer = styled.div`
   width: 100%;
-  height: 100%;
-  /* background-color: bisque; */
+  height: 500px;
+  /* height: 90%; */
+  /* max-height: 90%; */
   border: 1px solid black;
   border-radius: 15px;
   overflow-y: scroll;
@@ -109,12 +107,27 @@ export const SearchInput = styled.input<SearchInputProps>`
 `;
 
 export const EmptyContainer = styled.div`
-  height: 50%;
-  width: 50%;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const EmptyContent = styled.div`
+  height: 60%;
+  width: 60%;
+  display: flex;
   flex-direction: column;
+  align-self: center;
   align-items: center;
   justify-content: center;
-  background-color: aqua;
+`;
+
+export const EmptyMessage = styled.p`
+  font-size: ${props => props.theme.fontSizes.SMALL};
+  font-weight: 400;
+  line-height: 1em;
 `;
 
 export const SingleTagDelete = styled.div`
@@ -132,7 +145,8 @@ export const SingleTag = styled.div`
   display: flex;
   padding: 10px 20px;
   border-bottom: 1px solid ${props => props.theme.colors.BOOKEM_BLACK};
+  overflow: hidden;
   &:hover ${SingleTagDelete} {
-    display: block; // Show SingleTagDelete when SingleTag is hovered */
+    display: block;
   }
 `;
