@@ -17,6 +17,7 @@ import {
 } from '@/styles/components/windowFlow.styles';
 import { useForm } from 'react-hook-form';
 import {
+  EmptyContainer,
   InfoHeader,
   InfoList,
   InfoListItem,
@@ -25,6 +26,7 @@ import {
   MiddleContainer,
   SearchContainer,
   SearchInput,
+  SingleTag,
   TagBodyContainer,
   TagDisplayContainer,
   TagEventContainer,
@@ -40,6 +42,16 @@ const TagEventPopupWindow = ({
   const { handleSubmit } = useForm({});
   const onSubmit = (data: any) => {};
   const [showInfo, setShowInfo] = useState(false);
+
+  const fakeData = [
+    'dog',
+    'cat',
+    'alpaca',
+    'shark',
+    'bookem',
+    'BOOK',
+    'reading book',
+  ];
 
   return (
     <PopupWindow hidePopup={() => setShowPopup(false)}>
@@ -86,7 +98,22 @@ const TagEventPopupWindow = ({
               />
             </SearchContainer>
 
-            <TagDisplayContainer></TagDisplayContainer>
+            <TagDisplayContainer>
+              {fakeData.length > 0 ? (
+                fakeData.map((tag, index) => (
+                  <SingleTag key={index}>{tag}</SingleTag>
+                ))
+              ) : (
+                <EmptyContainer>
+                  <Image
+                    src="/./event/FolderDashed.png"
+                    alt="no tags"
+                    width="150"
+                    height="150"
+                  />
+                </EmptyContainer>
+              )}
+            </TagDisplayContainer>
           </MiddleContainer>
         </TagBodyContainer>
       </TagEventContainer>

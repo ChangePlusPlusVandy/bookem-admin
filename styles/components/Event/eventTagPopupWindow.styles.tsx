@@ -107,3 +107,19 @@ export const SearchInput = styled.input<SearchInputProps>`
   margin: 10px;
   background-color: ${props => props.theme.colors.BOOKEM_LIGHT_GRAY};
 `;
+
+export const EmptyContainer = styled.div`
+  height: 50%;
+  width: 50%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: aqua;
+`;
+
+export const SingleTag = styled.div`
+  height: 40px;
+  text-align: center;
+  align-items: center;
+  border-bottom: 1px solid ${props => props.theme.colors.BOOKEM_BLACK};
+`
