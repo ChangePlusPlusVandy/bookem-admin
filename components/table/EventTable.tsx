@@ -25,7 +25,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ObjectId } from 'mongodb';
 import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
-import TagEventPopupWindow from '../Forms/TagEventPopupWindow';
+import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 
 interface EventRowData {

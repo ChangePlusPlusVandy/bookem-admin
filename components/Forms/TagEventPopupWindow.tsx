@@ -111,7 +111,7 @@ const TagEventPopupWindow = ({
               <Image
                 onMouseOver={() => setShowInfo(true)}
                 onMouseLeave={() => setShowInfo(false)}
-                src="/./event/Info.png"
+                src="/event/info.svg"
                 alt="info button"
                 width="20"
                 height="20"
@@ -125,7 +125,7 @@ const TagEventPopupWindow = ({
                 }}
               />
               <Image
-                src="/./event/CheckSubmit.png"
+                src="/event/check-submit.svg"
                 alt="submit tag"
                 width="30"
                 height="30"
@@ -139,7 +139,7 @@ const TagEventPopupWindow = ({
                     {tag}
                     <SingleTagDelete>
                       <Image
-                        src="/./event/Trash.png"
+                        src="/event/trash.svg"
                         alt="delete tag"
                         height="25"
                         width="25"
@@ -152,7 +152,7 @@ const TagEventPopupWindow = ({
                 <EmptyContainer>
                   <EmptyContent>
                     <Image
-                      src="/./event/FolderDashed.png"
+                      src="/./event/folder-dashed.svg"
                       alt="no tags"
                       width="150"
                       height="150"
