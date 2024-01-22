@@ -35,21 +35,43 @@ const fetcher = (url: string) => fetch(url).then(res => res.json());
 const EventTable = () => {
   const { data, error, isLoading } = useSWR<QueriedVolunteerEventDTO[]>(
     '/api/event/',
-    fetcher
+    fetcher,
+    {
+      onSuccess: data => {
+        setDataForTable(convertEventDataToRowData(data));
+      },
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+    }
   );
+
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
+
   const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
-  const [isFiltering, setIsFilter] = useState<boolean>(false);
   const [filterTable, setFilterTable] = useState<EventRowData[]>([]);
+
+  const [isFiltering, setIsFilter] = useState<boolean>(false);
   const [filteredInfo, setFilteredInfo] = useState<
     Record<string, FilterValue | null>
   >({});
+
   const [sortedInfo, setSortedInfo] = useState<SorterResult<EventRowData>>({});
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
 
+  // check for errors and loading
+  if (error) return <div>Failed to load event table</div>;
+
+  if (isLoading) return <div>Loading...</div>;
+
+  /**
+   * Used for sort and filters
+   * @param pagination
+   * @param filters
+   * @param sorter
+   */
   const handleChange: TableProps<EventRowData>['onChange'] = (
     pagination,
     filters,
@@ -184,25 +206,15 @@ const EventTable = () => {
     setFilteredInfo({});
   };
 
-  useEffect(() => {
-    if (!isLoading && data) {
-      setDataForTable(convertEventDataToRowData(data));
-    }
-  }, [data, isLoading]);
-
-  // check for errors and loading
-  if (error) return <div>Failed to load event table</div>;
-  if (isLoading) return <div>Loading...</div>;
-
   // Define columns for the Ant Design table
   const columns: ColumnsType<EventRowData> = [
     {
       // Column for 'Event Name'
       title: 'Event Name',
-      dataIndex: 'eventName',
-      key: 'eventName',
+      dataIndex: 'name',
+      key: 'name',
       // Apply custom search properties using getColumnSearchProps
-      ...getColumnSearchProps('eventName'),
+      ...getColumnSearchProps('name'),
       // Example: Uncomment the following lines to add filters
       // filters: [
       //   { text: 'Office work', value: 'Office work' },
@@ -215,13 +227,11 @@ const EventTable = () => {
     {
       // Column for 'Date'
       title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
+      dataIndex: 'startDate',
+      key: 'startDate',
       // Custom sorter based on date values
       sorter: (a: EventRowData, b: EventRowData) => {
-        const aDate = new Date(a.date);
-        const bDate = new Date(b.date);
-        return aDate.getTime() - bDate.getTime();
+        return a.startDate.getTime() - b.startDate.getTime();
       },
       // Configuring the sort order based on the 'date' column
       sortOrder: sortedInfo.columnKey === 'date' ? sortedInfo.order : null,
@@ -234,7 +244,7 @@ const EventTable = () => {
       key: 'numVolunteers',
       // Custom sorter based on the number of volunteers
       sorter: (a: EventRowData, b: EventRowData) =>
-        a.numVolunteers - b.numVolunteers,
+        a.volunteers.length - b.volunteers.length,
       // Configuring the sort order based on the 'numVolunteers' column
       sortOrder:
         sortedInfo.columnKey === 'numVolunteers' ? sortedInfo.order : null,
@@ -268,9 +278,9 @@ const EventTable = () => {
       dataIndex: 'view',
       key: 'view',
       // Render function to display a link to the detailed view of the event
-      render: (_: any, { id, eventName }: EventRowData) => (
+      render: (_: any, { _id, name }: EventRowData) => (
         <>
-          <Link key={eventName} href={`/event/${id}`}>
+          <Link key={name} href={`/event/${_id.toString()}`}>
             See more
           </Link>
         </>
@@ -333,28 +343,16 @@ const EventTable = () => {
   );
 };
 
-const convertEventDataToRowData = (data: QueriedVolunteerEventDTO[]) => {
-  const result = data.map((event, index) => {
-    // Convert eventDate into a string date formatted mm/dd/yyyy
-    const date = new Date(event.startDate);
-    const stringDate =
-      (date.getMonth() > 8
-        ? date.getMonth() + 1
-        : '0' + (date.getMonth() + 1)) +
-      '/' +
-      (date.getDate() > 9 ? date.getDate() : '0' + date.getDate()) +
-      '/' +
-      date.getFullYear();
-
+const convertEventDataToRowData = (
+  data: QueriedVolunteerEventDTO[]
+): EventRowData[] => {
+  const result = data.map(event => {
     return {
-      key: index,
+      ...event,
+      key: event.name,
       title: event.name,
       dataIndex: event.name,
-      eventName: event.name,
-      date: stringDate,
       numVolunteers: event.volunteers.length,
-      tags: event.tags,
-      id: event._id.toString(),
     };
   });
   return result;
