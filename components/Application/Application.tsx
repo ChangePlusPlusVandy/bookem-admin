@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  ReactEventHandler,
-  ChangeEvent,
-} from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { QueriedVolunteerApplicationData } from 'bookem-shared/src/types/database';
 import { QueriedVolunteerEventData } from 'bookem-shared/src/types/database';
@@ -54,15 +49,10 @@ const StatusContainer = styled.div`
   align-items: center;
 `;
 
-// interface StatusOptionsProp {
-//   onChange?: ReactEventHandler<ChangeEvent<HTMLSelectElement>>  ;
-//   value?: string;
-// }
-
 const StatusPrompt = styled.label``;
-// const StatusOptions = styled.select<StatusOptionsProp>``;
+const StatusOptions = styled.select``;
 
-// const Option = styled.option``;
+const Option = styled.option``;
 
 const UserApplication = ({
   application,
@@ -153,24 +143,17 @@ const UserApplication = ({
       <Title>Application for {event?.name}</Title>
       <StatusContainer>
         <StatusPrompt>Status: </StatusPrompt>
-        {/* <StatusOptions onChange={handleInputChange} value={approvalStatus}> */}
-        <select onChange={handleInputChange} value={approvalStatus}>
-          {/* <Option value="approved">approved</Option>
+        <StatusOptions onChange={handleInputChange} value={approvalStatus}>
+          <Option value="approved">approved</Option>
           <Option value="rejected">rejected</Option>
-          <Option value="pending">pending</Option> */}
-          <option value="approved">approved</option>
-          <option value="rejected">rejected</option>
-          <option value="pending">pending</option>
-        </select>
-        {/* </StatusOptions> */}
+          <Option value="pending">pending</Option>
+        </StatusOptions>
       </StatusContainer>
       {application?.formData.map((item: any) => (
-        // <ItemContainer key={item.question}>
-        <div key={item.question}>
+        <ItemContainer key={item.question}>
           <Question>{item.question}</Question>
           <Response>{item.answer}</Response>
-        </div>
-        // </ItemContainer>
+        </ItemContainer>
       ))}
     </Container>
   );
