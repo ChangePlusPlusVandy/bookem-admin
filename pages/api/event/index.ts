@@ -4,6 +4,7 @@ import VolunteerEvents from 'bookem-shared/src/models/VolunteerEvents';
 import Tags from 'bookem-shared/src/models/Tags';
 import {
   QueriedUserData,
+  QueriedVolunteerEventDTO,
   QueriedVolunteerEventData,
 } from 'bookem-shared/src/types/database';
 import { ObjectId } from 'mongodb';
@@ -34,10 +35,12 @@ export default async function handler(
         await VolunteerPrograms.find({});
 
         // query events and populate fields with mongoose refs
-        const allEvents = await VolunteerEvents.find()
+        const allEvents = (await VolunteerEvents.find()
           .populate({ path: 'program' })
           .populate({ path: 'tags' })
-          .exec();
+          .exec()) as QueriedVolunteerEventDTO[];
+
+        console.log(allEvents[1]);
 
         return res.status(200).json(allEvents);
       } catch (error) {

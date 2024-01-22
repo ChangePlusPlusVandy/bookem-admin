@@ -7,8 +7,6 @@ import type {
   SorterResult,
 } from 'antd/es/table/interface';
 import { SearchOutlined } from '@ant-design/icons';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
 import useSWR from 'swr';
 import Highlighter from 'react-highlight-words';
 import {
@@ -27,17 +25,8 @@ import { ObjectId } from 'mongodb';
 import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
-
-interface EventRowData {
-  key: number;
-  eventName: string;
-  date: string;
-  numVolunteers: number;
-  tags: QueriedTagData[];
-  id: ObjectId;
-  title: string;
-  dataIndex: string;
-}
+import { EventRowData } from '@/utils/table-types';
+import { handleExport } from '@/utils/utils';
 
 type DataIndex = keyof EventRowData;
 
@@ -205,38 +194,6 @@ const EventTable = () => {
   if (error) return <div>Failed to load event table</div>;
   if (isLoading) return <div>Loading...</div>;
 
-  // function that determines what the table looks like after a search by the user
-  const onTableSearch = async (value: string) => {
-    if (value === '') {
-      setFilterTable([]);
-      setIsFilter(false);
-      return;
-    }
-
-    let filterTable = dataForTable.filter((o: { [x: string]: any }) =>
-      Object.keys(o).some(k =>
-        String(o[k]).toLowerCase().includes(value.toLowerCase())
-      )
-    );
-    setFilterTable(filterTable);
-    setIsFilter(true);
-  };
-
-  // function to export what is on the table at the time to an excel file
-  const handleExport = () => {
-    const workbook = XLSX.utils.table_to_book(
-      document.querySelector('#table-container')
-    );
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: 'xlsx',
-      type: 'array',
-    });
-    const blob = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
-    saveAs(blob, 'events.xlsx');
-  };
-
   // Define columns for the Ant Design table
   const columns: ColumnsType<EventRowData> = [
     {
@@ -397,7 +354,7 @@ const convertEventDataToRowData = (data: QueriedVolunteerEventDTO[]) => {
       date: stringDate,
       numVolunteers: event.volunteers.length,
       tags: event.tags,
-      id: event._id,
+      id: event._id.toString(),
     };
   });
   return result;
