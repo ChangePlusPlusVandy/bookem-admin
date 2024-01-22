@@ -29,11 +29,7 @@ export const BottomBox = styled.div`
 /**
  * Button for editing events
  */
-interface EditButtonProp {
-  onClick: () => void;
-  children?: React.ReactNode;
-}
-export const EditButton = styled.div<EditButtonProp>`
+export const EditButton = styled.div`
   position: absolute;
   right: 50px;
   margin-top: 10px;
@@ -49,11 +45,7 @@ export const EditButton = styled.div<EditButtonProp>`
   }
 `;
 
-interface CopyButtonProp {
-  onClick: () => void;
-  children?: React.ReactNode;
-}
-export const CopyButton = styled.div<CopyButtonProp>`
+export const CopyButton = styled.div`
   position: absolute;
   left: 500px;
   margin-top: 15px;
