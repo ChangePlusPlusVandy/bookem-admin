@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Button, Input, Space, Tag, Table, TableProps, InputRef } from 'antd';
+import React, { useState, useRef, useEffect } from 'react';
+import { Button, Input, Space, Table, TableProps, InputRef } from 'antd';
 import type {
   ColumnType,
   ColumnsType,
@@ -21,7 +21,6 @@ import {
 } from '@/styles/table.styles';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ObjectId } from 'mongodb';
 import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
@@ -33,19 +32,6 @@ type DataIndex = keyof EventRowData;
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 const EventTable = () => {
-  const { data, error, isLoading } = useSWR<QueriedVolunteerEventDTO[]>(
-    '/api/event/',
-    fetcher,
-    {
-      onSuccess: data => {
-        // console.log(data);
-        setDataForTable(convertEventDataToRowData(data));
-      },
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
-    }
-  );
-
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
 
@@ -61,6 +47,26 @@ const EventTable = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
+
+  const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
+    '/api/event/',
+    fetcher,
+    {
+      onSuccess: data => {
+        console.log(data[0]);
+        console.log(data[0].startDate);
+        console.log(new Date(data[0].startDate));
+        setDataForTable(convertEventDataToRowData(data));
+      },
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+    }
+  );
+
+  // Extra defense to refetch data if needed
+  useEffect(() => {
+    mutate();
+  }, [mutate, data]);
 
   // check for errors and loading
   if (error) return <div>Failed to load event table</div>;
@@ -141,17 +147,6 @@ const EventTable = () => {
             size="small"
             style={{ width: 90 }}>
             Reset
-          </Button>
-          {/* Filter and close buttons */}
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({ closeDropdown: false });
-              setSearchText((selectedKeys as string[])[0]);
-              setSearchedColumn(dataIndex);
-            }}>
-            Filter
           </Button>
           <Button
             type="link"
