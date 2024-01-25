@@ -40,8 +40,6 @@ export default async function handler(
           .populate({ path: 'tags' })
           .exec()) as QueriedVolunteerEventDTO[];
 
-        console.log(allEvents[1]);
-
         return res.status(200).json(allEvents);
       } catch (error) {
         console.error(error);

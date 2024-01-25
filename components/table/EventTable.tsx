@@ -38,6 +38,7 @@ const EventTable = () => {
     fetcher,
     {
       onSuccess: data => {
+        // console.log(data);
         setDataForTable(convertEventDataToRowData(data));
       },
       revalidateOnFocus: true,
@@ -234,7 +235,7 @@ const EventTable = () => {
         return a.startDate.getTime() - b.startDate.getTime();
       },
       // Configuring the sort order based on the 'date' column
-      sortOrder: sortedInfo.columnKey === 'date' ? sortedInfo.order : null,
+      sortOrder: sortedInfo.columnKey === 'startDate' ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
@@ -346,16 +347,13 @@ const EventTable = () => {
 const convertEventDataToRowData = (
   data: QueriedVolunteerEventDTO[]
 ): EventRowData[] => {
-  const result = data.map(event => {
+  return data.map(event => {
     return {
       ...event,
-      key: event.name,
-      title: event.name,
-      dataIndex: event.name,
+      key: event._id.toString(),
       numVolunteers: event.volunteers.length,
     };
   });
-  return result;
 };
 
 export default EventTable;

@@ -17,7 +17,5 @@ import { ObjectId } from 'mongoose';
 
 export interface EventRowData extends QueriedVolunteerEventDTO {
   key: string;
-  title: string;
-  dataIndex: string;
   numVolunteers: number;
 }
