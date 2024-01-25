@@ -26,6 +26,7 @@ import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import { EventRowData } from '@/utils/table-types';
 import { handleExport } from '@/utils/utils';
+import { convertEventDataToRowData } from '@/utils/table-utils';
 
 type DataIndex = keyof EventRowData;
 
@@ -198,10 +199,6 @@ const EventTable = () => {
     setSearchText('');
   };
 
-  const clearFilters = () => {
-    setFilteredInfo({});
-  };
-
   // Define columns for the Ant Design table
   const columns: ColumnsType<EventRowData> = [
     {
@@ -337,18 +334,6 @@ const EventTable = () => {
       </TableContainer>
     </>
   );
-};
-
-const convertEventDataToRowData = (
-  data: QueriedVolunteerEventDTO[]
-): EventRowData[] => {
-  return data.map(event => {
-    return {
-      ...event,
-      key: event._id.toString(),
-      numVolunteers: event.volunteers.length,
-    };
-  });
 };
 
 export default EventTable;
