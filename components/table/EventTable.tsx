@@ -24,11 +24,9 @@ import Image from 'next/image';
 import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
-import { EventRowData } from '@/utils/table-types';
+import { EventDataIndex, EventRowData } from '@/utils/table-types';
 import { handleExport } from '@/utils/utils';
 import { convertEventDataToRowData } from '@/utils/table-utils';
-
-type DataIndex = keyof EventRowData;
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
@@ -92,7 +90,7 @@ const EventTable = () => {
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex
+    dataIndex: EventDataIndex
   ) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -106,7 +104,7 @@ const EventTable = () => {
    */
   // Function to get column search properties
   const getColumnSearchProps = (
-    dataIndex: DataIndex
+    dataIndex: EventDataIndex
   ): ColumnType<EventRowData> => ({
     // Filter dropdown configuration
     filterDropdown: ({
@@ -208,14 +206,6 @@ const EventTable = () => {
       key: 'name',
       // Apply custom search properties using getColumnSearchProps
       ...getColumnSearchProps('name'),
-      // Example: Uncomment the following lines to add filters
-      // filters: [
-      //   { text: 'Office work', value: 'Office work' },
-      //   { text: 'Distribute books', value: 'Distribute books' },
-      //   // Add more filter options as needed
-      // ],
-      // onFilter: (value: string, record: { eventName: string }) =>
-      //   record.eventName.includes(value),
     },
     {
       // Column for 'Date'
@@ -237,34 +227,12 @@ const EventTable = () => {
       key: 'numVolunteers',
       // Custom sorter based on the number of volunteers
       sorter: (a: EventRowData, b: EventRowData) =>
-        a.volunteers.length - b.volunteers.length,
+        a.numVolunteers - b.numVolunteers,
       // Configuring the sort order based on the 'numVolunteers' column
       sortOrder:
         sortedInfo.columnKey === 'numVolunteers' ? sortedInfo.order : null,
       ellipsis: true,
     },
-    // Example: Uncomment the following block to add a 'Tags' column
-    // {
-    //   title: 'Tags',
-    //   dataIndex: 'tags',
-    //   key: 'tags',
-    //   // Render function to display tags using Ant Design Tag component
-    //   render: (_: any, { tags }: any) => (
-    //     <>
-    //       {tags.map((tag: QueriedTagData) => {
-    //         return <Tag key={tag.tagName}>{tag.tagName}</Tag>;
-    //       })}
-    //     </>
-    //   ),
-    //   // Example: Uncomment the following lines to add filters
-    //   // filters: [
-    //   //   { text: 'RFR', value: 'RFR' },
-    //   //   { text: 'RIF', value: 'RIF' },
-    //   //   // Add more filter options as needed
-    //   // ],
-    //   // onFilter: (value: string, record: { tags: string }) =>
-    //   //   record.tags.includes(value),
-    // },
     {
       // Column for 'View' with a link to see more details
       title: 'View',
