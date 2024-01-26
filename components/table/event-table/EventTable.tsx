@@ -27,6 +27,7 @@ import type { FilterConfirmProps } from 'antd/es/table/interface';
 import { EventDataIndex, EventRowData } from '@/utils/table-types';
 import { handleExport } from '@/utils/utils';
 import { convertEventDataToRowData } from '@/utils/table-utils';
+import TableHeader from '@/components/table/event-table/TableHeader';
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
@@ -253,42 +254,13 @@ const EventTable = () => {
     <>
       {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
       {showPopupTag && <TagEventPopupWindow setShowPopup={setShowPopupTag} />}
-      <div>
-        <SearchContainter>
-          <TableButton>
-            <Image
-              onClick={() => setShowPopup(prev => !prev)}
-              src="/table/addbutton.png"
-              alt=""
-              width={32}
-              height={32}
-              style={{ marginRight: 20 }}
-            />
-          </TableButton>
-          <TableButton>
-            <Image
-              onClick={() => {
-                setShowPopup(false);
-                setShowPopupTag(prev => !prev);
-              }}
-              src="/table/tagsbutton.png"
-              alt=""
-              width={32}
-              height={32}
-            />
-          </TableButton>
-          <Button
-            onClick={handleExport}
-            style={{
-              width: 250,
-              marginLeft: 90,
-              backgroundColor: 'darkgray',
-              color: 'whitesmoke',
-            }}>
-            Export
-          </Button>
-        </SearchContainter>
-      </div>
+      <TableHeader
+        setShowPopup={setShowPopup}
+        showPopup={showPopup}
+        setShowPopupTag={setShowPopupTag}
+        showPopupTag={showPopup}
+        handleExport={handleExport}
+      />
       <TableContainer>
         <div id="table-container">
           <Table
