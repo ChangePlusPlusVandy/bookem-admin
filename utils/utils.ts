@@ -40,6 +40,8 @@ export const fetchData = async (route: string) => {
   return await res.json();
 };
 
+export const fetcher = (url: string) => fetch(url).then(res => res.json());
+
 // function to export what is on the table at the time to an excel file
 export const handleExport = () => {
   const workbook = XLSX.utils.table_to_book(

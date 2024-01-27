@@ -3,45 +3,27 @@ import { Button, Input, Space, Table, TableProps, InputRef } from 'antd';
 import type {
   ColumnType,
   ColumnsType,
-  FilterValue,
   SorterResult,
 } from 'antd/es/table/interface';
 import { SearchOutlined } from '@ant-design/icons';
 import useSWR from 'swr';
 import Highlighter from 'react-highlight-words';
-import {
-  QueriedTagData,
-  QueriedVolunteerEventDTO,
-} from 'bookem-shared/src/types/database';
-import {
-  SearchContainter,
-  StyledTable,
-  TableButton,
-  TableContainer,
-} from '@/styles/table.styles';
+import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
+import { TableContainer } from '@/styles/table.styles';
 import Link from 'next/link';
-import Image from 'next/image';
 import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import { EventDataIndex, EventRowData } from '@/utils/table-types';
-import { handleExport } from '@/utils/utils';
+import { fetcher, handleExport } from '@/utils/utils';
 import { convertEventDataToRowData } from '@/utils/table-utils';
 import TableHeader from '@/components/table/event-table/TableHeader';
-
-const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 const EventTable = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
 
   const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
-  const [filterTable, setFilterTable] = useState<EventRowData[]>([]);
-
-  const [isFiltering, setIsFilter] = useState<boolean>(false);
-  const [filteredInfo, setFilteredInfo] = useState<
-    Record<string, FilterValue | null>
-  >({});
 
   const [sortedInfo, setSortedInfo] = useState<SorterResult<EventRowData>>({});
   const [searchText, setSearchText] = useState('');
@@ -53,9 +35,6 @@ const EventTable = () => {
     fetcher,
     {
       onSuccess: data => {
-        console.log(data[0]);
-        console.log(data[0].startDate);
-        console.log(new Date(data[0].startDate));
         setDataForTable(convertEventDataToRowData(data));
       },
       revalidateOnFocus: true,
@@ -70,21 +49,19 @@ const EventTable = () => {
 
   // check for errors and loading
   if (error) return <div>Failed to load event table</div>;
-
   if (isLoading) return <div>Loading...</div>;
 
   /**
    * Used for sort and filters
-   * @param pagination
-   * @param filters
+   * @param _pagination
+   * @param _filters
    * @param sorter
    */
   const handleChange: TableProps<EventRowData>['onChange'] = (
-    pagination,
-    filters,
+    _pagination,
+    _filters,
     sorter
   ) => {
-    setFilteredInfo(filters);
     setSortedInfo(sorter as SorterResult<EventRowData>);
   };
 
@@ -220,6 +197,9 @@ const EventTable = () => {
       // Configuring the sort order based on the 'date' column
       sortOrder: sortedInfo.columnKey === 'startDate' ? sortedInfo.order : null,
       ellipsis: true,
+      render(_: any, { startDate }: EventRowData) {
+        return <>{startDate.toLocaleDateString()}</>;
+      },
     },
     {
       // Column for '# Of Volunteers'
@@ -264,7 +244,7 @@ const EventTable = () => {
       <TableContainer>
         <div id="table-container">
           <Table
-            dataSource={isFiltering ? filterTable : dataForTable}
+            dataSource={dataForTable}
             onChange={handleChange}
             columns={columns}
             pagination={false}
