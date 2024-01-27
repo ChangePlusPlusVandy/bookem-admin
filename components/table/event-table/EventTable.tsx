@@ -7,12 +7,16 @@ import {
   FilterConfirmProps,
   SorterResult,
 } from 'antd/es/table/interface';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import EventTableImpl from './EventTableImpl';
+import useSWR from 'swr';
+import { convertEventDataToRowData } from '@/utils/table-utils';
+import { fetcher } from '@/utils/utils';
+import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
 
 /**
- * Contains the "Functionality" part of Event Table including search, filter and sort
+ * Contains the "Functionality" part of Event Table including data fetching, search, filter and sort
  * @returns
  */
 const EventTable = () => {
@@ -20,6 +24,28 @@ const EventTable = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
+
+  const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
+  const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
+    '/api/event/',
+    fetcher,
+    {
+      onSuccess: data => {
+        setDataForTable(convertEventDataToRowData(data));
+      },
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+    }
+  );
+
+  // Extra defense to refetch data if needed
+  useEffect(() => {
+    mutate();
+  }, [mutate, data]);
+
+  // check for errors and loading
+  if (error) return <div>Failed to load event table</div>;
+  if (isLoading) return <div>Loading...</div>;
 
   /**
    * Used for sort and filters
@@ -160,6 +186,7 @@ const EventTable = () => {
         getColumnSearchProps={getColumnSearchProps}
         sortedInfo={sortedInfo}
         handleChange={handleChange}
+        dataForTable={dataForTable}
       />
     </>
   );

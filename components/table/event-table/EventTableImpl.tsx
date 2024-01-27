@@ -5,54 +5,31 @@ import type {
   ColumnsType,
   SorterResult,
 } from 'antd/es/table/interface';
-import useSWR from 'swr';
-import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
 import { TableContainer } from '@/styles/table.styles';
 import Link from 'next/link';
 import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import { EventDataIndex, EventRowData } from '@/utils/table-types';
-import { fetcher, handleExport } from '@/utils/utils';
-import { convertEventDataToRowData } from '@/utils/table-utils';
+import { handleExport } from '@/utils/utils';
 import TableHeader from '@/components/table/event-table/TableHeader';
 
 /**
- * Contains the "Data" and "UI" part of Event Table
+ * Contains the "UI" part of Event Table
  * @returns
  */
 const EventTableImpl = ({
   getColumnSearchProps,
   sortedInfo,
   handleChange,
+  dataForTable,
 }: {
   getColumnSearchProps: (dataIndex: EventDataIndex) => ColumnType<EventRowData>;
   sortedInfo: SorterResult<EventRowData>;
   handleChange: TableProps<EventRowData>['onChange'];
+  dataForTable: EventRowData[];
 }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
-
-  const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
-  const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
-    '/api/event/',
-    fetcher,
-    {
-      onSuccess: data => {
-        setDataForTable(convertEventDataToRowData(data));
-      },
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
-    }
-  );
-
-  // Extra defense to refetch data if needed
-  useEffect(() => {
-    mutate();
-  }, [mutate, data]);
-
-  // check for errors and loading
-  if (error) return <div>Failed to load event table</div>;
-  if (isLoading) return <div>Loading...</div>;
 
   // Define columns for the Ant Design table
   const columns: ColumnsType<EventRowData> = [
