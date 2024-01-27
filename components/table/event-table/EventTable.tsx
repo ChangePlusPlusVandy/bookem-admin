@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Button, Input, Space, Table, TableProps, InputRef } from 'antd';
+import { Button, Input, Space, Table, TableProps, InputRef, Tag } from 'antd';
 import type {
   ColumnType,
   ColumnsType,
@@ -186,7 +186,7 @@ const EventTable = () => {
       ...getColumnSearchProps('name'),
     },
     {
-      // Column for 'Date'
+      // Column for 'Start Date'
       title: 'Start Date',
       dataIndex: 'startDate',
       key: 'startDate',
@@ -202,7 +202,7 @@ const EventTable = () => {
       },
     },
     {
-      // Column for 'Date'
+      // Column for 'End Date'
       title: 'End Date',
       dataIndex: 'endDate',
       key: 'endDate',
@@ -215,6 +215,24 @@ const EventTable = () => {
       ellipsis: true,
       render(_: any, { endDate }: EventRowData) {
         return <>{endDate.toLocaleDateString()}</>;
+      },
+    },
+    {
+      // Column for 'End Date'
+      title: 'Tags',
+      dataIndex: 'tags',
+      key: 'tags',
+
+      render(_: any, { tags }: EventRowData) {
+        return (
+          <>
+            {tags.map(tag => (
+              <Tag color="" key={tag._id.toString()}>
+                {tag.tagName}
+              </Tag>
+            ))}
+          </>
+        );
       },
     },
     {
