@@ -187,7 +187,7 @@ const EventTable = () => {
     },
     {
       // Column for 'Date'
-      title: 'Date',
+      title: 'Start Date',
       dataIndex: 'startDate',
       key: 'startDate',
       // Custom sorter based on date values
@@ -199,6 +199,22 @@ const EventTable = () => {
       ellipsis: true,
       render(_: any, { startDate }: EventRowData) {
         return <>{startDate.toLocaleDateString()}</>;
+      },
+    },
+    {
+      // Column for 'Date'
+      title: 'End Date',
+      dataIndex: 'endDate',
+      key: 'endDate',
+      // Custom sorter based on date values
+      sorter: (a: EventRowData, b: EventRowData) => {
+        return a.endDate.getTime() - b.endDate.getTime();
+      },
+      // Configuring the sort order based on the 'date' column
+      sortOrder: sortedInfo.columnKey === 'endDate' ? sortedInfo.order : null,
+      ellipsis: true,
+      render(_: any, { endDate }: EventRowData) {
+        return <>{endDate.toLocaleDateString()}</>;
       },
     },
     {
