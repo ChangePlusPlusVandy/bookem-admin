@@ -11,6 +11,10 @@ import React, { useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import EventTableImpl from './EventTableImpl';
 
+/**
+ * Contains the "Functionality" part of Event Table including search, filter and sort
+ * @returns
+ */
 const EventTable = () => {
   const [sortedInfo, setSortedInfo] = useState<SorterResult<EventRowData>>({});
   const [searchText, setSearchText] = useState('');
@@ -31,6 +35,12 @@ const EventTable = () => {
     setSortedInfo(sorter as SorterResult<EventRowData>);
   };
 
+  /**
+   * Used for search bar
+   * @param selectedKeys
+   * @param confirm
+   * @param dataIndex
+   */
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
@@ -41,6 +51,10 @@ const EventTable = () => {
     setSearchedColumn(dataIndex);
   };
 
+  /**
+   * Clear all search input
+   * @param clearFilters
+   */
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText('');

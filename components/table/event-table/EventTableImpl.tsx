@@ -1,25 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Tag } from 'antd';
-import type { ColumnsType } from 'antd/es/table/interface';
+import { Table, TableProps, Tag } from 'antd';
+import type {
+  ColumnType,
+  ColumnsType,
+  SorterResult,
+} from 'antd/es/table/interface';
 import useSWR from 'swr';
 import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
 import { TableContainer } from '@/styles/table.styles';
 import Link from 'next/link';
 import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
-import { EventRowData } from '@/utils/table-types';
+import { EventDataIndex, EventRowData } from '@/utils/table-types';
 import { fetcher, handleExport } from '@/utils/utils';
 import { convertEventDataToRowData } from '@/utils/table-utils';
 import TableHeader from '@/components/table/event-table/TableHeader';
 
+/**
+ * Contains the "Data" and "UI" part of Event Table
+ * @returns
+ */
 const EventTableImpl = ({
   getColumnSearchProps,
   sortedInfo,
   handleChange,
 }: {
-  getColumnSearchProps: any;
-  sortedInfo: any;
-  handleChange: any;
+  getColumnSearchProps: (dataIndex: EventDataIndex) => ColumnType<EventRowData>;
+  sortedInfo: SorterResult<EventRowData>;
+  handleChange: TableProps<EventRowData>['onChange'];
 }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
