@@ -218,6 +218,19 @@ const EventTable = () => {
       },
     },
     {
+      // Column for '# Of Volunteers'
+      title: '# Of Volunteers',
+      dataIndex: 'numVolunteers',
+      key: 'numVolunteers',
+      // Custom sorter based on the number of volunteers
+      sorter: (a: EventRowData, b: EventRowData) =>
+        a.numVolunteers - b.numVolunteers,
+      // Configuring the sort order based on the 'numVolunteers' column
+      sortOrder:
+        sortedInfo.columnKey === 'numVolunteers' ? sortedInfo.order : null,
+      ellipsis: true,
+    },
+    {
       // Column for 'Tags'
       title: 'Tags',
       dataIndex: 'tags',
@@ -234,19 +247,6 @@ const EventTable = () => {
           </>
         );
       },
-    },
-    {
-      // Column for '# Of Volunteers'
-      title: '# Of Volunteers',
-      dataIndex: 'numVolunteers',
-      key: 'numVolunteers',
-      // Custom sorter based on the number of volunteers
-      sorter: (a: EventRowData, b: EventRowData) =>
-        a.numVolunteers - b.numVolunteers,
-      // Configuring the sort order based on the 'numVolunteers' column
-      sortOrder:
-        sortedInfo.columnKey === 'numVolunteers' ? sortedInfo.order : null,
-      ellipsis: true,
     },
     {
       // Column for 'Programs'
