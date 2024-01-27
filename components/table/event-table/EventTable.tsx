@@ -218,7 +218,7 @@ const EventTable = () => {
       },
     },
     {
-      // Column for 'End Date'
+      // Column for 'Tags'
       title: 'Tags',
       dataIndex: 'tags',
       key: 'tags',
@@ -247,6 +247,16 @@ const EventTable = () => {
       sortOrder:
         sortedInfo.columnKey === 'numVolunteers' ? sortedInfo.order : null,
       ellipsis: true,
+    },
+    {
+      // Column for 'Programs'
+      title: 'Program',
+      dataIndex: 'programName',
+      key: 'programName',
+      ...getColumnSearchProps('programName'),
+      render(_: any, { programName }: EventRowData) {
+        return <>{programName}</>;
+      },
     },
     {
       // Column for 'View' with a link to see more details

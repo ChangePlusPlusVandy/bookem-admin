@@ -11,6 +11,7 @@ export const convertEventDataToRowData = (
       ...event,
       key: event._id.toString(),
       numVolunteers: event.volunteers.length,
+      programName: event.program ? event.program.name : '',
     };
   });
 };
