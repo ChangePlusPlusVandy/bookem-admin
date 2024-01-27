@@ -1,55 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Button, Input, Space, Table, TableProps, InputRef, Tag } from 'antd';
-import type {
+import { EventDataIndex, EventRowData } from '@/utils/table-types';
+import { Button, Input, InputRef, Space, TableProps } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+
+import {
   ColumnType,
-  ColumnsType,
+  FilterConfirmProps,
   SorterResult,
 } from 'antd/es/table/interface';
-import { SearchOutlined } from '@ant-design/icons';
-import useSWR from 'swr';
+import React, { useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
-import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
-import { TableContainer } from '@/styles/table.styles';
-import Link from 'next/link';
-import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
-import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
-import type { FilterConfirmProps } from 'antd/es/table/interface';
-import { EventDataIndex, EventRowData } from '@/utils/table-types';
-import { fetcher, handleExport } from '@/utils/utils';
-import { convertEventDataToRowData } from '@/utils/table-utils';
-import TableHeader from '@/components/table/event-table/TableHeader';
+import EventTableImpl from './EventTableImpl';
 
 const EventTable = () => {
-  const [showPopup, setShowPopup] = useState(false);
-  const [showPopupTag, setShowPopupTag] = useState(false);
-
-  const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
-
   const [sortedInfo, setSortedInfo] = useState<SorterResult<EventRowData>>({});
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
-
-  const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
-    '/api/event/',
-    fetcher,
-    {
-      onSuccess: data => {
-        setDataForTable(convertEventDataToRowData(data));
-      },
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
-    }
-  );
-
-  // Extra defense to refetch data if needed
-  useEffect(() => {
-    mutate();
-  }, [mutate, data]);
-
-  // check for errors and loading
-  if (error) return <div>Failed to load event table</div>;
-  if (isLoading) return <div>Loading...</div>;
 
   /**
    * Used for sort and filters
@@ -73,6 +39,11 @@ const EventTable = () => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters: () => void) => {
+    clearFilters();
+    setSearchText('');
   };
 
   /**
@@ -169,133 +140,13 @@ const EventTable = () => {
         text
       ),
   });
-
-  const handleReset = (clearFilters: () => void) => {
-    clearFilters();
-    setSearchText('');
-  };
-
-  // Define columns for the Ant Design table
-  const columns: ColumnsType<EventRowData> = [
-    {
-      // Column for 'Event Name'
-      title: 'Event Name',
-      dataIndex: 'name',
-      key: 'name',
-      // Apply custom search properties using getColumnSearchProps
-      ...getColumnSearchProps('name'),
-    },
-    {
-      // Column for 'Start Date'
-      title: 'Start Date',
-      dataIndex: 'startDate',
-      key: 'startDate',
-      // Custom sorter based on date values
-      sorter: (a: EventRowData, b: EventRowData) => {
-        return a.startDate.getTime() - b.startDate.getTime();
-      },
-      // Configuring the sort order based on the 'date' column
-      sortOrder: sortedInfo.columnKey === 'startDate' ? sortedInfo.order : null,
-      ellipsis: true,
-      render(_: any, { startDate }: EventRowData) {
-        return <>{startDate.toLocaleDateString()}</>;
-      },
-    },
-    {
-      // Column for 'End Date'
-      title: 'End Date',
-      dataIndex: 'endDate',
-      key: 'endDate',
-      // Custom sorter based on date values
-      sorter: (a: EventRowData, b: EventRowData) => {
-        return a.endDate.getTime() - b.endDate.getTime();
-      },
-      // Configuring the sort order based on the 'date' column
-      sortOrder: sortedInfo.columnKey === 'endDate' ? sortedInfo.order : null,
-      ellipsis: true,
-      render(_: any, { endDate }: EventRowData) {
-        return <>{endDate.toLocaleDateString()}</>;
-      },
-    },
-    {
-      // Column for '# Of Volunteers'
-      title: '# Of Volunteers',
-      dataIndex: 'numVolunteers',
-      key: 'numVolunteers',
-      // Custom sorter based on the number of volunteers
-      sorter: (a: EventRowData, b: EventRowData) =>
-        a.numVolunteers - b.numVolunteers,
-      // Configuring the sort order based on the 'numVolunteers' column
-      sortOrder:
-        sortedInfo.columnKey === 'numVolunteers' ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
-      // Column for 'Tags'
-      title: 'Tags',
-      dataIndex: 'tags',
-      key: 'tags',
-
-      render(_: any, { tags }: EventRowData) {
-        return (
-          <>
-            {tags.map(tag => (
-              <Tag color="" key={tag._id.toString()}>
-                {tag.tagName}
-              </Tag>
-            ))}
-          </>
-        );
-      },
-    },
-    {
-      // Column for 'Programs'
-      title: 'Program',
-      dataIndex: 'programName',
-      key: 'programName',
-      ...getColumnSearchProps('programName'),
-      render(_: any, { programName }: EventRowData) {
-        return <>{programName}</>;
-      },
-    },
-    {
-      // Column for 'View' with a link to see more details
-      title: 'View',
-      dataIndex: 'view',
-      key: 'view',
-      // Render function to display a link to the detailed view of the event
-      render: (_: any, { _id, name }: EventRowData) => (
-        <>
-          <Link key={name} href={`/event/${_id.toString()}`}>
-            See more
-          </Link>
-        </>
-      ),
-    },
-  ];
-
   return (
     <>
-      {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
-      {showPopupTag && <TagEventPopupWindow setShowPopup={setShowPopupTag} />}
-      <TableHeader
-        setShowPopup={setShowPopup}
-        showPopup={showPopup}
-        setShowPopupTag={setShowPopupTag}
-        showPopupTag={showPopup}
-        handleExport={handleExport}
+      <EventTableImpl
+        getColumnSearchProps={getColumnSearchProps}
+        sortedInfo={sortedInfo}
+        handleChange={handleChange}
       />
-      <TableContainer>
-        <div id="table-container">
-          <Table
-            dataSource={dataForTable}
-            onChange={handleChange}
-            columns={columns}
-            pagination={false}
-            scroll={{ y: 550 }}
-          />
-        </div>
-      </TableContainer>
     </>
   );
 };
