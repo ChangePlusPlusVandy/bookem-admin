@@ -22,7 +22,6 @@ import {
   TagEventHeader,
   TagInfoContainer,
 } from '@/styles/components/Event/eventTagPopupWindow.styles';
-import styled from 'styled-components';
 
 const TagEventPopupWindow = ({
   setShowPopup,
