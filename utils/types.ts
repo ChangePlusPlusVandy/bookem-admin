@@ -19,3 +19,13 @@ export interface PopupWindowProps {
   hidePopup: () => void;
   children: JSX.Element;
 }
+
+export interface Stats {
+  userCount: number;
+  volunteerHours: number;
+  eventCount: number;
+}
+
+export interface RatioProp {
+  ratio: number;
+}

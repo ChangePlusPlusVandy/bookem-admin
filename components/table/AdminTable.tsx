@@ -2,72 +2,65 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button, Input, Space, Tag, Table, TableProps, InputRef } from 'antd';
 import type {
   ColumnType,
-  ColumnsType,
   FilterValue,
   SorterResult,
 } from 'antd/es/table/interface';
-import { SearchOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  SearchOutlined,
+  MinusOutlined,
+  ArrowRightOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import useSWR from 'swr';
 import Highlighter from 'react-highlight-words';
-import {
-  QueriedTagData,
-  QueriedVolunteerEventDTO,
-} from 'bookem-shared/src/types/database';
-import {
-  SearchContainter,
-  StyledTable,
-  TableButton,
-  TableContainer,
-} from '@/styles/table.styles';
+import { QueriedAdminData } from 'bookem-shared/src/types/database';
+import { SearchContainter, TableContainer } from '@/styles/table.styles';
 import Link from 'next/link';
-import Image from 'next/image';
 import { ObjectId } from 'mongodb';
 import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
-import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 
-interface EventRowData {
+interface AdminRowData {
   key: number;
-  eventName: string;
-  date: string;
-  numVolunteers: number;
-  tags: QueriedTagData[];
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  role: string;
   id: ObjectId;
-  title: string;
-  dataIndex: string;
 }
 
-type DataIndex = keyof EventRowData;
+type DataIndex = keyof AdminRowData;
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
-const EventTable = () => {
-  const { data, error, isLoading } = useSWR<QueriedVolunteerEventDTO[]>(
-    '/api/event/',
+const AdminTable = () => {
+  const { data, error, isLoading } = useSWR<QueriedAdminData[]>(
+    '/api/admin/',
     fetcher
   );
   const [showPopup, setShowPopup] = useState(false);
-  const [showPopupTag, setShowPopupTag] = useState(false);
-  const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
+  const [dataForTable, setDataForTable] = useState<AdminRowData[]>([]);
   const [isFiltering, setIsFilter] = useState<boolean>(false);
-  const [filterTable, setFilterTable] = useState<EventRowData[]>([]);
+  const [filterTable, setFilterTable] = useState<AdminRowData[]>([]);
   const [filteredInfo, setFilteredInfo] = useState<
     Record<string, FilterValue | null>
   >({});
-  const [sortedInfo, setSortedInfo] = useState<SorterResult<EventRowData>>({});
+  const [sortedInfo, setSortedInfo] = useState<SorterResult<AdminRowData>>({});
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
 
-  const handleChange: TableProps<EventRowData>['onChange'] = (
+  const handleChange: TableProps<AdminRowData>['onChange'] = (
     pagination,
     filters,
     sorter
   ) => {
     setFilteredInfo(filters);
-    setSortedInfo(sorter as SorterResult<EventRowData>);
+    setSortedInfo(sorter as SorterResult<AdminRowData>);
   };
 
   const handleSearch = (
@@ -88,7 +81,7 @@ const EventTable = () => {
   // Function to get column search properties
   const getColumnSearchProps = (
     dataIndex: DataIndex
-  ): ColumnType<EventRowData> => ({
+  ): ColumnType<AdminRowData> => ({
     // Filter dropdown configuration
     filterDropdown: ({
       setSelectedKeys,
@@ -197,7 +190,7 @@ const EventTable = () => {
 
   useEffect(() => {
     if (!isLoading && data) {
-      setDataForTable(convertEventDataToRowData(data));
+      setDataForTable(convertAdminDataToRowData(data));
     }
   }, [data, isLoading]);
 
@@ -238,85 +231,50 @@ const EventTable = () => {
   };
 
   // Define columns for the Ant Design table
-  const columns: ColumnsType<EventRowData> = [
+  const columns: any = [
     {
-      // Column for 'Event Name'
-      title: 'Event Name',
-      dataIndex: 'eventName',
-      key: 'eventName',
-      // Apply custom search properties using getColumnSearchProps
-      ...getColumnSearchProps('eventName'),
-      // Example: Uncomment the following lines to add filters
-      // filters: [
-      //   { text: 'Office work', value: 'Office work' },
-      //   { text: 'Distribute books', value: 'Distribute books' },
-      //   // Add more filter options as needed
-      // ],
-      // onFilter: (value: string, record: { eventName: string }) =>
-      //   record.eventName.includes(value),
+      title: 'First Name',
+      dataIndex: 'firstName',
+      key: 'firstName',
+      ...getColumnSearchProps('firstName'),
     },
     {
-      // Column for 'Date'
-      title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
-      // Custom sorter based on date values
-      sorter: (a: EventRowData, b: EventRowData) => {
-        const aDate = new Date(a.date);
-        const bDate = new Date(b.date);
-        return aDate.getTime() - bDate.getTime();
-      },
-      // Configuring the sort order based on the 'date' column
-      sortOrder: sortedInfo.columnKey === 'date' ? sortedInfo.order : null,
-      ellipsis: true,
+      title: 'Last Name',
+      dataIndex: 'lastName',
+      key: 'lastName',
+      ...getColumnSearchProps('lastName'),
     },
     {
-      // Column for '# Of Volunteers'
-      title: '# Of Volunteers',
-      dataIndex: 'numVolunteers',
-      key: 'numVolunteers',
-      // Custom sorter based on the number of volunteers
-      sorter: (a: EventRowData, b: EventRowData) =>
-        a.numVolunteers - b.numVolunteers,
-      // Configuring the sort order based on the 'numVolunteers' column
-      sortOrder:
-        sortedInfo.columnKey === 'numVolunteers' ? sortedInfo.order : null,
-      ellipsis: true,
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      ...getColumnSearchProps('email'),
     },
-    // Example: Uncomment the following block to add a 'Tags' column
-    // {
-    //   title: 'Tags',
-    //   dataIndex: 'tags',
-    //   key: 'tags',
-    //   // Render function to display tags using Ant Design Tag component
-    //   render: (_: any, { tags }: any) => (
-    //     <>
-    //       {tags.map((tag: QueriedTagData) => {
-    //         return <Tag key={tag.tagName}>{tag.tagName}</Tag>;
-    //       })}
-    //     </>
-    //   ),
-    //   // Example: Uncomment the following lines to add filters
-    //   // filters: [
-    //   //   { text: 'RFR', value: 'RFR' },
-    //   //   { text: 'RIF', value: 'RIF' },
-    //   //   // Add more filter options as needed
-    //   // ],
-    //   // onFilter: (value: string, record: { tags: string }) =>
-    //   //   record.tags.includes(value),
-    // },
     {
-      // Column for 'View' with a link to see more details
+      title: 'Phone',
+      dataIndex: 'phone',
+      key: 'phone',
+      ...getColumnSearchProps('phone'),
+    },
+    { title: 'Role', dataIndex: 'role', key: 'role' },
+    {
       title: 'View',
-      dataIndex: 'view',
-      key: 'view',
-      // Render function to display a link to the detailed view of the event
-      render: (_: any, { id, eventName }: EventRowData) => (
-        <>
-          <Link key={eventName} href={`/event/${id}`}>
-            See more
-          </Link>
-        </>
+      dataIndex: '',
+      key: 'x',
+      render: () => (
+        <a>
+          <Button
+            icon={<ArrowRightOutlined rev={undefined} />}
+            onClick={() => {}}
+            style={{
+              width: 30,
+              borderRadius: 70,
+              marginLeft: 30,
+              backgroundColor: 'white',
+              color: 'black',
+              borderColor: 'black',
+            }}></Button>
+        </a>
       ),
     },
   ];
@@ -324,43 +282,48 @@ const EventTable = () => {
   return (
     <>
       {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
-      {showPopupTag && <TagEventPopupWindow setShowPopup={setShowPopupTag} />}
-      <div>
-        <SearchContainter>
-          <TableButton>
-            <Image
-              onClick={() => setShowPopup(prev => !prev)}
-              src="/table/addbutton.png"
-              alt=""
-              width={32}
-              height={32}
-              style={{ marginRight: 20 }}
-            />
-          </TableButton>
-          <TableButton>
-            <Image
-              onClick={() => {
-                setShowPopup(false);
-                setShowPopupTag(prev => !prev);
-              }}
-              src="/table/tagsbutton.png"
-              alt=""
-              width={32}
-              height={32}
-            />
-          </TableButton>
-          <Button
-            onClick={handleExport}
-            style={{
-              width: 250,
-              marginLeft: 90,
-              backgroundColor: 'darkgray',
-              color: 'whitesmoke',
-            }}>
-            Export
-          </Button>
-        </SearchContainter>
-      </div>
+
+      <SearchContainter style={{ marginLeft: 0 }}>
+        <Input
+          ref={searchInput}
+          placeholder={'Search'}
+          onChange={e => (e.target.value ? [e.target.value] : [])}
+          prefix={<SearchOutlined rev={undefined} />}
+          style={{ width: 1000, display: 'flex' }}
+        />
+        <Button
+          icon={<PlusOutlined rev={undefined} />}
+          onClick={() => {}}
+          style={{
+            width: 50,
+            marginLeft: 10,
+            borderRadius: 100,
+            backgroundColor: 'darkgray',
+            color: 'whitesmoke',
+          }}></Button>
+        <Button
+          icon={<MinusOutlined rev={undefined} />}
+          onClick={() => {}}
+          style={{
+            width: 50,
+            marginLeft: 10,
+            borderRadius: 100,
+            backgroundColor: 'darkgray',
+            color: 'whitesmoke',
+          }}></Button>
+        <Button
+          icon={<UserOutlined rev={undefined} />}
+          onClick={() => {}}
+          style={{
+            width: 250,
+            marginLeft: 10,
+            backgroundColor: 'darkgray',
+            color: 'whitesmoke',
+          }}>
+          Your Account
+        </Button>
+      </SearchContainter>
+
       <TableContainer>
         <div id="table-container">
           <Table
@@ -376,31 +339,33 @@ const EventTable = () => {
   );
 };
 
-const convertEventDataToRowData = (data: QueriedVolunteerEventDTO[]) => {
-  const result = data.map((event, index) => {
-    // Convert eventDate into a string date formatted mm/dd/yyyy
-    const date = new Date(event.startDate);
-    const stringDate =
-      (date.getMonth() > 8
-        ? date.getMonth() + 1
-        : '0' + (date.getMonth() + 1)) +
-      '/' +
-      (date.getDate() > 9 ? date.getDate() : '0' + date.getDate()) +
-      '/' +
-      date.getFullYear();
+// const convertEventDataToRowData = (data: QueriedVolunteerEventDTO[]) => {
+//   const result = data.map((event, index) => {
+//     return {
+//       key: index,
+//       firstName: 'Manish',
+//       lastName: 'Acharya',
+//       email: 'manish@gmail.com',
+//       phone: '1234567890',
+//       role: 'Super Admin',
+//     };
+//   });
+//   return result;
+// };
 
+const convertAdminDataToRowData = (data: QueriedAdminData[]) => {
+  const result = data.map((user, index) => {
     return {
       key: index,
-      title: event.name,
-      dataIndex: event.name,
-      eventName: event.name,
-      date: stringDate,
-      numVolunteers: event.volunteers.length,
-      tags: event.tags,
-      id: event._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone,
+      role: user.status,
+      id: user._id,
     };
   });
   return result;
 };
 
-export default EventTable;
+export default AdminTable;

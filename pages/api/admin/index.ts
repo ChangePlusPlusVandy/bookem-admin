@@ -3,8 +3,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '@/lib/dbConnect';
 
 import { getSession } from 'next-auth/react';
-import Users from 'bookem-shared/src/models/Users';
-import { QueriedUserData, UserData } from 'bookem-shared/src/types/database';
+import Admins from 'bookem-shared/src/models/Admins';
+import { QueriedAdminData, AdminData } from 'bookem-shared/src/types/database';
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,7 +16,7 @@ export default async function handler(
       await dbConnect();
 
       try {
-        const allUsers = (await Users.find()) as QueriedUserData[];
+        const allUsers = (await Admins.find()) as QueriedAdminData[];
         res.status(200).json(allUsers);
       } catch (e) {
         console.error('An error has occurred in index.ts', e);
