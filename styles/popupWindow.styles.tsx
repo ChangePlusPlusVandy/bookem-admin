@@ -6,7 +6,7 @@ export const Background = styled.div`
   top: 0px;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 5; // Need to be the MAX
   display: flex;
   background: rgba(0, 0, 0, 0.6);
 `;
