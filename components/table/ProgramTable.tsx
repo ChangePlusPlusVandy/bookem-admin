@@ -170,13 +170,13 @@ const ProgramTable = () => {
       title: 'Events',
       dataIndex: 'programEvent',
       key: 'programEvent',
-      render: () => <Button type="link">Show Events</Button>,
+      render: () => <Button type="link">See Events</Button>,
     },
     {
       title: 'Volunteers',
       dataIndex: 'programVolunteer',
       key: 'programVolunteer',
-      render: () => <Button type="link">Show Volunteers</Button>,
+      render: () => <Button type="link">See Volunteers</Button>,
     },
   ];
 
