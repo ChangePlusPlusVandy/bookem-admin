@@ -23,26 +23,17 @@ export default async function handler(
      * @desc Get all programs
      * @res QueriedVolunteerProgramData
      */
-    case 'GET':
+     case 'GET':
       try {
         await dbConnect();
-
-        // TODO: remove this after development
-        await Tags.find({});
-        await VolunteerPrograms.find({});
-
-        // query programs and populate fields with mongoose refs
-        const allPrograms = await VolunteerPrograms.find()
-          .populate({ path: 'program' })
-          .populate({ path: 'tags' })
-          .exec();
-
-        return res.status(200).json(allPrograms);
+        const allPrograms = await VolunteerPrograms.find();
+        return res.status(200).json(allPrograms); // directly returning the array
       } catch (error) {
         console.error(error);
-        res.status(500).json({ message: error });
+        res.status(500).json({ message: 'Server error' });
       }
       break;
+    
     // case 'PUT':
     // case 'DELETE':
     // default:
