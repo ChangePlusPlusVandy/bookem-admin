@@ -25,7 +25,7 @@ import {
   ButtonCenter,
 } from '@/styles/components/windowFlow.styles';
 import { DatePicker, TimePicker, Select, Space } from 'antd';
-import type { SelectProps } from 'antd';
+// import type { SelectProps } from 'antd';
 import moment from 'moment';
 import Dayjs from 'dayjs';
 
@@ -67,7 +67,7 @@ const EditEventPopupWindowForm = ({
   //fetch tags data from database
   useEffect(() => {
     if (pid) {
-      fetch('/api/tags/' + pid)
+      fetch('/api/event/' + pid)
         .then(res => {
           if (!res.ok) {
             throw new Error(
@@ -79,9 +79,11 @@ const EditEventPopupWindowForm = ({
         .then(eventData => {
           // Access the tags field from the eventData
           if (eventData && eventData.tags) {
+            console.log(eventData.tags);
             setTags(eventData.tags);
           } else {
             // Handle the case where tags are not present
+            console.log("tags not fetched");
             setTags([]);
           }
         })
@@ -90,12 +92,12 @@ const EditEventPopupWindowForm = ({
   }, [pid]);
 
   // create a options that include all the tags
-  const options: SelectProps['options'] = [];
+  const options: string[] = [];
 
   const tagArray: string[] = eventData?.tags?.map(element => String(element)) ?? [];
 
   for (let i = 0; i < tagArray.length; i++) {
-    options.push(tags[i]);
+    options.push(tagArray[i]);
   }
 
   // function onChange(time, timeString) {
@@ -185,10 +187,10 @@ const EditEventPopupWindowForm = ({
                 allowClear
                 style={{ width: '100%' }}
                 placeholder="Please select"
-                // defaultValue={(eventData?.tags?.length || 0) > 0 ? eventData?.tags : ['']}
-                defaultValue={tagArray}
+                // defaultValue={tagArray}
+                defaultValue={["hidden", "saved"]}
                 onChange={handleChange}
-                options={options}
+                options={tags}
               />
             </Space>
           </InputFlex>
