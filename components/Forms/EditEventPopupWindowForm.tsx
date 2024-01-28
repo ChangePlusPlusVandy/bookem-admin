@@ -11,7 +11,7 @@ import {
   AboutEvent,
   EditEventContainer,
 } from '@/styles/components/editEventPopupWindowForm.styles';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import PopupWindow from '@/components/PopupWindow';
 import {
@@ -24,7 +24,8 @@ import {
   SubmitButton,
   ButtonCenter,
 } from '@/styles/components/windowFlow.styles';
-import { DatePicker, TimePicker } from 'antd';
+import { DatePicker, TimePicker, Select, Space } from 'antd';
+import type { SelectProps } from 'antd';
 import moment from 'moment';
 import Dayjs from 'dayjs';
 
@@ -48,6 +49,7 @@ const EditEventPopupWindowForm = ({
     },
   });
   const [eventData, setEventData] = useState<QueriedVolunteerEventDTO>();
+  const [tags, setTags] = useState([]);
   const [locationData, setLocationData] = useState<VolunteerEventLocation>();
   const [startTime, setStartTime] = useState('12:00');
   const [endTime, setEndTime] = useState('12:00');
@@ -57,6 +59,44 @@ const EditEventPopupWindowForm = ({
   const [error, setError] = useState<Error>();
 
   const { RangePicker } = DatePicker;
+
+  const handleChange = (value: string[]) => {
+    console.log(`selected ${value}`);
+  };
+
+  //fetch tags data from database
+  useEffect(() => {
+    if (pid) {
+      fetch('/api/tags/' + pid)
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(
+              'An error has occurred while fetching: ' + res.statusText
+            );
+          }
+          return res.json();
+        })
+        .then(eventData => {
+          // Access the tags field from the eventData
+          if (eventData && eventData.tags) {
+            setTags(eventData.tags);
+          } else {
+            // Handle the case where tags are not present
+            setTags([]);
+          }
+        })
+        .catch(err => setError(err));
+    } else setError(new Error('No pid found'));
+  }, [pid]);
+
+  // create a options that include all the tags
+  const options: SelectProps['options'] = [];
+
+  const tagArray: string[] = eventData?.tags?.map(element => String(element)) ?? [];
+
+  for (let i = 0; i < tagArray.length; i++) {
+    options.push(tags[i]);
+  }
 
   // function onChange(time, timeString) {
   //   console.log(time, timeString);
@@ -136,6 +176,21 @@ const EditEventPopupWindowForm = ({
               pattern="[A-Za-z]"
               title="Input must be text"
               defaultValue={eventData?.program?.name}></FormInput>
+          </InputFlex>
+        
+          <InputFlex>
+            <Space style={{ width: '100%' }} direction="vertical">
+              <Select
+                mode="multiple"
+                allowClear
+                style={{ width: '100%' }}
+                placeholder="Please select"
+                // defaultValue={(eventData?.tags?.length || 0) > 0 ? eventData?.tags : ['']}
+                defaultValue={tagArray}
+                onChange={handleChange}
+                options={options}
+              />
+            </Space>
           </InputFlex>
 
           <FormLabel>Logistics</FormLabel>
