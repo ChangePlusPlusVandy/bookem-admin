@@ -12,10 +12,11 @@ import {
   EditEventContainer,
 } from '@/styles/components/editEventPopupWindowForm.styles';
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+// import { useForm } from 'react-hook-form';
 import PopupWindow from '@/components/PopupWindow';
 import {
   QueriedVolunteerEventDTO,
+  QueriedVolunteerEventData,
   VolunteerEventData,
   VolunteerEventLocation,
 } from 'bookem-shared/src/types/database';
@@ -24,10 +25,7 @@ import {
   SubmitButton,
   ButtonCenter,
 } from '@/styles/components/windowFlow.styles';
-import { DatePicker, TimePicker, Select, Space } from 'antd';
-// import type { SelectProps } from 'antd';
-import moment from 'moment';
-import Dayjs from 'dayjs';
+import { DatePicker, Select, Space, DatePickerProps } from 'antd';
 
 interface ModifiedVolunteerEventData
   extends Omit<VolunteerEventData, 'volunteers'> {}
@@ -40,70 +38,58 @@ const EditEventPopupWindowForm = ({
   const router = useRouter();
   const { pid } = router.query;
 
-  const { register, handleSubmit } = useForm({
-    defaultValues: async () => {
-      const response = await fetch('/api/event/' + pid);
-      const data = await response.json();
-      console.log('aaaaa', data);
-      return data;
-    },
-  });
   const [eventData, setEventData] = useState<QueriedVolunteerEventDTO>();
   const [tags, setTags] = useState([]);
-  const [locationData, setLocationData] = useState<VolunteerEventLocation>();
-  const [startTime, setStartTime] = useState('12:00');
-  const [endTime, setEndTime] = useState('12:00');
-  const [startDate, setStartDate] = useState('01/01/01');
-  const [endDate, setEndDate] = useState('01/01/01');
-
+  const [startDate, setStartDate] = useState<any>();
+  const [endDate, setEndDate] = useState<any>();
+  const [name, setName] = useState<string>();
+  const [program, setProgram] = useState<string>();
+  const [max, setMax] = useState<string>();
+  const [street, setStreet] = useState<string>();
+  const [city, setCity] = useState<string>();
+  const [state, setState] = useState<string>();
+  const [zip, setZip] = useState<string>();
+  const [description, setDescription] = useState<string>();
+  const [phone, setPhone] = useState<string>();
+  const [email, setEmail] = useState<string>();
   const [error, setError] = useState<Error>();
-
-  const { RangePicker } = DatePicker;
 
   const handleChange = (value: string[]) => {
     console.log(`selected ${value}`);
   };
 
-  //fetch tags data from database
-  useEffect(() => {
-    if (pid) {
-      fetch('/api/event/' + pid)
-        .then(res => {
-          if (!res.ok) {
-            throw new Error(
-              'An error has occurred while fetching: ' + res.statusText
-            );
-          }
-          return res.json();
-        })
-        .then(eventData => {
-          // Access the tags field from the eventData
-          if (eventData && eventData.tags) {
-            console.log(eventData.tags);
-            setTags(eventData.tags);
-          } else {
-            // Handle the case where tags are not present
-            console.log("tags not fetched");
-            setTags([]);
-          }
-        })
-        .catch(err => setError(err));
-    } else setError(new Error('No pid found'));
-  }, [pid]);
+  const tagArray: string[] =
+    eventData?.tags?.map(tag => String(tag.tagName)) ?? [];
 
   // create a options that include all the tags
   const options: string[] = [];
-
-  const tagArray: string[] = eventData?.tags?.map(element => String(element)) ?? [];
 
   for (let i = 0; i < tagArray.length; i++) {
     options.push(tagArray[i]);
   }
 
-  // function onChange(time, timeString) {
-  //   console.log(time, timeString);
-  // }
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('/api/event/' + pid);
+      const data = await response.json();
+      console.log('aaaaa', data);
+      setEventData(data);
+      setName(data?.name);
+      setProgram(data?.program?.name);
+      setMax(data?.maxSpot);
+      setStreet(data?.location?.street);
+      setCity(data?.location?.city);
+      setState(data?.location?.state);
+      setZip(data?.location?.zip);
+      setDescription(data?.description);
+      setPhone(data?.phone);
+      setEmail(data?.email);
+    };
 
+    fetchData();
+  }, [pid]);
+
+  // TODO:fetch tags data from database
   // useEffect(() => {
   //   if (pid) {
   //     fetch('/api/event/' + pid)
@@ -115,13 +101,20 @@ const EditEventPopupWindowForm = ({
   //         }
   //         return res.json();
   //       })
-  //       .then(data => {
-  //         setEventData(data);
-  //         console.log(data);
+  //       .then(eventData => {
+  //         // Access the tags field from the eventData
+  //         if (eventData && eventData.tags) {
+  //           console.log(eventData.tags);
+  //           setTags(eventData.tags);
+  //         } else {
+  //           // Handle the case where tags are not present
+  //           console.log('tags not fetched');
+  //           setTags([]);
+  //         }
   //       })
   //       .catch(err => setError(err));
   //   } else setError(new Error('No pid found'));
-  // }, []);
+  // }, [pid]);
 
   const onSubmit = (data: any) => {
     // VolunteerEventData
@@ -147,13 +140,40 @@ const EditEventPopupWindowForm = ({
       requireApplication: false,
       tags: [],
     };
+  };
 
-    // how to convert this into VolunteerEventData
-    // and then send this to PATCH /api/event/:id
-    // await fetch('/api/event/' + pid, {
-    //   method: 'PATCH',
-    //   body: dataToSave
-    // })
+  const onChange1 = (
+    value: DatePickerProps['value'],
+    dateString: [string, string] | string
+  ) => {
+    console.log('Selected Time: ', value);
+    console.log('Formatted Selected Time: ', dateString);
+
+    setStartDate(value);
+    console.log(startDate);
+  };
+
+  const onChange2 = (
+    value: DatePickerProps['value'],
+    dateString: [string, string] | string
+  ) => {
+    console.log('Selected Time: ', value);
+    console.log('Formatted Selected Time: ', dateString);
+
+    setEndDate(value);
+    console.log(endDate);
+  };
+
+  const onOk1 = (value: DatePickerProps['value']) => {
+    console.log('onOk1: ', value);
+    setStartDate(value);
+    console.log(startDate);
+  };
+
+  const onOk2 = (value: DatePickerProps['value']) => {
+    console.log('onOk2: ', value);
+    setEndDate(value);
+    console.log(endDate);
   };
 
   return (
@@ -165,30 +185,29 @@ const EditEventPopupWindowForm = ({
           <FormLabel>Event Name</FormLabel>
           <InputFlex>
             <FormInput
-              {...register('name')}
               type="text"
               placeholder="Event Name"
               pattern="[A-Za-z]"
               title="Input must be text"
-              defaultValue={eventData?.name}></FormInput>
+              defaultValue={name}></FormInput>
             <FormInput
-              {...register('program')}
               type="text"
               placeholder="Event Category (optional)"
               pattern="[A-Za-z]"
               title="Input must be text"
-              defaultValue={eventData?.program?.name}></FormInput>
+              defaultValue={program}></FormInput>
           </InputFlex>
-        
+
           <InputFlex>
             <Space style={{ width: '100%' }} direction="vertical">
               <Select
                 mode="multiple"
                 allowClear
                 style={{ width: '100%' }}
-                placeholder="Please select"
+                placeholder="Please select tags"
                 // defaultValue={tagArray}
-                defaultValue={["hidden", "saved"]}
+                // Todo: change the hard coded tags to tags from database
+                defaultValue={['hidden', 'saved']}
                 onChange={handleChange}
                 options={tags}
               />
@@ -197,120 +216,67 @@ const EditEventPopupWindowForm = ({
 
           <FormLabel>Logistics</FormLabel>
 
-          <RangePicker
-          // defaultValue:[moment('2020-03-09'), moment('2020-03-27')]
-          // onChange={(value, startDate, endDate) => {
-          //   setStartDate(startDate);
-          //   setEndDate(endDate);
-          // }}
-          />
-
-          <InputFlex>
-            <TimePicker
-              use12Hours
-              format="h:mm a"
-              defaultValue={Dayjs(
-                Dayjs(eventData?.startDate.getTime()),
-                'HH:mm'
-              )}
-              onChange={(value, startTime) => {
-                setStartTime(startTime);
-                console.log(startTime);
-              }}
-            />
-            <TimePicker
-              use12Hours
-              format="h:mm a"
-              defaultValue={Dayjs(
-                Dayjs(eventData?.startDate.getTime()),
-                'HH:mm'
-              )}
-              onChange={(value, endTime) => {
-                setEndTime(endTime);
-                console.log(endTime);
-              }}
-            />
-          </InputFlex>
-
-          <InputFlex>
-            <TimePicker
-              format="h:mm a"
-              defaultValue={Dayjs('12:08', 'HH:mm')}
-              disabled
-            />
-            <TimePicker
-              format="h:mm a"
-              defaultValue={Dayjs('12:09', 'HH:mm')}
-              disabled
-            />
-          </InputFlex>
+          <DatePicker showTime onChange={onChange1} onOk={onOk1} />
+          <DatePicker showTime onChange={onChange2} onOk={onOk2} />
 
           <InputFlex>
             <ShortFormInput
-              {...register('maxSpot')}
               type="text"
               placeholder="#"
               pattern="^[0-9]*$"
               title="Input must be a whole number"
-              defaultValue={eventData?.maxSpot}></ShortFormInput>
+              defaultValue={max}></ShortFormInput>
             <FormLogistics>max spots</FormLogistics>
           </InputFlex>
           <FormLabel>Address</FormLabel>
           <LongFormInput
-            {...register('street')}
             type="text"
             placeholder="Street"
             pattern="[A-Za-z0-9]"
             title="Input must be in address format"
-            defaultValue={locationData?.street}></LongFormInput>
+            defaultValue={street}></LongFormInput>
           <InputFlex>
             <FormInput
-              {...register('city')}
               type="text"
               placeholder="City"
               pattern="[A-Za-z]"
               title="Input must be a valid city"
-              defaultValue={locationData?.city}></FormInput>
+              defaultValue={city}></FormInput>
             <FormInput
-              {...register('state')}
               type="text"
               placeholder="State"
               pattern="[A-Za-z]"
               title="Input must be a valid state"
-              defaultValue={locationData?.state}></FormInput>
+              defaultValue={state}></FormInput>
           </InputFlex>
           <FormInput
-            {...register('zip')}
             type="text"
             placeholder="Zip Code"
             pattern="^(?(^00000(|-0000))|(\d{5}(|-\d{4})))$"
             title="Input must be in proper zip code format"
-            defaultValue={locationData?.zip}></FormInput>
+            defaultValue={zip}></FormInput>
 
           <FormLabel>About the event</FormLabel>
           <AboutEvent>
             <LargeFormInput
-              {...register('description')}
               placeholder="About..."
-              defaultValue={eventData?.description}></LargeFormInput>
+              defaultValue={description}></LargeFormInput>
           </AboutEvent>
           <FormLabel>Contact</FormLabel>
           <FormInput
-            {...register('phone')}
             type="text"
             placeholder="Phone number"
             pattern="/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/"
             title="Input must be a valid phone number"
-            defaultValue={eventData?.phone}></FormInput>
+            defaultValue={phone}></FormInput>
           <FormInput
-            {...register('email')}
             type="text"
             placeholder="Email address"
             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
             title="Input must be a valid email address"
-            defaultValue={eventData?.email}></FormInput>
+            defaultValue={email}></FormInput>
           <ButtonCenter>
-            <SubmitButton onClick={handleSubmit(onSubmit)}>Save</SubmitButton>
+            <SubmitButton onClick={onSubmit}>Save</SubmitButton>
           </ButtonCenter>
         </EditEventForm>
       </EditEventContainer>
