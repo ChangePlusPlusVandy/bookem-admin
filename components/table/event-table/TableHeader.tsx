@@ -2,19 +2,18 @@ import { SearchContainter, TableButton } from '@/styles/table.styles';
 import React from 'react';
 import Image from 'next/image';
 import { Button } from 'antd';
+import { handleExport } from '@/utils/utils';
 
 const TableHeader = ({
   setShowPopup,
   showPopup,
   setShowPopupTag,
   showPopupTag,
-  handleExport,
 }: {
   setShowPopup: (a: boolean) => void;
   showPopup: boolean;
   setShowPopupTag: (a: boolean) => void;
   showPopupTag: boolean;
-  handleExport: () => void;
 }) => {
   return (
     <>
@@ -43,7 +42,7 @@ const TableHeader = ({
             />
           </TableButton>
           <Button
-            onClick={handleExport}
+            onClick={() => handleExport('events')}
             style={{
               width: 250,
               marginLeft: 90,
