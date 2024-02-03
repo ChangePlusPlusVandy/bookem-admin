@@ -44,7 +44,7 @@ const UpcomingEvents = ({}: any) => {
               ))}
             </Suspense>
           </Events>
-          <button onClick={() => router.push('/program')}>Show More</button>
+          <button onClick={() => router.push('/event')}>Show More</button>
         </EventsContainer>
       )}
     </>

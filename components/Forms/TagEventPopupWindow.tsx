@@ -1,20 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PopupWindow from '@/components/PopupWindow';
 import Image from 'next/image';
-// import {
-//   CreateEventContainer,
-//   CreateEventForm,
-//   FormLabel,
-//   FormHeader,
-//   InputFlex,
-//   FormInput,
-//   LargeFormInput,
-// } from '@/styles/components/event.styles';
-import { LongFormInput } from '@/styles/components/editEventPopupWindowForm.styles';
-import {
-  SubmitButton,
-  ButtonCenter,
-} from '@/styles/components/windowFlow.styles';
 import { useForm } from 'react-hook-form';
 import {
   EmptyContainer,

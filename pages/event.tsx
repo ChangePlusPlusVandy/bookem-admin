@@ -1,4 +1,4 @@
-import EventTable from '@/components/table/EventTable';
+import EventTable from '@/components/table/event-table/EventTable';
 import { PageTitle, PageLayout } from '@/styles/table.styles';
 import React from 'react';
 
