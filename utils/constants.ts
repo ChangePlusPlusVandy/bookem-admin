@@ -51,6 +51,11 @@ export const SIDEBAR_ICON_PARAMS: SidebarIconParams[] = [
     linkTo: '/event',
   },
   {
+    defaultSrc: '/sidebar/program-management-white.png',
+    hoveredsrc: '/sidebar/program-management-black.png',
+    linkTo: '/program',
+  },
+  {
     defaultSrc: '/sidebar/setting-white.png',
     hoveredsrc: '/sidebar/setting-black.png',
     linkTo: '/settings',

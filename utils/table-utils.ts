@@ -1,5 +1,8 @@
-import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
-import { EventRowData } from './table-types';
+import {
+  QueriedVolunteerEventDTO,
+  QueriedVolunteerProgramData,
+} from 'bookem-shared/src/types/database';
+import { EventRowData, ProgramRowData } from './table-types';
 
 export const convertEventDataToRowData = (
   data: QueriedVolunteerEventDTO[]
@@ -11,7 +14,21 @@ export const convertEventDataToRowData = (
       ...event,
       key: event._id.toString(),
       numVolunteers: event.volunteers.length,
-      programName: event.program ? event.program.name : '',
+      programName: event.program?.name ?? '',
     };
   });
+};
+
+export const convertProgramDataToRowData = (
+  data: QueriedVolunteerProgramData[]
+): ProgramRowData[] => {
+  const result = data.map(program => {
+    return {
+      ...program,
+      key: program._id.toString(),
+      numEvents: program.events.length,
+      description: program.description ?? '',
+    };
+  });
+  return result;
 };

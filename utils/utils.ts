@@ -43,7 +43,7 @@ export const fetchData = async (route: string) => {
 export const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 // function to export what is on the table at the time to an excel file
-export const handleExport = () => {
+export const handleExport = (fileName: string) => {
   const workbook = XLSX.utils.table_to_book(
     document.querySelector('#table-container')
   );
@@ -54,5 +54,5 @@ export const handleExport = () => {
   const blob = new Blob([excelBuffer], {
     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   });
-  saveAs(blob, 'events.xlsx');
+  saveAs(blob, fileName + '.xlsx');
 };

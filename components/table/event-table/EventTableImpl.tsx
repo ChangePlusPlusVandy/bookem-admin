@@ -139,7 +139,6 @@ const EventTableImpl = ({
         showPopup={showPopup}
         setShowPopupTag={setShowPopupTag}
         showPopupTag={showPopup}
-        handleExport={handleExport}
       />
       <TableContainer>
         <div id="table-container">
