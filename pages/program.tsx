@@ -1,4 +1,4 @@
-import ProgramTable from '@/components/table/ProgramTable';
+import ProgramTable from '@/components/table/program-table/ProgramTable';
 import { PageTitle, PageLayout } from '@/styles/table.styles';
 import React from 'react';
 

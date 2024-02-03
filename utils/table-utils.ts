@@ -15,3 +15,17 @@ export const convertEventDataToRowData = (
     };
   });
 };
+
+export const convertProgramDataToRowData = (
+  data: QueriedVolunteerEventDTO[]
+) => {
+  console.log('Data:', data); // Add this line
+  const result = data.map((program, index) => {
+    return {
+      key: index,
+      programName: program.name,
+      programDesc: program.description,
+    };
+  });
+  return result;
+};

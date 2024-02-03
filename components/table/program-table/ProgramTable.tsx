@@ -2,8 +2,8 @@ import React, { useRef, useState, useEffect } from 'react';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 
-import { Button, Input, Space, Tag, Table, TableProps, InputRef } from 'antd';
-import type { ColumnType, ColumnsType } from 'antd/es/table';
+import { Button, Input, Space, InputRef } from 'antd';
+import type { ColumnType } from 'antd/es/table';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import {
   SearchContainter,
@@ -11,22 +11,12 @@ import {
   TableButton,
   TableContainer,
 } from '@/styles/table.styles';
-import {
-  QueriedTagData,
-  QueriedVolunteerEventDTO,
-} from 'bookem-shared/src/types/database';
+import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
 import useSWR from 'swr';
-import { ObjectId } from 'mongodb';
-import Link from 'next/link';
 import Image from 'next/image';
 import CreateProgramPopupWindow from '@/components/Forms/CreateProgramPopupWindow';
-
-interface ProgramRowData {
-  key: number;
-  programName: string;
-}
-
-type DataIndex = keyof ProgramRowData;
+import { ProgramDataIndex, ProgramRowData } from '@/utils/table-types';
+import { convertProgramDataToRowData } from '@/utils/table-utils';
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
@@ -47,7 +37,7 @@ const ProgramTable = () => {
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex
+    dataIndex: ProgramDataIndex
   ) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -66,7 +56,7 @@ const ProgramTable = () => {
   }, [data, isLoading]);
 
   const getColumnSearchProps = (
-    dataIndex: DataIndex
+    dataIndex: ProgramDataIndex
   ): ColumnType<ProgramRowData> => ({
     filterDropdown: ({
       setSelectedKeys,
@@ -191,7 +181,7 @@ const ProgramTable = () => {
               alt=""
               width={32}
               height={32}
-              style={{ mtarginLeft: 150 }}
+              style={{ marginLeft: 150 }}
             />
           </TableButton>
         </SearchContainter>
@@ -209,16 +199,4 @@ const ProgramTable = () => {
     </>
   );
 };
-const convertProgramDataToRowData = (data: QueriedVolunteerEventDTO[]) => {
-  console.log('Data:', data); // Add this line
-  const result = data.map((program, index) => {
-    return {
-      key: index,
-      programName: program.name,
-      programDesc: program.description,
-    };
-  });
-  return result;
-};
-
 export default ProgramTable;
