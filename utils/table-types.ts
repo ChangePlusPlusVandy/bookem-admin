@@ -4,7 +4,8 @@ import {
 } from 'bookem-shared/src/types/database';
 
 // Event Row
-export interface EventRowData extends QueriedVolunteerEventDTO {
+export interface EventRowData
+  extends Omit<QueriedVolunteerEventDTO, 'applicationId'> {
   key: string;
   numVolunteers: number;
   programName: string;

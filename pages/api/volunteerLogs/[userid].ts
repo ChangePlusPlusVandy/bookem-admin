@@ -19,7 +19,7 @@ export default async function handler(
           userId: userid,
         });
 
-        console.log('found this many: ', logs.length);
+        // console.log('found this many: ', logs.length);
 
         // if user does not exist, handle
         if (!logs) res.status(400).json({ message: 'No logs found' });
