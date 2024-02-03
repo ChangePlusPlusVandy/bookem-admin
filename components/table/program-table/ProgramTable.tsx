@@ -17,6 +17,7 @@ import Image from 'next/image';
 import CreateProgramPopupWindow from '@/components/Forms/CreateProgramPopupWindow';
 import { ProgramDataIndex, ProgramRowData } from '@/utils/table-types';
 import { convertProgramDataToRowData } from '@/utils/table-utils';
+import TableHeader from './TableHeader';
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
@@ -174,17 +175,7 @@ const ProgramTable = () => {
     <>
       {showPopUp && <CreateProgramPopupWindow setShowPopup={setShowPopUp} />}
       <div>
-        <SearchContainter>
-          <TableButton onClick={() => setShowPopUp(prev => !prev)}>
-            <Image
-              src="/table/addbutton.png"
-              alt=""
-              width={32}
-              height={32}
-              style={{ marginLeft: 150 }}
-            />
-          </TableButton>
-        </SearchContainter>
+        <TableHeader setShowPopUp={setShowPopUp} showPopUp={showPopUp} />
         <TableContainer>
           <div id="table-container">
             <StyledTable
