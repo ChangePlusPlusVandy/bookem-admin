@@ -18,14 +18,26 @@ import CreateProgramPopupWindow from '@/components/Forms/CreateProgramPopupWindo
 import { ProgramDataIndex, ProgramRowData } from '@/utils/table-types';
 import { convertProgramDataToRowData } from '@/utils/table-utils';
 import TableHeader from './TableHeader';
-
-const fetcher = (url: string) => fetch(url).then(res => res.json());
+import { fetcher } from '@/utils/utils';
 
 const ProgramTable = () => {
-  const { data, error, isLoading } = useSWR<QueriedVolunteerEventDTO[]>(
+  const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
     '/api/program/',
-    fetcher
+    fetcher,
+    {
+      onSuccess: data => {
+        setDataForTable(convertProgramDataToRowData(data));
+      },
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+    }
   );
+
+  // Extra defense to refetch data if needed
+  useEffect(() => {
+    mutate();
+  }, [mutate, data]);
+
   const [showPopUp, setShowPopUp] = useState(false);
   const [dataForTable, setDataForTable] = useState<ProgramRowData[]>([]);
   const [filterTable, setFilterTable] = useState<ProgramRowData[]>([]);
@@ -34,6 +46,10 @@ const ProgramTable = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
+
+  // check for errors and loading
+  if (error) return <div>Failed to load event table</div>;
+  if (isLoading) return <div>Loading...</div>;
 
   const handleSearch = (
     selectedKeys: string[],
@@ -49,12 +65,6 @@ const ProgramTable = () => {
     clearFilters();
     setSearchText('');
   };
-
-  useEffect(() => {
-    if (!isLoading && data) {
-      setDataForTable(convertProgramDataToRowData(data));
-    }
-  }, [data, isLoading]);
 
   const getColumnSearchProps = (
     dataIndex: ProgramDataIndex
