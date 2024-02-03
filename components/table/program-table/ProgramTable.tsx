@@ -1,24 +1,15 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
-
 import { Button, Input, Space, InputRef } from 'antd';
 import type { ColumnType } from 'antd/es/table';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
-import {
-  SearchContainter,
-  StyledTable,
-  TableButton,
-  TableContainer,
-} from '@/styles/table.styles';
 import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
 import useSWR from 'swr';
-import Image from 'next/image';
-import CreateProgramPopupWindow from '@/components/Forms/CreateProgramPopupWindow';
 import { ProgramDataIndex, ProgramRowData } from '@/utils/table-types';
 import { convertProgramDataToRowData } from '@/utils/table-utils';
-import TableHeader from './TableHeader';
 import { fetcher } from '@/utils/utils';
+import ProgramTableImpl from './ProgramTableImpl';
 
 const ProgramTable = () => {
   const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
@@ -38,10 +29,7 @@ const ProgramTable = () => {
     mutate();
   }, [mutate, data]);
 
-  const [showPopUp, setShowPopUp] = useState(false);
   const [dataForTable, setDataForTable] = useState<ProgramRowData[]>([]);
-  const [filterTable, setFilterTable] = useState<ProgramRowData[]>([]);
-  const [isFiltering, setIsFilter] = useState<boolean>(false);
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
@@ -110,16 +98,6 @@ const ProgramTable = () => {
             type="link"
             size="small"
             onClick={() => {
-              confirm({ closeDropdown: false });
-              setSearchText((selectedKeys as string[])[0]);
-              setSearchedColumn(dataIndex);
-            }}>
-            Filter
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
               close();
             }}>
             close
@@ -155,48 +133,13 @@ const ProgramTable = () => {
         text
       ),
   });
-  const columns: any = [
-    {
-      title: 'Program Name',
-      dataIndex: 'programName',
-      key: 'programName',
-      ...getColumnSearchProps('programName'),
-    },
-    {
-      title: 'Description',
-      dataIndex: 'programDesc',
-      key: 'programDesc',
-    },
-    {
-      title: 'Events',
-      dataIndex: 'programEvent',
-      key: 'programEvent',
-      render: () => <Button type="link">See Events</Button>,
-    },
-    {
-      title: 'Volunteers',
-      dataIndex: 'programVolunteer',
-      key: 'programVolunteer',
-      render: () => <Button type="link">See Volunteers</Button>,
-    },
-  ];
 
   return (
     <>
-      {showPopUp && <CreateProgramPopupWindow setShowPopup={setShowPopUp} />}
-      <div>
-        <TableHeader setShowPopUp={setShowPopUp} showPopUp={showPopUp} />
-        <TableContainer>
-          <div id="table-container">
-            <StyledTable
-              dataSource={isFiltering ? filterTable : dataForTable}
-              columns={columns}
-              pagination={false}
-              scroll={{ y: 550 }}
-            />
-          </div>
-        </TableContainer>
-      </div>
+      <ProgramTableImpl
+        getColumnSearchProps={getColumnSearchProps}
+        dataForTable={dataForTable}
+      />
     </>
   );
 };
