@@ -23,7 +23,7 @@ export default async function handler(
      * @desc Get all programs
      * @res QueriedVolunteerProgramData
      */
-     case 'GET':
+    case 'GET':
       try {
         await dbConnect();
         const allPrograms = await VolunteerPrograms.find();
@@ -33,7 +33,7 @@ export default async function handler(
         res.status(500).json({ message: 'Server error' });
       }
       break;
-    
+
     // case 'PUT':
     // case 'DELETE':
     // default:
