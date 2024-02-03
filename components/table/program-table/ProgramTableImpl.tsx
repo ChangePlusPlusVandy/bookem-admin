@@ -1,41 +1,45 @@
 import CreateProgramPopupWindow from '@/components/Forms/CreateProgramPopupWindow';
 import React, { useState } from 'react';
 import TableHeader from './TableHeader';
-import { StyledTable, TableContainer } from '@/styles/table.styles';
+import { TableContainer } from '@/styles/table.styles';
 import { Button } from 'antd';
+import { ProgramDataIndex, ProgramRowData } from '@/utils/table-types';
+import { ColumnType, ColumnsType } from 'antd/es/table';
+import { Table } from 'antd';
 
 const ProgramTableImpl = ({
   getColumnSearchProps,
   dataForTable,
 }: {
-  getColumnSearchProps: any;
-  dataForTable: any;
+  getColumnSearchProps: (
+    dataIndex: ProgramDataIndex
+  ) => ColumnType<ProgramRowData>;
+  dataForTable: ProgramRowData[];
 }) => {
   const [showPopUp, setShowPopUp] = useState(false);
 
-  const columns: any = [
+  const columns: ColumnsType<ProgramRowData> = [
     {
       title: 'Program Name',
-      dataIndex: 'programName',
-      key: 'programName',
-      ...getColumnSearchProps('programName'),
+      dataIndex: 'name',
+      key: 'name',
+      ...getColumnSearchProps('name'),
     },
     {
       title: 'Description',
-      dataIndex: 'programDesc',
-      key: 'programDesc',
+      dataIndex: 'description',
+      key: 'description',
+    },
+    {
+      title: 'Number of Events',
+      dataIndex: 'numEvents',
+      key: 'numEvents',
     },
     {
       title: 'Events',
-      dataIndex: 'programEvent',
-      key: 'programEvent',
+      dataIndex: 'events',
+      key: 'events',
       render: () => <Button type="link">See Events</Button>,
-    },
-    {
-      title: 'Volunteers',
-      dataIndex: 'programVolunteer',
-      key: 'programVolunteer',
-      render: () => <Button type="link">See Volunteers</Button>,
     },
   ];
   return (
@@ -45,7 +49,7 @@ const ProgramTableImpl = ({
         <TableHeader setShowPopUp={setShowPopUp} showPopUp={showPopUp} />
         <TableContainer>
           <div id="table-container">
-            <StyledTable
+            <Table
               dataSource={dataForTable}
               columns={columns}
               pagination={false}

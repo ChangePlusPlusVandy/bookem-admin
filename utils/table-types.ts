@@ -12,8 +12,12 @@ export interface EventRowData extends QueriedVolunteerEventDTO {
 export type EventDataIndex = keyof EventRowData;
 
 // Program Row
-export interface ProgramRowData {
-  key: number;
-  programName: string;
+// Omit description because it's an optional field and ANTD doesn't like it
+// We have to fill it with something
+export interface ProgramRowData
+  extends Omit<QueriedVolunteerProgramData, 'description'> {
+  key: string;
+  numEvents: number;
+  description: string;
 }
 export type ProgramDataIndex = keyof ProgramRowData;
