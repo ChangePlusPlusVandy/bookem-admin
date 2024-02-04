@@ -25,8 +25,6 @@ import { DatePicker, TimePicker } from 'antd';
 import { useForm } from 'react-hook-form';
 import type { DatePickerProps, GetProps } from 'antd';
 
-
-
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 dayjs.extend(customParseFormat);
 
@@ -42,7 +40,6 @@ const CreateEventPopupWindow = ({
 }: {
   setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-
   const [eventName, setEventName] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');
   const [startTime, setStartTime] = useState<string>('');
@@ -61,25 +58,25 @@ const CreateEventPopupWindow = ({
   const { RangePicker } = DatePicker;
 
   const handleSubmit = async () => {
-    const eventObject = { 
-      name: eventName, 
+    const eventObject = {
+      name: eventName,
       description: description,
       startDate: convertToMongoDate(startDate, startTime),
       endDate: convertToMongoDate(endDate, endTime),
       maxSpot: parseInt(maxSpot, 10),
-      location: { 
-        city: city, 
-        state: state, 
-        street: address, 
-        zip: zip
+      location: {
+        city: city,
+        state: state,
+        street: address,
+        zip: zip,
       },
       phone: phone,
       email: email,
       program: null,
       requireApplication: false,
       tags: [],
-      volunteers: []
-    }
+      volunteers: [],
+    };
 
     try {
       const response = await fetch('/api/event', {
@@ -90,12 +87,12 @@ const CreateEventPopupWindow = ({
         body: JSON.stringify(eventObject),
       });
 
-      console.log(eventObject)
-  
+      console.log(eventObject);
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-  
+
       const data = await response.json();
       console.log('Success:', data);
       // Handle success (e.g., show a success message, redirect, etc.)
@@ -107,7 +104,7 @@ const CreateEventPopupWindow = ({
 
   const handleRangeChange = (
     value: DatePickerProps['value'] | RangePickerProps['value'],
-    dateString: [string, string] | string,
+    dateString: [string, string] | string
   ) => {
     setStartDate(dateString[0]);
     setEndDate(dateString[1]);
@@ -116,13 +113,14 @@ const CreateEventPopupWindow = ({
   function convertToMongoDate(dateStr: string, timeStr: string): string {
     // Check for invalid inputs
     if (!dateStr || !timeStr) {
-        throw new Error('Invalid input for date or time');
+      throw new Error('Invalid input for date or time');
     }
 
     // Parse the time string
-    const timeParts: RegExpMatchArray | null = timeStr.match(/(\d+):(\d+) (\w+)/);
+    const timeParts: RegExpMatchArray | null =
+      timeStr.match(/(\d+):(\d+) (\w+)/);
     if (!timeParts) {
-        throw new Error('Invalid time format');
+      throw new Error('Invalid time format');
     }
 
     let hours: number = parseInt(timeParts[1], 10);
@@ -130,9 +128,9 @@ const CreateEventPopupWindow = ({
     const ampm: string = timeParts[3];
 
     if (ampm.toLowerCase() === 'pm' && hours < 12) {
-        hours += 12;
+      hours += 12;
     } else if (ampm.toLowerCase() === 'am' && hours === 12) {
-        hours = 0;
+      hours = 0;
     }
 
     // Combine the date and time into a standard format.
@@ -143,7 +141,7 @@ const CreateEventPopupWindow = ({
 
     // Convert to ISO 8601 string format (used by MongoDB).
     return dateObj.toISOString();
-}
+  }
 
   return (
     <PopupWindow hidePopup={() => setShowPopup(false)}>
@@ -160,8 +158,9 @@ const CreateEventPopupWindow = ({
                 placeholder="Event Name"
                 pattern="[A-Za-z]"
                 title="Input must be text"
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setEventName(e.target.value)}
-              ></FormInput>
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setEventName(e.target.value)
+                }></FormInput>
             </InputColumnFlex>
 
             <InputColumnFlex>
@@ -172,11 +171,12 @@ const CreateEventPopupWindow = ({
                 placeholder="Category"
                 pattern="[A-Za-z]"
                 title="Input must be text"
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setEventCategory(e.target.value)}
-                ></FormInput>
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setEventCategory(e.target.value)
+                }></FormInput>
             </InputColumnFlex>
           </InputRowFlex>
-          
+
           <FormLabel>Logistics</FormLabel>
 
           <RangePicker onChange={handleRangeChange} />
@@ -202,7 +202,6 @@ const CreateEventPopupWindow = ({
               onChange={(time: Dayjs | null, timeString: string) => {
                 setEndTime(timeString);
               }}
-              
             />
           </InputRowFlex>
 
@@ -213,8 +212,9 @@ const CreateEventPopupWindow = ({
               placeholder="#"
               pattern="^[0-9]*$"
               title="Input must be a whole number"
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setMaxSpot(e.target.value)}
-            ></ShortFormInput>
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setMaxSpot(e.target.value)
+              }></ShortFormInput>
             <FormLogistics>max spots</FormLogistics>
           </InputRowFlex>
 
@@ -225,7 +225,9 @@ const CreateEventPopupWindow = ({
             placeholder="Street"
             pattern="[A-Za-z0-9]"
             title="Input must be in address format"
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setAddress(e.target.value)
+            }
             // defaultValue={locationData?.street}
           ></LongFormInput>
           <InputRowFlex>
@@ -235,16 +237,18 @@ const CreateEventPopupWindow = ({
               placeholder="City"
               pattern="[A-Za-z]"
               title="Input must be a valid city"
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setCity(e.target.value)}
-            ></FormInput>
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setCity(e.target.value)
+              }></FormInput>
             <FormInput
               // {...register('state')}
               type="text"
               placeholder="State"
               pattern="[A-Za-z]"
               title="Input must be a valid state"
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setState(e.target.value)}
-            ></FormInput>
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setState(e.target.value)
+              }></FormInput>
           </InputRowFlex>
           <FormInput
             // {...register('zip')}
@@ -252,16 +256,18 @@ const CreateEventPopupWindow = ({
             placeholder="Zip Code"
             pattern="^(?(^00000(|-0000))|(\d{5}(|-\d{4})))$"
             title="Input must be in proper zip code format"
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setZip(e.target.value)}
-          ></FormInput>
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setZip(e.target.value)
+            }></FormInput>
 
           <FormLabel>About the event</FormLabel>
           <AboutEvent>
             <LargeFormInput
               // {...register('description')}
               placeholder="About..."
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
-            ></LargeFormInput>
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setDescription(e.target.value)
+              }></LargeFormInput>
           </AboutEvent>
           <FormLabel>Contact</FormLabel>
           <FormInput
@@ -270,16 +276,18 @@ const CreateEventPopupWindow = ({
             placeholder="Phone number"
             pattern="/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/"
             title="Input must be a valid phone number"
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
-          ></FormInput>
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setPhone(e.target.value)
+            }></FormInput>
           <FormInput
             // {...register('email')}
             type="text"
             placeholder="Email address"
             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
             title="Input must be a valid email address"
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-          ></FormInput>
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }></FormInput>
 
           <ButtonCenter>
             <SubmitButton onClick={handleSubmit}>Create</SubmitButton>

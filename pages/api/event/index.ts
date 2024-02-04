@@ -19,8 +19,7 @@ export default async function handler(
   // Get session user
   const session = await getServerSession(req, res, authOptions);
 
-  await dbConnect()
-
+  await dbConnect();
 
   switch (req.method) {
     /**
@@ -48,7 +47,7 @@ export default async function handler(
         res.status(500).json({ message: error });
       }
       break;
-    
+
     case 'POST':
       try {
         // Extract data from the request body
@@ -67,7 +66,9 @@ export default async function handler(
         res.status(201).json({ success: true, event });
       } catch (error) {
         console.error(error);
-        res.status(400).json({ success: false, message: 'Error creating event' });
+        res
+          .status(400)
+          .json({ success: false, message: 'Error creating event' });
       }
       break;
 
