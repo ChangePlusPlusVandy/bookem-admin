@@ -14,12 +14,12 @@ export default async function handler(
       // Connect to the database
       await dbConnect();
       try {
-        console.log('userid' + userid);
+        // console.log('userid' + userid);
         const logs = await VolunteerApplications.find({
           userId: userid,
         });
 
-        console.log('found this many: ', logs.length);
+        // console.log('found this many: ', logs.length);
 
         // if user does not exist, handle
         if (!logs) res.status(400).json({ message: 'No logs found' });

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import {
   QueriedUserData,
   QueriedVolunteerLogData,
-  QueriedVolunteerApplicationData,
   ApplicationStatus,
 } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
@@ -68,9 +66,7 @@ export default function Volunteer() {
   const [loggedHoursLoaded, setLoggedHoursLoaded] = useState(false);
   const [loggedHours, setLoggedHours] = useState<QueriedVolunteerLogData[]>([]);
   const [userFound, setUserFound] = useState(false);
-  const [userApplications, setUserApplications] = useState<
-    QueriedVolunteerApplicationData[]
-  >([
+  const [userApplications, setUserApplications] = useState<any[]>([
     {
       _id: new mongoose.Types.ObjectId(),
       userId: new mongoose.Types.ObjectId(),
@@ -104,7 +100,7 @@ export default function Volunteer() {
       });
       const data = await res.json();
       setLoggedHoursLoaded(true);
-      console.log('data here', data);
+      // console.log('data here', data);
       if (!data.error) {
         setLoggedHours(data);
         setUserFound(true);
@@ -121,7 +117,7 @@ export default function Volunteer() {
         method: 'GET',
       });
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       setUserApplications(data);
       setApplicationsLoaded(true);
     } catch (err) {

@@ -46,6 +46,11 @@ export const SIDEBAR_ICON_PARAMS: SidebarIconParams[] = [
     linkTo: '/volunteer',
   },
   {
+    defaultSrc: '/sidebar/event-management-white.png',
+    hoveredsrc: '/sidebar/event-management-black.png',
+    linkTo: '/event',
+  },
+  {
     defaultSrc: '/sidebar/program-management-white.png',
     hoveredsrc: '/sidebar/program-management-black.png',
     linkTo: '/program',
