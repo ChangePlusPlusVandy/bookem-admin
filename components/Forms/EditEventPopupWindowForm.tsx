@@ -142,10 +142,7 @@ const EditEventPopupWindowForm = ({
     };
   };
 
-  const onChange1 = (
-    value: DatePickerProps['value'],
-    dateString: [string, string] | string
-  ) => {
+  const onChange1 = (value: DatePickerProps['value'], dateString: any) => {
     console.log('Selected Time: ', value);
     console.log('Formatted Selected Time: ', dateString);
 
@@ -153,10 +150,7 @@ const EditEventPopupWindowForm = ({
     console.log(startDate);
   };
 
-  const onChange2 = (
-    value: DatePickerProps['value'],
-    dateString: [string, string] | string
-  ) => {
+  const onChange2 = (value: DatePickerProps['value'], dateString: any) => {
     console.log('Selected Time: ', value);
     console.log('Formatted Selected Time: ', dateString);
 
