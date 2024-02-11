@@ -43,10 +43,14 @@ export const fetchData = async (route: string) => {
 export const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 // function to export what is on the table at the time to an excel file
+
 export const handleExport = (fileName: string) => {
   const workbook = XLSX.utils.table_to_book(
     document.querySelector('#table-container')
   );
+  const sheet = workbook.Sheets[workbook.SheetNames[0]];
+  const options = ['Event Name', 'Program']
+  console.log(sheet['!cols']);
   const excelBuffer = XLSX.write(workbook, {
     bookType: 'xlsx',
     type: 'array',
@@ -56,3 +60,20 @@ export const handleExport = (fileName: string) => {
   });
   saveAs(blob, fileName + '.xlsx');
 };
+
+export const handleJsonExport = (data: any, fileName: string, headers: string[][]) => {
+  const workbook = XLSX.utils.book_new();
+  const sheet = XLSX.utils.json_to_sheet([]);
+  XLSX.utils.sheet_add_aoa(sheet, headers);
+  XLSX.utils.sheet_add_json(sheet, data, { origin: 'A2', skipHeader: true});
+  XLSX.utils.book_append_sheet(workbook, sheet, 'Sheet1');
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array',
+  });
+  const blob = new Blob([excelBuffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  });
+  saveAs(blob, fileName + '.xlsx');
+
+}

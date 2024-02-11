@@ -22,3 +22,9 @@ export interface ProgramRowData
   description: string;
 }
 export type ProgramDataIndex = keyof ProgramRowData;
+
+// Filter Option
+export type FilterOption = {
+  key: string;
+  text: string;
+}

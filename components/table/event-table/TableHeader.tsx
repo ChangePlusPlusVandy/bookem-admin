@@ -9,11 +9,13 @@ const TableHeader = ({
   showPopup,
   setShowPopupTag,
   showPopupTag,
+  onExportPress,
 }: {
   setShowPopup: (a: boolean) => void;
   showPopup: boolean;
   setShowPopupTag: (a: boolean) => void;
   showPopupTag: boolean;
+  onExportPress: () => void;
 }) => {
   return (
     <>
@@ -42,7 +44,7 @@ const TableHeader = ({
             />
           </TableButton>
           <Button
-            onClick={() => handleExport('events')}
+            onClick={onExportPress}
             style={{
               width: 250,
               marginLeft: 90,

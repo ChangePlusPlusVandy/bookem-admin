@@ -9,8 +9,8 @@ import { TableContainer } from '@/styles/table.styles';
 import Link from 'next/link';
 import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
-import { EventDataIndex, EventRowData } from '@/utils/table-types';
-import { handleExport } from '@/utils/utils';
+import { EventDataIndex, EventRowData, FilterOption } from '@/utils/table-types';
+import { handleExport, handleJsonExport } from '@/utils/utils';
 import TableHeader from '@/components/table/event-table/TableHeader';
 
 /**
@@ -129,7 +129,40 @@ const EventTableImpl = ({
       ),
     },
   ];
-
+  const onExportPress = (option: FilterOption[]) => {
+    // delete once option is implemented
+    option = [
+      {
+        key: 'name',
+        text: 'Event Name',
+      },
+      {
+        key: 'startDate',
+        text: 'Start Date',
+      },
+    ]
+    // replace with the keys you want to keep for each row in the table.
+    // these keys are the member values of the dataForTable array.
+    const keep = option.map((opt) => opt.key); 
+    // for each option, there should be a corresponding header for it
+    // example: name -> Event Name or programName -> Program
+    const header = [option.map((opt) => opt.text)]; 
+    const data = dataForTable.map((row) => {
+      return keep.map((key) => {
+        // can do some preprocessing here
+        // todo: abstract this to be a part of filter options
+        if (key === 'tags') {
+          return row[key].map((tag) => tag.tagName).join('; ');
+        }
+        // if (key === 'startDate' || key === 'endDate') {
+        //   return row[key].toLocaleDateString();
+        // }
+        return row[key];
+      });
+    });
+    console.log(data);
+    handleJsonExport(data, 'events', header);
+  }
   return (
     <>
       {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
@@ -139,6 +172,7 @@ const EventTableImpl = ({
         showPopup={showPopup}
         setShowPopupTag={setShowPopupTag}
         showPopupTag={showPopup}
+        onExportPress={onExportPress}
       />
       <TableContainer>
         <div id="table-container">
