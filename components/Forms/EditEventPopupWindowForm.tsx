@@ -37,6 +37,7 @@ const EditEventPopupWindowForm = ({
 }) => {
   const router = useRouter();
   const { pid } = router.query;
+  const { RangePicker } = DatePicker;
 
   const [eventData, setEventData] = useState<QueriedVolunteerEventDTO>();
   const [tags, setTags] = useState([]);
@@ -54,8 +55,8 @@ const EditEventPopupWindowForm = ({
   const [email, setEmail] = useState<string>();
   const [error, setError] = useState<Error>();
 
-  const handleChange = (value: string[]) => {
-    console.log(`selected ${value}`);
+  const handleTagChange = (value: string[]) => {
+    // TODO: handle tag change
   };
 
   const tagArray: string[] =
@@ -72,7 +73,6 @@ const EditEventPopupWindowForm = ({
     const fetchData = async () => {
       const response = await fetch('/api/event/' + pid);
       const data = await response.json();
-      console.log('aaaaa', data);
       setEventData(data);
       setName(data?.name);
       setProgram(data?.program?.name);
@@ -118,8 +118,6 @@ const EditEventPopupWindowForm = ({
 
   const onSubmit = (data: any) => {
     // VolunteerEventData
-    console.log('THIS ISDATA: ', data);
-
     const location: VolunteerEventLocation = {
       street: data.street,
       city: data.city,
@@ -140,34 +138,19 @@ const EditEventPopupWindowForm = ({
       requireApplication: false,
       tags: [],
     };
+
+    // TODO: save the data to the database
   };
 
-  const onChange1 = (value: DatePickerProps['value'], dateString: any) => {
-    console.log('Selected Time: ', value);
-    console.log('Formatted Selected Time: ', dateString);
-
-    setStartDate(value);
-    console.log(startDate);
-  };
-
-  const onChange2 = (value: DatePickerProps['value'], dateString: any) => {
-    console.log('Selected Time: ', value);
-    console.log('Formatted Selected Time: ', dateString);
-
-    setEndDate(value);
-    console.log(endDate);
-  };
-
-  const onOk1 = (value: DatePickerProps['value']) => {
-    console.log('onOk1: ', value);
-    setStartDate(value);
-    console.log(startDate);
-  };
-
-  const onOk2 = (value: DatePickerProps['value']) => {
-    console.log('onOk2: ', value);
-    setEndDate(value);
-    console.log(endDate);
+  const onDateChange = (
+    value: DatePickerProps['value'],
+    type: 'start' | 'end'
+  ) => {
+    if (type === 'start') {
+      setStartDate(value);
+    } else {
+      setEndDate(value);
+    }
   };
 
   return (
@@ -202,7 +185,7 @@ const EditEventPopupWindowForm = ({
                 // defaultValue={tagArray}
                 // Todo: change the hard coded tags to tags from database
                 defaultValue={['hidden', 'saved']}
-                onChange={handleChange}
+                onChange={handleTagChange}
                 options={tags}
               />
             </Space>
@@ -210,8 +193,14 @@ const EditEventPopupWindowForm = ({
 
           <FormLabel>Logistics</FormLabel>
 
-          <DatePicker showTime onChange={onChange1} onOk={onOk1} />
-          <DatePicker showTime onChange={onChange2} onOk={onOk2} />
+          <RangePicker
+            showTime
+            onOk={value => {
+              onDateChange(value[0], 'start');
+              onDateChange(value[1], 'end');
+            }}
+            placeholder={['Start Date', 'End Date']}
+          />
 
           <InputFlex>
             <ShortFormInput
