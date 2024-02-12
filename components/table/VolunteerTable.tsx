@@ -284,6 +284,9 @@ const VolunteerTable = () => {
       dataIndex: 'email',
       key: 'email',
       ...getColumnSearchProps('email'),
+      render(_: any, { email }: VolunteerRowData) {
+        return <Link href={'mailto:' + email}>{email}</Link>;
+      },
     },
     {
       title: 'Phone',
