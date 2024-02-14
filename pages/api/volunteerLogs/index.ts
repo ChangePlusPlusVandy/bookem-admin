@@ -12,17 +12,11 @@ export default async function handler(
   const { userid } = req.query;
   switch (req.method) {
     case 'GET':
-      // Connect to the database
-      await dbConnect();
       try {
-        const user = (await VolunteerLogs.findOne({
-          userId: userid,
-        })) as QueriedVolunteerLogData;
-
-        // if user does not exist, handle
-        if (!user) res.status(400).json({ message: 'User not found' });
-
-        res.status(200).json(user);
+        // Connect to the database
+        await dbConnect();
+        const logs = await VolunteerLogs.find();
+        res.status(200).json(logs);
       } catch (e) {
         console.error('An error has occurred in index.ts', e);
         res.status(500).json({
@@ -30,10 +24,13 @@ export default async function handler(
         });
       }
       break;
+    
+    case 'POST':
+      
 
     default:
       res.status(405).json({
-        error: 'Sorry, only GET requests are supported',
+        error: 'Sorry, only GET and POST requests are supported',
       });
       break;
   }
