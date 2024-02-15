@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableProps, Tag } from 'antd';
+import { Table, TableProps, Tag, Input, Popover } from 'antd';
 import type {
   ColumnType,
   ColumnsType,
@@ -9,6 +9,7 @@ import { TableContainer } from '@/styles/table.styles';
 import Link from 'next/link';
 import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
+import EventTable from './EventTable';
 import { EventDataIndex, EventRowData } from '@/utils/table-types';
 import { handleExport } from '@/utils/utils';
 import TableHeader from '@/components/table/event-table/TableHeader';
@@ -29,6 +30,8 @@ const EventTableImpl = ({
   dataForTable: EventRowData[];
 }) => {
   const [showPopup, setShowPopup] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
   const [showPopupTag, setShowPopupTag] = useState(false);
 
   // Define columns for the Ant Design table
@@ -88,7 +91,29 @@ const EventTableImpl = ({
     },
     {
       // Column for 'Tags'
-      title: 'Tags',
+      title: (
+        <Popover
+          content={
+            <Input
+              placeholder="Enter tags separated by commas"
+              onPressEnter={e => {
+                // Logic to handle tag input, similar to your existing onChange
+                const tags = e.target.value
+                  .split(',')
+                  .map(tag => tag.trim())
+                  .filter(tag => tag !== '');
+                // Assuming you have a way to lift this state up or manage it at this level
+                setSelectedTags(tags);
+              }}
+            />
+          }
+          trigger="click"
+          title="Filter by Tags">
+          <Tag color="blue" style={{ cursor: 'pointer' }}>
+            Tags
+          </Tag>
+        </Popover>
+      ),
       dataIndex: 'tags',
       key: 'tags',
 
