@@ -1,21 +1,16 @@
 import dbConnect from '@/lib/dbConnect';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import VolunteerApplications from 'bookem-shared/src/models/VolunteerApplications';
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import { getServerSession } from 'next-auth';
-import { makeSessionForAPITest } from '@/utils/api-testing';
 import ApplicationResponse from 'bookem-shared/src/models/ApplicationResponse';
-import { ApplicationStatus, ApplicationResponseData } from 'bookem-shared/src/types/database';
+import {
+  ApplicationStatus,
+  ApplicationResponseData,
+} from 'bookem-shared/src/types/database';
 import { enumChecking as checkEnum } from '@/utils/utils';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Get session user
-  const session =
-    (await getServerSession(req, res, authOptions)) || makeSessionForAPITest();
-
   // Get request parameter
   const {
     query: { id, responseId },

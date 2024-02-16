@@ -3,7 +3,7 @@ import { saveAs } from 'file-saver';
 
 export const enumChecking = (value: string, enumType: any) => {
   return Object.values(enumType).includes(value);
-}
+};
 
 export const convertToDate = (str: string) => {
   if (str === '') return str;
