@@ -21,7 +21,7 @@ export default async function handler(
 
   switch (method) {
     /**
-     * @route GET /api/applications
+     * @route GET /api/event/applications
      * @desc Return a list of questions + a list of responses
      * @req event id
      * @res a list of questions + a list of responses

@@ -24,8 +24,7 @@ export default async function handler(
 
   switch (method) {
     /**
-     * // TODO - change the route comments for both files
-     * @route GET /api/applications
+     * @route GET /api/event/[id]/application/[responseId]
      * @desc Get specific response
      * @req event: id, response: responseId
      * @res a specific response
@@ -49,6 +48,12 @@ export default async function handler(
       }
       break;
 
+    /**
+     * @route PUT /api/event/[id]/application/[responseId]
+     * @desc update the status of a response
+     * @req event: id, response: responseId
+     * @res a message telling whether the response is updated
+     */
     case 'PUT':
       try {
         await dbConnect();
