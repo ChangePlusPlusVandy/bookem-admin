@@ -35,11 +35,21 @@ const TagEventPopupWindow = ({
 }: {
   setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { data, isLoading } = useSWR<QueriedTagData[]>('/api/tags/', fetcher);
+  const {
+    data: allTags,
+    isLoading,
+    error,
+    mutate,
+  } = useSWR<QueriedTagData[]>('/api/tags/', fetcher, {
+    onSuccess: data => {
+      // setAllTags(data);
+      setFilteredTags(data);
+    },
+  });
 
   const [showInfo, setShowInfo] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [allTags, setAllTags] = useState<QueriedTagData[]>([]);
+  // const [allTags, setAllTags] = useState<QueriedTagData[]>([]);
   const [filteredTags, setFilteredTags] = useState<QueriedTagData[]>([]);
   //for edit tag
   const [editingTag, setEditingTag] = useState<QueriedTagData | undefined>(
@@ -49,6 +59,9 @@ const TagEventPopupWindow = ({
 
   // ANTD message
   const [messageApi, contextHolder] = message.useMessage();
+
+  if (!allTags || error) return <div>Failed to load event table</div>;
+  if (isLoading) return <div>Loading...</div>;
 
   //for delete confirmation
   // const [deleteTag, setDeleteTag] = useState('');
@@ -73,13 +86,6 @@ const TagEventPopupWindow = ({
       }
     }
   };
-
-  useEffect(() => {
-    if (!isLoading && data) {
-      setAllTags(data);
-      setFilteredTags(data);
-    }
-  }, [data, isLoading]);
 
   const handleSearch = (query: string) => {
     const filtered = allTags.filter(tag =>
