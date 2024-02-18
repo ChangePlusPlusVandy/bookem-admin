@@ -23,15 +23,17 @@ const EventTableImpl = ({
   sortedInfo,
   handleChange,
   dataForTable,
-}: {
+  setSelectedTags,
+}: //have one for seleted tags
+
+{
   getColumnSearchProps: (dataIndex: EventDataIndex) => ColumnType<EventRowData>;
   sortedInfo: SorterResult<EventRowData>;
   handleChange: TableProps<EventRowData>['onChange'];
   dataForTable: EventRowData[];
+  setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>; // Add this line
 }) => {
   const [showPopup, setShowPopup] = useState(false);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
   const [showPopupTag, setShowPopupTag] = useState(false);
 
   // Define columns for the Ant Design table
@@ -102,7 +104,6 @@ const EventTableImpl = ({
                   .split(',')
                   .map(tag => tag.trim())
                   .filter(tag => tag !== '');
-                // Assuming you have a way to lift this state up or manage it at this level
                 setSelectedTags(tags);
               }}
             />

@@ -208,7 +208,6 @@ const EventTable = () => {
         handleChange={handleChange}
         dataForTable={filteredDataByTags}
         setSelectedTags={setSelectedTags} // Pass this as a prop
-        selectedTags={selectedTags}
       />
     </>
   );
