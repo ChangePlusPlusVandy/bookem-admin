@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import PopupWindow from '@/components/PopupWindow';
 import Image from 'next/image';
-import { useForm } from 'react-hook-form';
 import {
   BoldText,
-  DeleteConfirmButton,
-  DeleteConfirmButtonGroup,
-  DeleteConfirmContainer,
-  DeleteConfirmText,
-  DeleteConfirmTitle,
   EditingTagForm,
   EditingTagInput,
   EmptyContainer,
@@ -33,13 +27,14 @@ import {
 import { QueriedTagData } from 'bookem-shared/src/types/database';
 import useSWR from 'swr';
 import { ObjectId } from 'mongodb';
+import { message } from 'antd';
+import { fetcher } from '@/utils/utils';
 
 const TagEventPopupWindow = ({
   setShowPopup,
 }: {
   setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const fetcher = (url: string) => fetch(url).then(res => res.json());
   const { data, isLoading } = useSWR<QueriedTagData[]>('/api/tags/', fetcher);
 
   const [showInfo, setShowInfo] = useState(false);
@@ -52,20 +47,29 @@ const TagEventPopupWindow = ({
   );
   const [newTagName, setNewTagName] = useState('');
 
+  // ANTD message
+  const [messageApi, contextHolder] = message.useMessage();
+
   //for delete confirmation
   // const [deleteTag, setDeleteTag] = useState('');
   // const [showConfirm, setShowConfirm] = useState(false);
   // const [confirmPosition, setConfirmPosition] = useState({ x: 0, y: 0 });
   const handleDeleteIconClick = async (tagName: string, tagId: ObjectId) => {
     if (window.confirm(`Are you sure to delete: ${tagName}?`)) {
-      console.log('OK BRO');
       const res = await fetch(`/api/tags/${tagId}`, {
         method: 'DELETE',
       });
       if (res.ok) {
-        alert('Tag deleted successfully');
+        const resObj = await res.json();
+        messageApi.open({
+          type: 'success',
+          content: resObj.message,
+        });
       } else {
-        alert('error deleting tag');
+        messageApi.open({
+          type: 'error',
+          content: 'There was an error deleting the tag',
+        });
       }
     }
   };
@@ -97,13 +101,22 @@ const TagEventPopupWindow = ({
           body: JSON.stringify({ tagName: query }),
         });
         if (res.ok) {
-          const newTag = await res.json();
-          alert('New tag is successfully created.');
+          const resObj = await res.json();
+          messageApi.open({
+            type: 'success',
+            content: resObj.message,
+          });
         } else {
-          throw new Error('Fail to create new tag');
+          messageApi.open({
+            type: 'error',
+            content: 'Sorry, an error occurred',
+          });
         }
       } else {
-        alert('This tag already exists!');
+        messageApi.open({
+          type: 'warning',
+          content: 'This tag already exists!',
+        });
       }
     }
   };
@@ -119,7 +132,11 @@ const TagEventPopupWindow = ({
     if (res.ok) {
       setNewTagName('');
       setEditingTag(undefined);
-      alert('Tag edited successfully');
+      const resObj = await res.json();
+      messageApi.open({
+        type: 'success',
+        content: resObj.message,
+      });
     } else {
       alert('error editing tag');
     }
@@ -134,9 +151,11 @@ const TagEventPopupWindow = ({
   };
 
   return (
-    <PopupWindow hidePopup={() => setShowPopup(false)}>
-      <TagEventContainer>
-        {/* {showConfirm && (
+    <>
+      {contextHolder}
+      <PopupWindow hidePopup={() => setShowPopup(false)}>
+        <TagEventContainer>
+          {/* {showConfirm && (
           <DeleteConfirmContainer
             style={{
               top: confirmPosition.y - 120,
@@ -152,125 +171,128 @@ const TagEventPopupWindow = ({
             </DeleteConfirmButtonGroup>
           </DeleteConfirmContainer>
         )} */}
-        <TagEventHeader>Manage tags</TagEventHeader>
-        <TagBodyContainer>
-          {showInfo && (
-            <TagInfoContainer>
-              <InfoTextBox>
-                <InfoHeader>Tips</InfoHeader>
-                <InfoSubheader>How to use this page?</InfoSubheader>
-                <InfoList>
-                  <InfoListItem>Tags are categories of events.</InfoListItem>
-                  <InfoListItem>
-                    To create <BoldText>new</BoldText> tags: enter tag names and
-                    click check mark.
-                  </InfoListItem>
-                  <InfoListItem>
-                    To <BoldText>edit</BoldText> existing tags: double click a
-                    tag and modify.
-                  </InfoListItem>
-                  <InfoListItem>
-                    To <BoldText>delete</BoldText> a tag: hover over a tag and
-                    click the trash icon.
-                  </InfoListItem>
-                </InfoList>
-              </InfoTextBox>
-            </TagInfoContainer>
-          )}
+          <TagEventHeader>Manage tags</TagEventHeader>
+          <TagBodyContainer>
+            {showInfo && (
+              <TagInfoContainer>
+                <InfoTextBox>
+                  <InfoHeader>Tips</InfoHeader>
+                  <InfoSubheader>How to use this page?</InfoSubheader>
+                  <InfoList>
+                    <InfoListItem>Tags are categories of events.</InfoListItem>
+                    <InfoListItem>
+                      To create <BoldText>new</BoldText> tags: enter tag names
+                      and click check mark.
+                    </InfoListItem>
+                    <InfoListItem>
+                      To <BoldText>edit</BoldText> existing tags: double click a
+                      tag and modify.
+                    </InfoListItem>
+                    <InfoListItem>
+                      To <BoldText>delete</BoldText> a tag: hover over a tag and
+                      click the trash icon.
+                    </InfoListItem>
+                  </InfoList>
+                </InfoTextBox>
+              </TagInfoContainer>
+            )}
 
-          <MiddleContainer>
-            <SearchContainer>
-              <Image
-                onMouseOver={() => setShowInfo(true)}
-                onMouseLeave={() => setShowInfo(false)}
-                src="/event/info.svg"
-                alt="info button"
-                width="20"
-                height="20"
-              />
-              <SearchInput
-                placeholder="Enter tag name here..."
-                value={searchQuery}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setSearchQuery(e.target.value);
-                  handleSearch(e.target.value);
-                }}
-              />
-              <Image
-                onClick={handleCreateTag}
-                src="/event/check-submit.svg"
-                alt="submit tag"
-                width="30"
-                height="30"
-              />
-            </SearchContainer>
+            <MiddleContainer>
+              <SearchContainer>
+                <Image
+                  onMouseOver={() => setShowInfo(true)}
+                  onMouseLeave={() => setShowInfo(false)}
+                  src="/event/info.svg"
+                  alt="info button"
+                  width="20"
+                  height="20"
+                />
+                <SearchInput
+                  placeholder="Enter tag name here..."
+                  value={searchQuery}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setSearchQuery(e.target.value);
+                    handleSearch(e.target.value);
+                  }}
+                />
+                <Image
+                  onClick={handleCreateTag}
+                  src="/event/check-submit.svg"
+                  alt="submit tag"
+                  width="30"
+                  height="30"
+                />
+              </SearchContainer>
 
-            <TagDisplayContainer>
-              {filteredTags.length > 0 ? (
-                filteredTags.map((tag, index) => (
-                  <SingleTag
-                    key={index}
-                    onDoubleClick={() => {
-                      setNewTagName('');
-                      setEditingTag(tag);
-                    }}
-                    onMouseLeave={() => {
-                      cancelEdit();
-                    }}>
-                    {editingTag === tag ? (
-                      <EditingTagForm
-                        onSubmit={e => {
-                          e.preventDefault();
-                          handleEditTag(tag._id);
-                        }}>
-                        <EditingTagInput
-                          placeholder="Type in new name and hit enter"
-                          value={newTagName}
-                          onChange={(
-                            e: React.ChangeEvent<HTMLInputElement>
-                          ) => {
-                            setNewTagName(e.target.value);
-                          }}
-                        />
-                      </EditingTagForm>
-                    ) : (
-                      <>
-                        <span>{tag.tagName}</span>
-                        <SingleTagDelete>
-                          <Image
-                            src="/event/trash.svg"
-                            alt="delete tag"
-                            height="25"
-                            width="25"
-                            // onClick={() => setShowConfirm(!showConfirm)}
-                            onClick={() =>
-                              handleDeleteIconClick(tag.tagName, tag._id)
-                            }
+              <TagDisplayContainer>
+                {filteredTags.length > 0 ? (
+                  filteredTags.map((tag, index) => (
+                    <SingleTag
+                      key={index}
+                      onDoubleClick={() => {
+                        setNewTagName('');
+                        setEditingTag(tag);
+                      }}
+                      onMouseLeave={() => {
+                        cancelEdit();
+                      }}>
+                      {editingTag === tag ? (
+                        <EditingTagForm
+                          onSubmit={e => {
+                            e.preventDefault();
+                            handleEditTag(tag._id);
+                          }}>
+                          <EditingTagInput
+                            placeholder="Type in new name and hit enter"
+                            value={newTagName}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                              setNewTagName(e.target.value);
+                            }}
                           />
-                        </SingleTagDelete>
-                      </>
-                    )}
-                  </SingleTag>
-                ))
-              ) : (
-                <EmptyContainer>
-                  <EmptyContent>
-                    <Image
-                      src="/./event/folder-dashed.svg"
-                      alt="no tags"
-                      width="150"
-                      height="150"
-                    />
-                    <EmptyMessage>No tag</EmptyMessage>
-                    <EmptyMessage>Click check mark to create new</EmptyMessage>
-                  </EmptyContent>
-                </EmptyContainer>
-              )}
-            </TagDisplayContainer>
-          </MiddleContainer>
-        </TagBodyContainer>
-      </TagEventContainer>
-    </PopupWindow>
+                        </EditingTagForm>
+                      ) : (
+                        <>
+                          <span>{tag.tagName}</span>
+                          <SingleTagDelete>
+                            <Image
+                              src="/event/trash.svg"
+                              alt="delete tag"
+                              height="25"
+                              width="25"
+                              // onClick={() => setShowConfirm(!showConfirm)}
+                              onClick={() =>
+                                handleDeleteIconClick(tag.tagName, tag._id)
+                              }
+                            />
+                          </SingleTagDelete>
+                        </>
+                      )}
+                    </SingleTag>
+                  ))
+                ) : (
+                  <EmptyContainer>
+                    <EmptyContent>
+                      <Image
+                        src="/./event/folder-dashed.svg"
+                        alt="no tags"
+                        width="150"
+                        height="150"
+                      />
+                      <EmptyMessage>No tag</EmptyMessage>
+                      <EmptyMessage>
+                        Click check mark to create new
+                      </EmptyMessage>
+                    </EmptyContent>
+                  </EmptyContainer>
+                )}
+              </TagDisplayContainer>
+            </MiddleContainer>
+          </TagBodyContainer>
+        </TagEventContainer>
+      </PopupWindow>
+    </>
   );
 };
 

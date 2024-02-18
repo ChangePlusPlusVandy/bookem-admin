@@ -46,7 +46,7 @@ export default async function handler(
           events: [],
         });
         await newTag.save();
-        res.status(200).json(newTag);
+        res.status(200).json({ message: 'New tag created successfully' });
       } catch (err) {
         console.error(err);
         res.status(500).json({ message: err });
