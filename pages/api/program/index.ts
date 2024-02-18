@@ -1,18 +1,15 @@
 import dbConnect from '@/lib/dbConnect';
 import Users from 'bookem-shared/src/models/Users';
-import VolunteerEvents from 'bookem-shared/src/models/VolunteerEvents';
+import VolunteerPrograms from 'bookem-shared/src/models/VolunteerPrograms';
 import Tags from 'bookem-shared/src/models/Tags';
 import {
   QueriedUserData,
-  QueriedVolunteerEventDTO,
-  QueriedVolunteerEventData,
+  QueriedVolunteerProgramData,
 } from 'bookem-shared/src/types/database';
 import { ObjectId } from 'mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]';
-import VolunteerPrograms from 'bookem-shared/src/models/VolunteerPrograms';
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -22,30 +19,21 @@ export default async function handler(
 
   switch (req.method) {
     /**
-     * @route GET /api/event/
-     * @desc Get all events
-     * @res QueriedVolunteerEventData
+     * @route GET /api/program/
+     * @desc Get all programs
+     * @res QueriedVolunteerProgramData
      */
     case 'GET':
       try {
         await dbConnect();
-
-        // TODO: remove this after development
-        await Tags.find({});
-        await VolunteerPrograms.find({});
-
-        // query events and populate fields with mongoose refs
-        const allEvents = (await VolunteerEvents.find()
-          .populate({ path: 'program' })
-          .populate({ path: 'tags' })
-          .exec()) as QueriedVolunteerEventDTO[];
-
-        return res.status(200).json(allEvents);
+        const allPrograms = await VolunteerPrograms.find();
+        return res.status(200).json(allPrograms); // directly returning the array
       } catch (error) {
         console.error(error);
-        res.status(500).json({ message: error });
+        res.status(500).json({ message: 'Server error' });
       }
       break;
+
     // case 'PUT':
     // case 'DELETE':
     // default:

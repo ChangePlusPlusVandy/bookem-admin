@@ -1,3 +1,5 @@
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 export const convertToDate = (str: string) => {
   if (str === '') return str;
   const date = new Date(str);
@@ -36,4 +38,21 @@ export const fetchData = async (route: string) => {
     throw new Error('An error has occurred while fetching: ' + res.statusText);
   }
   return await res.json();
+};
+
+export const fetcher = (url: string) => fetch(url).then(res => res.json());
+
+// function to export what is on the table at the time to an excel file
+export const handleExport = (fileName: string) => {
+  const workbook = XLSX.utils.table_to_book(
+    document.querySelector('#table-container')
+  );
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array',
+  });
+  const blob = new Blob([excelBuffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  });
+  saveAs(blob, fileName + '.xlsx');
 };

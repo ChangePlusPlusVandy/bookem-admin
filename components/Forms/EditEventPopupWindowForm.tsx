@@ -157,7 +157,7 @@ const EditEventPopupWindowForm = ({
                 'HH:mm'
               )}
               onChange={(value, startTime) => {
-                setStartTime(startTime);
+                setStartTime(startTime.toString());
                 console.log(startTime);
               }}
             />
@@ -169,7 +169,7 @@ const EditEventPopupWindowForm = ({
                 'HH:mm'
               )}
               onChange={(value, endTime) => {
-                setEndTime(endTime);
+                setEndTime(endTime.toString());
                 console.log(endTime);
               }}
             />

@@ -54,11 +54,7 @@ const StatusOptions = styled.select``;
 
 const Option = styled.option``;
 
-const UserApplication = ({
-  application,
-}: {
-  application: QueriedVolunteerApplicationData;
-}) => {
+const UserApplication = ({ application }: { application: any }) => {
   const [eventLoaded, setEventLoaded] = useState(false);
   const [event, setEvent] = useState<QueriedVolunteerEventData>();
   const [approvalStatus, setApprovalStatus] = useState('pending');
@@ -102,7 +98,7 @@ const UserApplication = ({
     try {
       const approveObject = { updatedStatus: 'rejected', id: application._id };
       const path = '/api/applications/updateStatus';
-      console.log("I'm here!");
+      // console.log("I'm here!");
       await fetch(path, {
         method: 'POST',
         body: JSON.stringify(approveObject),
@@ -149,12 +145,12 @@ const UserApplication = ({
           <Option value="pending">pending</Option>
         </StatusOptions>
       </StatusContainer>
-      {application?.formData.map((item: any) => (
+      {/* {application?.formData.map((item: any) => (
         <ItemContainer key={item.question}>
           <Question>{item.question}</Question>
           <Response>{item.answer}</Response>
         </ItemContainer>
-      ))}
+      ))} */}
     </Container>
   );
 };
