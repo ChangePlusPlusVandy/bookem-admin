@@ -39,17 +39,15 @@ const TagEventPopupWindow = ({
     data: allTags,
     isLoading,
     error,
-    mutate,
+    mutate, // Used to refetch the data
   } = useSWR<QueriedTagData[]>('/api/tags/', fetcher, {
     onSuccess: data => {
-      // setAllTags(data);
       setFilteredTags(data);
     },
   });
 
   const [showInfo, setShowInfo] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  // const [allTags, setAllTags] = useState<QueriedTagData[]>([]);
   const [filteredTags, setFilteredTags] = useState<QueriedTagData[]>([]);
   //for edit tag
   const [editingTag, setEditingTag] = useState<QueriedTagData | undefined>(
@@ -78,6 +76,7 @@ const TagEventPopupWindow = ({
           type: 'success',
           content: resObj.message,
         });
+        mutate();
       } else {
         messageApi.open({
           type: 'error',
@@ -112,6 +111,7 @@ const TagEventPopupWindow = ({
             type: 'success',
             content: resObj.message,
           });
+          mutate();
         } else {
           messageApi.open({
             type: 'error',
@@ -143,6 +143,7 @@ const TagEventPopupWindow = ({
         type: 'success',
         content: resObj.message,
       });
+      mutate();
     } else {
       alert('error editing tag');
     }
@@ -158,6 +159,7 @@ const TagEventPopupWindow = ({
 
   return (
     <>
+      {/* ANTD message context holder */}
       {contextHolder}
       <PopupWindow hidePopup={() => setShowPopup(false)}>
         <TagEventContainer>
