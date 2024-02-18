@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PopupWindow from '@/components/PopupWindow';
 import Image from 'next/image';
+import { ExclamationCircleFilled } from '@ant-design/icons';
 import {
   BoldText,
   EditingTagForm,
@@ -27,7 +28,7 @@ import {
 import { QueriedTagData } from 'bookem-shared/src/types/database';
 import useSWR from 'swr';
 import { ObjectId } from 'mongodb';
-import { message } from 'antd';
+import { Modal, message } from 'antd';
 import { fetcher } from '@/utils/utils';
 
 const TagEventPopupWindow = ({
@@ -58,31 +59,45 @@ const TagEventPopupWindow = ({
   // ANTD message
   const [messageApi, contextHolder] = message.useMessage();
 
+  // ANTD Modal
+  const { confirm } = Modal;
+
   if (!allTags || error) return <div>Failed to load event table</div>;
   if (isLoading) return <div>Loading...</div>;
 
-  //for delete confirmation
-  // const [deleteTag, setDeleteTag] = useState('');
-  // const [showConfirm, setShowConfirm] = useState(false);
-  // const [confirmPosition, setConfirmPosition] = useState({ x: 0, y: 0 });
-  const handleDeleteIconClick = async (tagName: string, tagId: ObjectId) => {
-    if (window.confirm(`Are you sure to delete: ${tagName}?`)) {
-      const res = await fetch(`/api/tags/${tagId}`, {
-        method: 'DELETE',
+  const showDeleteConfirm = (tagName: string, tagId: ObjectId) => {
+    confirm({
+      title: 'Are you sure about deleting this tags?',
+      icon: <ExclamationCircleFilled />,
+      content: 'Some descriptions',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        handleDelete(tagName, tagId);
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
+
+  const handleDelete = async (tagName: string, tagId: ObjectId) => {
+    const res = await fetch(`/api/tags/${tagId}`, {
+      method: 'DELETE',
+    });
+    if (res.ok) {
+      const resObj = await res.json();
+      messageApi.open({
+        type: 'success',
+        content: resObj.message,
       });
-      if (res.ok) {
-        const resObj = await res.json();
-        messageApi.open({
-          type: 'success',
-          content: resObj.message,
-        });
-        mutate();
-      } else {
-        messageApi.open({
-          type: 'error',
-          content: 'There was an error deleting the tag',
-        });
-      }
+      mutate();
+    } else {
+      messageApi.open({
+        type: 'error',
+        content: 'There was an error deleting the tag',
+      });
     }
   };
 
@@ -163,22 +178,6 @@ const TagEventPopupWindow = ({
       {contextHolder}
       <PopupWindow hidePopup={() => setShowPopup(false)}>
         <TagEventContainer>
-          {/* {showConfirm && (
-          <DeleteConfirmContainer
-            style={{
-              top: confirmPosition.y - 120,
-              left: confirmPosition.x,
-            }}>
-            <DeleteConfirmTitle>Are you sure?</DeleteConfirmTitle>
-            <DeleteConfirmText>
-              Confirmation to delete tag: {deleteTag}
-            </DeleteConfirmText>
-            <DeleteConfirmButtonGroup>
-              <DeleteConfirmButton>Cancel</DeleteConfirmButton>
-              <DeleteConfirmButton>Delete</DeleteConfirmButton>
-            </DeleteConfirmButtonGroup>
-          </DeleteConfirmContainer>
-        )} */}
           <TagEventHeader>Manage tags</TagEventHeader>
           <TagBodyContainer>
             {showInfo && (
@@ -269,9 +268,8 @@ const TagEventPopupWindow = ({
                               alt="delete tag"
                               height="25"
                               width="25"
-                              // onClick={() => setShowConfirm(!showConfirm)}
                               onClick={() =>
-                                handleDeleteIconClick(tag.tagName, tag._id)
+                                showDeleteConfirm(tag.tagName, tag._id)
                               }
                             />
                           </SingleTagDelete>
