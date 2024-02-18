@@ -106,6 +106,7 @@ const EventTableImpl = ({
                   .filter(tag => tag !== '');
                 setSelectedTags(tags);
               }}
+              style={{ width: '300px' }}
             />
           }
           trigger="click"

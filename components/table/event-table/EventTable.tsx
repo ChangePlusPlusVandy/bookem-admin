@@ -191,17 +191,6 @@ const EventTable = () => {
   });
   return (
     <>
-      <Input
-        placeholder="Enter tags separated by commas"
-        onChange={e => {
-          const tags = e.target.value
-            .split(',')
-            .map(tag => tag.trim())
-            .filter(tag => tag !== '');
-          setSelectedTags(tags);
-        }}
-      />
-
       <EventTableImpl
         getColumnSearchProps={getColumnSearchProps}
         sortedInfo={sortedInfo}
