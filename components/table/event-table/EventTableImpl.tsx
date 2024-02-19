@@ -9,10 +9,12 @@ import { TableContainer } from '@/styles/table.styles';
 import Link from 'next/link';
 import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
-import EventTable from './EventTable';
 import { EventDataIndex, EventRowData } from '@/utils/table-types';
-import { handleExport } from '@/utils/utils';
+import { fetcher } from '@/utils/utils';
 import TableHeader from '@/components/table/event-table/TableHeader';
+import { convertEventDataToRowData } from '@/utils/table-utils';
+import useSWR from 'swr';
+import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
 
 /**
  * Contains the "UI" part of Event Table
@@ -22,19 +24,56 @@ const EventTableImpl = ({
   getColumnSearchProps,
   sortedInfo,
   handleChange,
-  dataForTable,
-  setSelectedTags,
 }: //have one for seleted tags
-
 {
   getColumnSearchProps: (dataIndex: EventDataIndex) => ColumnType<EventRowData>;
   sortedInfo: SorterResult<EventRowData>;
   handleChange: TableProps<EventRowData>['onChange'];
-  dataForTable: EventRowData[];
-  setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>; // Add this line
 }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
+  const [filteredDataByTags, setFilteredDataByTags] =
+    useState<EventRowData[]>();
+
+  const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
+  const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
+    '/api/event/',
+    fetcher,
+    {
+      onSuccess: data => {
+        setDataForTable(convertEventDataToRowData(data));
+        setFilteredDataByTags(dataForTable);
+      },
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+    }
+  );
+
+  // Extra defense to refetch data if needed
+  useEffect(() => {
+    mutate();
+  }, [mutate, data]);
+
+  // check for errors and loading
+  if (error) return <div>Failed to load event table</div>;
+  if (isLoading) return <div>Loading...</div>;
+
+  // Tag filter
+  const handleFilterByTags = (e: any) => {
+    // Logic to handle tag input, similar to your existing onChange
+    const tags = e.target.value
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(tag => tag !== '');
+    const filteredData = dataForTable.filter(
+      event =>
+        tags.length === 0 || // Show all events if no tags are selected
+        tags.every(tag =>
+          event.tags.some(eventTag => eventTag.tagName.includes(tag))
+        )
+    );
+    setFilteredDataByTags(filteredData);
+  };
 
   // Define columns for the Ant Design table
   const columns: ColumnsType<EventRowData> = [
@@ -98,14 +137,7 @@ const EventTableImpl = ({
           content={
             <Input
               placeholder="Enter tags separated by commas"
-              onPressEnter={e => {
-                // Logic to handle tag input, similar to your existing onChange
-                const tags = e.target.value
-                  .split(',')
-                  .map(tag => tag.trim())
-                  .filter(tag => tag !== '');
-                setSelectedTags(tags);
-              }}
+              onPressEnter={handleFilterByTags}
               style={{ width: '300px' }}
             />
           }
@@ -170,7 +202,7 @@ const EventTableImpl = ({
       <TableContainer>
         <div id="table-container">
           <Table
-            dataSource={dataForTable}
+            dataSource={filteredDataByTags}
             onChange={handleChange}
             columns={columns}
             pagination={false}

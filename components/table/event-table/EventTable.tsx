@@ -22,39 +22,8 @@ import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
 const EventTable = () => {
   const [sortedInfo, setSortedInfo] = useState<SorterResult<EventRowData>>({});
   const [searchText, setSearchText] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
-  const [allData, setAllData] = useState<EventRowData[]>([]);
-  const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
-  const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
-    '/api/event/',
-    fetcher,
-    {
-      onSuccess: data => {
-        setDataForTable(convertEventDataToRowData(data));
-      },
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
-    }
-  );
-
-  // Extra defense to refetch data if needed
-  useEffect(() => {
-    mutate();
-  }, [mutate, data]);
-
-  // check for errors and loading
-  if (error) return <div>Failed to load event table</div>;
-  if (isLoading) return <div>Loading...</div>;
-
-  const filteredDataByTags = dataForTable.filter(
-    event =>
-      selectedTags.length === 0 || // Show all events if no tags are selected
-      selectedTags.every(tag =>
-        event.tags.some(eventTag => eventTag.tagName.includes(tag))
-      )
-  );
 
   /**
    * Used for sort and filters
@@ -195,8 +164,6 @@ const EventTable = () => {
         getColumnSearchProps={getColumnSearchProps}
         sortedInfo={sortedInfo}
         handleChange={handleChange}
-        dataForTable={filteredDataByTags}
-        setSelectedTags={setSelectedTags} // Pass this as a prop
       />
     </>
   );
