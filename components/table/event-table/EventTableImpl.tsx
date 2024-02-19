@@ -29,16 +29,22 @@ const EventTableImpl = ({
   getColumnSearchProps,
   sortedInfo,
   handleChange,
-}: //have one for seleted tags
-{
+  filteredDataByTags,
+  setFilteredDataByTags,
+  handleFilterByTags,
+}: {
   getColumnSearchProps: (dataIndex: EventDataIndex) => ColumnType<EventRowData>;
   sortedInfo: SorterResult<EventRowData>;
   handleChange: TableProps<EventRowData>['onChange'];
+  filteredDataByTags: EventRowData[];
+  setFilteredDataByTags: (data: EventRowData[]) => void;
+  handleFilterByTags: (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    dataForTable: EventRowData[]
+  ) => void;
 }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
-  const [filteredDataByTags, setFilteredDataByTags] =
-    useState<EventRowData[]>();
 
   const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
   const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
@@ -62,23 +68,6 @@ const EventTableImpl = ({
   // check for errors and loading
   if (error) return <div>Failed to load event table</div>;
   if (isLoading) return <div>Loading...</div>;
-
-  // Tag filter
-  const handleFilterByTags = (e: any) => {
-    // Logic to handle tag input, similar to your existing onChange
-    const tags = e.target.value
-      .split(',')
-      .map(tag => tag.trim())
-      .filter(tag => tag !== '');
-    const filteredData = dataForTable.filter(
-      event =>
-        tags.length === 0 || // Show all events if no tags are selected
-        tags.every(tag =>
-          event.tags.some(eventTag => eventTag.tagName.includes(tag))
-        )
-    );
-    setFilteredDataByTags(filteredData);
-  };
 
   // Define columns for the Ant Design table
   const columns: ColumnsType<EventRowData> = [
@@ -144,7 +133,7 @@ const EventTableImpl = ({
             content={
               <Input
                 placeholder="Enter tags separated by commas"
-                onPressEnter={handleFilterByTags}
+                onPressEnter={e => handleFilterByTags(e, dataForTable)}
                 style={{ width: '300px' }}
               />
             }
