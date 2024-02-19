@@ -63,7 +63,7 @@ const EventTableImpl = ({
   // Extra defense to refetch data if needed
   useEffect(() => {
     mutate();
-  }, [mutate, data]);
+  }, [mutate, data, filteredDataByTags]);
 
   // check for errors and loading
   if (error) return <div>Failed to load event table</div>;
