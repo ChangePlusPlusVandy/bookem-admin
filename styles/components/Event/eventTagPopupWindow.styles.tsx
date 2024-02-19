@@ -67,6 +67,10 @@ export const InfoListItem = styled.li`
   line-height: 1.5em;
 `;
 
+export const BoldText = styled.b`
+  font-weight: 800;
+`;
+
 export const MiddleContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -149,4 +153,46 @@ export const SingleTag = styled.div`
   &:hover ${SingleTagDelete} {
     display: block;
   }
+  position: relative;
+`;
+
+export const DeleteConfirmContainer = styled.div`
+  width: 250px;
+  height: 150px;
+  padding: 20px;
+  border-radius: 10px;
+  position: absolute;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const DeleteConfirmTitle = styled.h2`
+  font-size: ${props => props.theme.fontSizes.EXTRA_SMALL};
+`;
+
+export const DeleteConfirmText = styled.p`
+  font-size: ${props => props.theme.fontSizes.EXTRA_SMALL};
+`;
+
+export const DeleteConfirmButtonGroup = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-around;
+  /* margin: 10px; */
+`;
+
+export const DeleteConfirmButton = styled.button``;
+
+export const EditingTagForm = styled.form`
+  width: 100%;
+`;
+
+export const EditingTagInput = styled.input`
+  border: 0;
+  padding: 5px 7px;
+  width: 100%;
 `;
