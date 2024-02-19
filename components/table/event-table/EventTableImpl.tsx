@@ -15,6 +15,11 @@ import TableHeader from '@/components/table/event-table/TableHeader';
 import { convertEventDataToRowData } from '@/utils/table-utils';
 import useSWR from 'swr';
 import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
+import { FilterOutlined } from '@ant-design/icons';
+import {
+  FilterIcon,
+  TagTitle,
+} from '@/styles/components/Table/EventTable.styles';
 
 /**
  * Contains the "UI" part of Event Table
@@ -133,20 +138,21 @@ const EventTableImpl = ({
     {
       // Column for 'Tags'
       title: (
-        <Popover
-          content={
-            <Input
-              placeholder="Enter tags separated by commas"
-              onPressEnter={handleFilterByTags}
-              style={{ width: '300px' }}
-            />
-          }
-          trigger="click"
-          title="Filter by Tags">
-          <Tag color="blue" style={{ cursor: 'pointer' }}>
-            Tags
-          </Tag>
-        </Popover>
+        <TagTitle>
+          <span>Tags</span>
+          <Popover
+            content={
+              <Input
+                placeholder="Enter tags separated by commas"
+                onPressEnter={handleFilterByTags}
+                style={{ width: '300px' }}
+              />
+            }
+            trigger="click"
+            title="Filter by Tags">
+            <FilterIcon />
+          </Popover>
+        </TagTitle>
       ),
       dataIndex: 'tags',
       key: 'tags',
