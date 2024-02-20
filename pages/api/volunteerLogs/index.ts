@@ -13,32 +13,33 @@ export default async function handler(
   res: NextApiResponse<any>
 ) {
   // check that user is authenticated
-  const validateData = (volunteerLog: VolunteerLogData) => {
+  const validateData = (volunteerLog: VolunteerLogData): boolean => {
     if (!volunteerLog.eventId) {
-      res.status(400).json({
+      res.status(500).json({
         message: 'You forgot to select an event.',
       });
-      return;
+      return false;
     }
 
     if (!volunteerLog.hours) {
       res
-        .status(400)
+        .status(500)
         .json({ message: 'You forgot to fill in number of hours.' });
-      return;
+      return false;
     }
 
     if (!volunteerLog.numBooks) {
       res
-        .status(400)
+        .status(500)
         .json({ message: 'You forgot to fill in number of books donated' });
-      return;
+      return false;
     }
 
     if (!volunteerLog.date) {
-      res.status(400).json({ message: 'You forgot to fill in date' });
-      return;
+      res.status(500).json({ message: 'You forgot to fill in date' });
+      return false;
     }
+    return true;
   };
 
   switch (req.method) {
@@ -64,7 +65,7 @@ export default async function handler(
         // start a try catch block to catch any errors in parsing the request body
         const volunteerLog = req.body as VolunteerLogData;
 
-        validateData(volunteerLog);
+        if (!validateData(volunteerLog)) return;
 
         // construct the object we want to insert into our database
         await VolunteerLogs.insertMany(volunteerLog);
