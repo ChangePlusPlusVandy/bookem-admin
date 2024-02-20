@@ -11,7 +11,8 @@ import { authOptions } from '../auth/[...nextauth]';
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
-) {  // check that user is authenticated
+) {
+  // check that user is authenticated
   const validateData = (volunteerLog: VolunteerLogData) => {
     if (!volunteerLog.eventId) {
       res.status(400).json({
@@ -54,7 +55,7 @@ export default async function handler(
         });
       }
       break;
-    
+
     case 'POST':
       try {
         // connect to our database
