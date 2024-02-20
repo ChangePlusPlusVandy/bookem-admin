@@ -24,28 +24,9 @@ const EventTable = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
-
-  const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
-  const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
-    '/api/event/',
-    fetcher,
-    {
-      onSuccess: data => {
-        setDataForTable(convertEventDataToRowData(data));
-      },
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
-    }
+  const [filteredDataByTags, setFilteredDataByTags] = useState<EventRowData[]>(
+    []
   );
-
-  // Extra defense to refetch data if needed
-  useEffect(() => {
-    mutate();
-  }, [mutate, data]);
-
-  // check for errors and loading
-  if (error) return <div>Failed to load event table</div>;
-  if (isLoading) return <div>Loading...</div>;
 
   /**
    * Used for sort and filters
@@ -59,6 +40,26 @@ const EventTable = () => {
     sorter
   ) => {
     setSortedInfo(sorter as SorterResult<EventRowData>);
+  };
+
+  // Tag filter
+  const handleFilterByTags = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    dataForTable: EventRowData[]
+  ) => {
+    // Logic to handle tag input, similar to your existing onChange
+    const tags = e.currentTarget.value
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(tag => tag !== '');
+    const filteredData = dataForTable.filter(
+      event =>
+        tags.length === 0 || // Show all events if no tags are selected
+        tags.every(tag =>
+          event.tags.some(eventTag => eventTag.tagName.includes(tag))
+        )
+    );
+    setFilteredDataByTags(filteredData);
   };
 
   /**
@@ -186,7 +187,9 @@ const EventTable = () => {
         getColumnSearchProps={getColumnSearchProps}
         sortedInfo={sortedInfo}
         handleChange={handleChange}
-        dataForTable={dataForTable}
+        filteredDataByTags={filteredDataByTags}
+        setFilteredDataByTags={setFilteredDataByTags}
+        handleFilterByTags={handleFilterByTags}
       />
     </>
   );
