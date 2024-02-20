@@ -15,7 +15,6 @@ export const config = {
   matcher: ['/api/:function*'],
 };
 
-
 function middleware() {}
 // when in development, export the empty middleware function
 if (testingAPI) {
