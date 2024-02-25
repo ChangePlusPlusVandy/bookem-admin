@@ -3,7 +3,7 @@ import { Button, Table, TableProps } from 'antd';
 import type { ColumnType, SorterResult } from 'antd/es/table/interface';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import { TableContainer } from '@/styles/table.styles';
-import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
+import CreateAdminPopupWindow from '@/components/Forms/CreateAdminPopupWindow';
 import { AdminDataIndex, AdminRowData } from '@/utils/table-types';
 import TableHeader from '../admin-table/TableHeader';
 
@@ -78,9 +78,15 @@ const AdminTableImpl = ({
 
   return (
     <>
-      {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
+      {showPopup && <CreateAdminPopupWindow setShowPopup={setShowPopup} />}
 
-      <TableHeader searchInput={searchInput} />
+      <TableHeader
+        setShowPopup={setShowPopup}
+        showPopup={showPopup}
+        setShowPopupTag={setShowPopupTag}
+        showPopupTag={showPopup}
+        searchInput={searchInput}
+      />
       <TableContainer>
         <div id="table-container">
           <Table

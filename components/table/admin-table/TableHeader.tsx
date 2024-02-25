@@ -9,8 +9,16 @@ import {
 } from '@ant-design/icons';
 
 const TableHeader = ({
+  setShowPopup,
+  showPopup,
+  setShowPopupTag,
+  showPopupTag,
   searchInput,
 }: {
+  setShowPopup: (a: boolean) => void;
+  showPopup: boolean;
+  setShowPopupTag: (a: boolean) => void;
+  showPopupTag: boolean;
   searchInput: React.RefObject<any>;
 }) => {
   return (
@@ -26,7 +34,7 @@ const TableHeader = ({
           />
           <Button
             icon={<PlusOutlined rev={undefined} />}
-            onClick={() => {}}
+            onClick={() => setShowPopup(!showPopup)}
             style={{
               width: 50,
               marginLeft: 10,
