@@ -55,15 +55,20 @@ const EventTableImpl = ({
         setDataForTable(convertEventDataToRowData(data));
         setFilteredDataByTags(dataForTable);
       },
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     }
   );
 
-  // Extra defense to refetch data if needed
+  // Refetch data when data is updated
   useEffect(() => {
     mutate();
-  }, [mutate, data, filteredDataByTags]);
+  }, [mutate, data]);
+
+  //Reset filtered data if data is updated
+  useEffect(() => {
+    setFilteredDataByTags(dataForTable);
+  }, [dataForTable, setFilteredDataByTags]);
 
   // check for errors and loading
   if (error) return <div>Failed to load event table</div>;
