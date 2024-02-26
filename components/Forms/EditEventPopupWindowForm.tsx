@@ -1,260 +1,282 @@
 import {
   EditEventForm,
-  FormHeader,
-  FormLabel,
-  FormLogistics,
-  FormInput,
-  InputFlex,
-  ShortFormInput,
-  LongFormInput,
-  LargeFormInput,
-  AboutEvent,
   EditEventContainer,
 } from '@/styles/components/editEventPopupWindowForm.styles';
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
 import PopupWindow from '@/components/PopupWindow';
 import {
   QueriedVolunteerEventDTO,
+  QueriedVolunteerProgramData,
   VolunteerEventData,
-  VolunteerEventLocation,
 } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
+import dayjs from 'dayjs';
+import { QueriedTagData } from 'bookem-shared/src/types/database';
+
 import {
-  SubmitButton,
-  ButtonCenter,
-} from '@/styles/components/windowFlow.styles';
-import { DatePicker, TimePicker } from 'antd';
-import moment from 'moment';
-import Dayjs from 'dayjs';
+  Form,
+  Input,
+  Button,
+  Select,
+  DatePicker,
+  InputNumber,
+  Typography,
+  Space,
+  Flex,
+} from 'antd';
 
 interface ModifiedVolunteerEventData
   extends Omit<VolunteerEventData, 'volunteers'> {}
 
 const EditEventPopupWindowForm = ({
   setShowPopup,
+  event,
 }: {
   setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  event: QueriedVolunteerEventDTO;
 }) => {
   const router = useRouter();
   const { pid } = router.query;
-
-  const { register, handleSubmit } = useForm({
-    defaultValues: async () => {
-      const response = await fetch('/api/event/' + pid);
-      const data = await response.json();
-      console.log('aaaaa', data);
-      return data;
-    },
-  });
-  const [eventData, setEventData] = useState<QueriedVolunteerEventDTO>();
-  const [locationData, setLocationData] = useState<VolunteerEventLocation>();
-  const [startTime, setStartTime] = useState('12:00');
-  const [endTime, setEndTime] = useState('12:00');
-  const [startDate, setStartDate] = useState('01/01/01');
-  const [endDate, setEndDate] = useState('01/01/01');
-
-  const [error, setError] = useState<Error>();
-
   const { RangePicker } = DatePicker;
+  const [allTags, setAllTags] = useState<QueriedTagData[]>([]);
+  const [allPrograms, setAllPrograms] = useState<QueriedVolunteerProgramData[]>(
+    []
+  );
+  const [loading, setLoading] = useState(false);
+  const [submittable, setSubmittable] = useState(false);
 
-  // function onChange(time, timeString) {
-  //   console.log(time, timeString);
-  // }
+  const [form] = Form.useForm();
 
-  // useEffect(() => {
-  //   if (pid) {
-  //     fetch('/api/event/' + pid)
-  //       .then(res => {
-  //         if (!res.ok) {
-  //           throw new Error(
-  //             'An error has occurred while fetching: ' + res.statusText
-  //           );
-  //         }
-  //         return res.json();
-  //       })
-  //       .then(data => {
-  //         setEventData(data);
-  //         console.log(data);
-  //       })
-  //       .catch(err => setError(err));
-  //   } else setError(new Error('No pid found'));
-  // }, []);
+  useEffect(() => {
+    // get all tags
+    fetch('/api/tags')
+      .then(response => response.json())
+      .then(data => setAllTags(data));
+
+    // get all programs
+    fetch('/api/program')
+      .then(response => response.json())
+      .then(data => setAllPrograms(data));
+  }, []);
+
+  // Watch all values
+  const values = Form.useWatch([], form);
+
+  useEffect(() => {
+    form
+      .validateFields({ validateOnly: true })
+      .then(() => setSubmittable(true))
+      .catch(() => setSubmittable(false));
+  }, [form, values]);
 
   const onSubmit = (data: any) => {
-    // VolunteerEventData
-    console.log('THIS ISDATA: ', data);
+    setLoading(true);
+    // find tag ids from tag names
+    const tagIds = allTags
+      .filter(tag => data.tags.includes(tag.tagName))
+      .map(tag => tag._id);
 
-    const location: VolunteerEventLocation = {
-      street: data.street,
-      city: data.city,
-      state: data.state,
-      zip: data.zip,
-    };
+    // find program id from program name
+    const programId = allPrograms.find(
+      program => program.name === data.program
+    )?._id;
 
-    const dataToSave: ModifiedVolunteerEventData = {
+    const modifiedData: ModifiedVolunteerEventData = {
       name: data.name,
-      description: data.description,
-      startDate: data.startDate,
-      endDate: data.startDate,
+      tags: tagIds,
       maxSpot: data.maxSpot,
-      location: location,
+      requireApplication: false, // TODO: change when implementing application
+      program: programId,
+      location: {
+        street: data.location.street,
+        city: data.location.city,
+        state: data.location.state,
+        zip: data.location.zip,
+      },
+      description: data.description,
       phone: data.phone,
       email: data.email,
-      program: data.program,
-      requireApplication: false,
-      tags: [],
+      startDate: data.dateRange[0].format(),
+      endDate: data.dateRange[1].format(),
     };
-
-    // how to convert this into VolunteerEventData
-    // and then send this to PATCH /api/event/:id
-    // await fetch('/api/event/' + pid, {
-    //   method: 'PATCH',
-    //   body: dataToSave
-    // })
+    // console.log(modifiedData);
+    fetch(`/api/event/${pid}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(modifiedData),
+    }).then(() => {
+      setLoading(false);
+      setShowPopup(false);
+    });
   };
 
   return (
     <PopupWindow hidePopup={() => setShowPopup(false)}>
       <EditEventContainer>
         <EditEventForm>
-          <FormHeader>Edit Event</FormHeader>
+          <Typography.Title level={3} style={{ textAlign: 'center' }}>
+            Edit Event
+          </Typography.Title>
+          <Typography.Title level={5} style={{ textAlign: 'center' }}>
+            Overview
+          </Typography.Title>
+          <Form
+            form={form}
+            initialValues={{
+              name: event.name,
+              program: event.program?.name,
+              tags: event.tags.map(tag => tag.tagName),
+              maxSpot: event.maxSpot,
+              location: {
+                street: event.location.street,
+                city: event.location.city,
+                state: event.location.state,
+                zip: event.location.zip,
+              },
+              description: event.description,
+              phone: event.phone,
+              email: event.email,
+              dateRange: [dayjs(event.startDate), dayjs(event.endDate)],
+            }}
+            layout="horizontal"
+            onFinish={onSubmit}
+            labelCol={{ flex: '120px' }}
+            labelAlign="left"
+            labelWrap
+            colon={false}>
+            <Form.Item
+              label="Event Name"
+              name="name"
+              required
+              rules={[{ required: true }]}>
+              <Input placeholder="Event Name" />
+            </Form.Item>
 
-          <FormLabel>Event Name</FormLabel>
-          <InputFlex>
-            <FormInput
-              {...register('name')}
-              type="text"
-              placeholder="Event Name"
-              pattern="[A-Za-z]"
-              title="Input must be text"
-              defaultValue={eventData?.name}></FormInput>
-            <FormInput
-              {...register('program')}
-              type="text"
-              placeholder="Event Category (optional)"
-              pattern="[A-Za-z]"
-              title="Input must be text"
-              defaultValue={eventData?.program?.name}></FormInput>
-          </InputFlex>
+            <Form.Item name="program" label="Program Name">
+              <Select
+                allowClear
+                placeholder="Please select a program (Optional)"
+                options={allPrograms.map(program => ({
+                  label: program.name,
+                  value: program.name,
+                }))}
+              />
+            </Form.Item>
 
-          <FormLabel>Logistics</FormLabel>
+            <Form.Item name="tags" label="Event Tags">
+              <Select
+                mode="multiple"
+                allowClear
+                placeholder="Please select tags (Optional)"
+                options={allTags.map(tag => ({
+                  label: tag.tagName,
+                  value: tag.tagName,
+                }))}
+              />
+            </Form.Item>
 
-          <RangePicker
-          // defaultValue:[moment('2020-03-09'), moment('2020-03-27')]
-          // onChange={(value, startDate, endDate) => {
-          //   setStartDate(startDate);
-          //   setEndDate(endDate);
-          // }}
-          />
+            <Typography.Title level={5} style={{ textAlign: 'center' }}>
+              Logistics
+            </Typography.Title>
 
-          <InputFlex>
-            <TimePicker
-              use12Hours
-              format="h:mm a"
-              defaultValue={Dayjs(
-                Dayjs(eventData?.startDate.getTime()),
-                'HH:mm'
-              )}
-              onChange={(value, startTime) => {
-                setStartTime(startTime.toString());
-                console.log(startTime);
-              }}
-            />
-            <TimePicker
-              use12Hours
-              format="h:mm a"
-              defaultValue={Dayjs(
-                Dayjs(eventData?.startDate.getTime()),
-                'HH:mm'
-              )}
-              onChange={(value, endTime) => {
-                setEndTime(endTime.toString());
-                console.log(endTime);
-              }}
-            />
-          </InputFlex>
+            <Form.Item
+              name="dateRange"
+              label="Date Range"
+              required
+              rules={[{ required: true }]}>
+              <RangePicker showTime placeholder={['Start Date', 'End Date']} />
+            </Form.Item>
 
-          <InputFlex>
-            <TimePicker
-              format="h:mm a"
-              defaultValue={Dayjs('12:08', 'HH:mm')}
-              disabled
-            />
-            <TimePicker
-              format="h:mm a"
-              defaultValue={Dayjs('12:09', 'HH:mm')}
-              disabled
-            />
-          </InputFlex>
+            <Form.Item
+              name="maxSpot"
+              label="Max Spots"
+              required
+              rules={[{ required: true }]}>
+              <InputNumber placeholder="#" />
+            </Form.Item>
 
-          <InputFlex>
-            <ShortFormInput
-              {...register('maxSpot')}
-              type="text"
-              placeholder="#"
-              pattern="^[0-9]*$"
-              title="Input must be a whole number"
-              defaultValue={eventData?.maxSpot}></ShortFormInput>
-            <FormLogistics>max spots</FormLogistics>
-          </InputFlex>
-          <FormLabel>Address</FormLabel>
-          <LongFormInput
-            {...register('street')}
-            type="text"
-            placeholder="Street"
-            pattern="[A-Za-z0-9]"
-            title="Input must be in address format"
-            defaultValue={locationData?.street}></LongFormInput>
-          <InputFlex>
-            <FormInput
-              {...register('city')}
-              type="text"
-              placeholder="City"
-              pattern="[A-Za-z]"
-              title="Input must be a valid city"
-              defaultValue={locationData?.city}></FormInput>
-            <FormInput
-              {...register('state')}
-              type="text"
-              placeholder="State"
-              pattern="[A-Za-z]"
-              title="Input must be a valid state"
-              defaultValue={locationData?.state}></FormInput>
-          </InputFlex>
-          <FormInput
-            {...register('zip')}
-            type="text"
-            placeholder="Zip Code"
-            pattern="^(?(^00000(|-0000))|(\d{5}(|-\d{4})))$"
-            title="Input must be in proper zip code format"
-            defaultValue={locationData?.zip}></FormInput>
+            <Typography.Title level={5} style={{ textAlign: 'center' }}>
+              Address
+            </Typography.Title>
+            <Form.Item
+              label="Street"
+              name={['location', 'street']}
+              required
+              rules={[{ required: true }]}>
+              <Input placeholder="2301 Vanderbilt Place" />
+            </Form.Item>
+            <Form.Item
+              label="City"
+              name={['location', 'city']}
+              required
+              rules={[{ required: true }]}>
+              <Input placeholder="Nashville" />
+            </Form.Item>
+            <Form.Item
+              label="State"
+              name={['location', 'state']}
+              required
+              rules={[{ required: true }]}>
+              <Input placeholder="TN" />
+            </Form.Item>
+            <Form.Item
+              label="Zip"
+              name={['location', 'zip']}
+              required
+              rules={[{ required: true }]}>
+              <Input placeholder="37235" />
+            </Form.Item>
 
-          <FormLabel>About the event</FormLabel>
-          <AboutEvent>
-            <LargeFormInput
-              {...register('description')}
-              placeholder="About..."
-              defaultValue={eventData?.description}></LargeFormInput>
-          </AboutEvent>
-          <FormLabel>Contact</FormLabel>
-          <FormInput
-            {...register('phone')}
-            type="text"
-            placeholder="Phone number"
-            pattern="/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/"
-            title="Input must be a valid phone number"
-            defaultValue={eventData?.phone}></FormInput>
-          <FormInput
-            {...register('email')}
-            type="text"
-            placeholder="Email address"
-            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-            title="Input must be a valid email address"
-            defaultValue={eventData?.email}></FormInput>
-          <ButtonCenter>
-            <SubmitButton onClick={handleSubmit(onSubmit)}>Save</SubmitButton>
-          </ButtonCenter>
+            <Typography.Title level={5} style={{ textAlign: 'center' }}>
+              Event Description
+            </Typography.Title>
+            <Form.Item name="description" required rules={[{ required: true }]}>
+              <Input.TextArea placeholder="About..." />
+            </Form.Item>
+            <Typography.Title level={5}>Contact</Typography.Title>
+            <Form.Item
+              name="phone"
+              label="Phone"
+              required
+              rules={[{ required: true }]}>
+              <Input placeholder="xxx-xxx-xxxx" />
+            </Form.Item>
+            <Form.Item
+              name="email"
+              label="Email"
+              rules={[
+                {
+                  type: 'email',
+                  required: true,
+                  message: 'Invalid email',
+                },
+              ]}
+              required>
+              <Input placeholder="johndoe@bookem.org" />
+            </Form.Item>
+            <Form.Item>
+              <Flex justify="space-around">
+                <Button
+                  type="default"
+                  htmlType="button"
+                  style={{ width: '45%' }}
+                  onClick={() => setShowPopup(false)}>
+                  Close
+                </Button>
+                <Space size={10} />
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                  disabled={!submittable}
+                  style={{ width: '45%' }}>
+                  Save Changes
+                </Button>
+              </Flex>
+            </Form.Item>
+          </Form>
         </EditEventForm>
       </EditEventContainer>
     </PopupWindow>

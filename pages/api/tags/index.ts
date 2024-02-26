@@ -13,9 +13,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Get session user
-  const session = await getServerSession(req, res, authOptions);
-
   switch (req.method) {
     /**
      * @route GET /api/tags

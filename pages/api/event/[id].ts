@@ -43,6 +43,7 @@ export default async function handler(
         // query event and populate fields with mongoose refs
         const event = await VolunteerEvents.findById(id)
           .populate({ path: 'program' })
+          .populate({ path: 'tags' })
           .exec();
 
         // if event is not found
@@ -121,11 +122,16 @@ export default async function handler(
           return res.status(400).json({ message: 'Invalid id' });
 
         // validate that req.body follows the VolunteerEventSchema
+        const newEvent = new VolunteerEvents(req.body);
+
+        try {
+          await newEvent.validate();
+        } catch (error: any) {
+          return res.status(400).json({ message: error.message });
+        }
 
         // update event based on input
         const event = await VolunteerEvents.findByIdAndUpdate(id, req.body);
-        console.log('before update: ', event);
-        console.log('after update: ', req.body);
 
         // if event is not found
         if (!event)
