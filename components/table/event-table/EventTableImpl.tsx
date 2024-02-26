@@ -7,7 +7,7 @@ import type {
 } from 'antd/es/table/interface';
 import { TableContainer } from '@/styles/table.styles';
 import Link from 'next/link';
-import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
+import EventPopupWindowForm from '@/components/Forms/EventPopupWindowForm';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import { EventDataIndex, EventRowData } from '@/utils/table-types';
 import { handleExport } from '@/utils/utils';
@@ -132,7 +132,7 @@ const EventTableImpl = ({
 
   return (
     <>
-      {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
+      {showPopup && <EventPopupWindowForm setShowPopup={setShowPopup} />}
       {showPopupTag && <TagEventPopupWindow setShowPopup={setShowPopupTag} />}
       <TableHeader
         setShowPopup={setShowPopup}

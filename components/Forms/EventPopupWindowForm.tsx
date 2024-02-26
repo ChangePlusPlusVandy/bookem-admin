@@ -28,12 +28,12 @@ import {
 interface ModifiedVolunteerEventData
   extends Omit<VolunteerEventData, 'volunteers'> {}
 
-const EditEventPopupWindowForm = ({
+const EventPopupWindowForm = ({
   setShowPopup,
   event,
 }: {
   setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
-  event: QueriedVolunteerEventDTO;
+  event?: QueriedVolunteerEventDTO;
 }) => {
   const router = useRouter();
   const { pid } = router.query;
@@ -43,24 +43,82 @@ const EditEventPopupWindowForm = ({
     []
   );
   const [loading, setLoading] = useState(false);
+  const [submittable, setSubmittable] = useState(false);
+
+  const [form] = Form.useForm();
 
   useEffect(() => {
     // get all tags
     fetch('/api/tags')
       .then(response => response.json())
-      .then(data => setAllTags(data));
+      .then(data => setAllTags(data || []));
 
     // get all programs
     fetch('/api/program')
       .then(response => response.json())
-      .then(data => setAllPrograms(data));
+      .then(data => setAllPrograms(data || []));
   }, []);
+
+  // Watch all values
+  const values = Form.useWatch([], form);
+
+  useEffect(() => {
+    form
+      .validateFields({ validateOnly: true })
+      .then(() => setSubmittable(true))
+      .catch(() => setSubmittable(false));
+  }, [form, values]);
+
+  const initialValues = event
+    ? {
+        name: event.name,
+        program: event.program?.name,
+        tags: event.tags.map(tag => tag.tagName),
+        maxSpot: event.maxSpot,
+        location: {
+          street: event.location.street,
+          city: event.location.city,
+          state: event.location.state,
+          zip: event.location.zip,
+        },
+        description: event.description,
+        phone: event.phone,
+        email: event.email,
+        dateRange: [dayjs(event.startDate), dayjs(event.endDate)],
+      }
+    : {};
+
+  const handleEditEvent = (data: ModifiedVolunteerEventData) => {
+    fetch(`/api/event/${pid}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }).then(() => {
+      setLoading(false);
+      setShowPopup(false);
+    });
+  };
+
+  const handleCreateEvent = (data: ModifiedVolunteerEventData) => {
+    fetch('/api/event', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }).then(() => {
+      setLoading(false);
+      setShowPopup(false);
+    });
+  };
 
   const onSubmit = (data: any) => {
     setLoading(true);
     // find tag ids from tag names
     const tagIds = allTags
-      .filter(tag => data.tags.includes(tag.tagName))
+      .filter(tag => data.tags?.includes(tag.tagName))
       .map(tag => tag._id);
 
     // find program id from program name
@@ -87,16 +145,14 @@ const EditEventPopupWindowForm = ({
       endDate: data.dateRange[1].format(),
     };
     console.log(modifiedData);
-    fetch(`/api/event/${pid}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(modifiedData),
-    }).then(() => {
-      setLoading(false);
-      setShowPopup(false);
-    });
+
+    if (event) {
+      // if event exists, then it's an edit
+      handleEditEvent(modifiedData);
+    } else {
+      // if event doesn't exist, then it's a new event
+      handleCreateEvent(modifiedData);
+    }
   };
 
   return (
@@ -104,35 +160,25 @@ const EditEventPopupWindowForm = ({
       <EditEventContainer>
         <EditEventForm>
           <Typography.Title level={3} style={{ textAlign: 'center' }}>
-            Edit Event
+            {event ? 'Edit Event' : 'Create Event'}
           </Typography.Title>
           <Typography.Title level={5} style={{ textAlign: 'center' }}>
             Overview
           </Typography.Title>
           <Form
-            initialValues={{
-              name: event.name,
-              program: event.program?.name,
-              tags: event.tags.map(tag => tag.tagName),
-              maxSpot: event.maxSpot,
-              location: {
-                street: event.location.street,
-                city: event.location.city,
-                state: event.location.state,
-                zip: event.location.zip,
-              },
-              description: event.description,
-              phone: event.phone,
-              email: event.email,
-              dateRange: [dayjs(event.startDate), dayjs(event.endDate)],
-            }}
+            form={form}
+            initialValues={initialValues}
             layout="horizontal"
             onFinish={onSubmit}
             labelCol={{ flex: '120px' }}
             labelAlign="left"
             labelWrap
             colon={false}>
-            <Form.Item label="Event Name" name="name" required>
+            <Form.Item
+              label="Event Name"
+              name="name"
+              required
+              rules={[{ required: true }]}>
               <Input placeholder="Event Name" />
             </Form.Item>
 
@@ -163,38 +209,66 @@ const EditEventPopupWindowForm = ({
               Logistics
             </Typography.Title>
 
-            <Form.Item name="dateRange" label="Date Range" required>
+            <Form.Item
+              name="dateRange"
+              label="Date Range"
+              required
+              rules={[{ required: true }]}>
               <RangePicker showTime placeholder={['Start Date', 'End Date']} />
             </Form.Item>
 
-            <Form.Item name="maxSpot" label="Max Spots" required>
+            <Form.Item
+              name="maxSpot"
+              label="Max Spots"
+              required
+              rules={[{ required: true }]}>
               <InputNumber placeholder="#" />
             </Form.Item>
 
             <Typography.Title level={5} style={{ textAlign: 'center' }}>
               Address
             </Typography.Title>
-            <Form.Item label="Street" name={['location', 'street']} required>
+            <Form.Item
+              label="Street"
+              name={['location', 'street']}
+              required
+              rules={[{ required: true }]}>
               <Input placeholder="2301 Vanderbilt Place" />
             </Form.Item>
-            <Form.Item label="City" name={['location', 'city']} required>
+            <Form.Item
+              label="City"
+              name={['location', 'city']}
+              required
+              rules={[{ required: true }]}>
               <Input placeholder="Nashville" />
             </Form.Item>
-            <Form.Item label="State" name={['location', 'state']} required>
+            <Form.Item
+              label="State"
+              name={['location', 'state']}
+              required
+              rules={[{ required: true }]}>
               <Input placeholder="TN" />
             </Form.Item>
-            <Form.Item label="Zip" name={['location', 'zip']} required>
+            <Form.Item
+              label="Zip"
+              name={['location', 'zip']}
+              required
+              rules={[{ required: true }]}>
               <Input placeholder="37235" />
             </Form.Item>
 
             <Typography.Title level={5} style={{ textAlign: 'center' }}>
               Event Description
             </Typography.Title>
-            <Form.Item name="description">
+            <Form.Item name="description" required rules={[{ required: true }]}>
               <Input.TextArea placeholder="About..." />
             </Form.Item>
             <Typography.Title level={5}>Contact</Typography.Title>
-            <Form.Item name="phone" label="Phone">
+            <Form.Item
+              name="phone"
+              label="Phone"
+              required
+              rules={[{ required: true }]}>
               <Input placeholder="xxx-xxx-xxxx" />
             </Form.Item>
             <Form.Item
@@ -203,9 +277,11 @@ const EditEventPopupWindowForm = ({
               rules={[
                 {
                   type: 'email',
+                  required: true,
                   message: 'Invalid email',
                 },
-              ]}>
+              ]}
+              required>
               <Input placeholder="johndoe@bookem.org" />
             </Form.Item>
             <Form.Item>
@@ -222,8 +298,9 @@ const EditEventPopupWindowForm = ({
                   type="primary"
                   htmlType="submit"
                   loading={loading}
+                  disabled={!submittable}
                   style={{ width: '45%' }}>
-                  Save Changes
+                  {event ? 'Save Changes' : 'Create Event'}
                 </Button>
               </Flex>
             </Form.Item>
@@ -234,4 +311,4 @@ const EditEventPopupWindowForm = ({
   );
 };
 
-export default EditEventPopupWindowForm;
+export default EventPopupWindowForm;
