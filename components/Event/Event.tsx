@@ -1,5 +1,5 @@
-import { QueriedVolunteerEventData } from 'bookem-shared/src/types/database';
-import React, { useState } from 'react';
+import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Header from './Header';
 import BookIcon from './BookIcon';
@@ -23,11 +23,36 @@ import EditEventPopupWindowForm from '../Forms/EditEventPopupWindowForm';
 
 /**
  * Event Detail
- * @param event Data about the event
+ * @param pid - event id
  */
-const Event = ({ event }: { event: QueriedVolunteerEventData }) => {
+const Event = ({ pid }: { pid: string }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+
+  const [event, setEvent] = useState<QueriedVolunteerEventDTO>();
+  const [error, setError] = useState<Error>();
+
+  useEffect(() => {
+    const fetchEvent = () => {
+      fetch('/api/event/' + pid)
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(
+              'An error has occurred while fetching: ' + res.statusText
+            );
+          }
+          return res.json();
+        })
+        .then(data => setEvent(data))
+        .catch(err => setError(err));
+    };
+    if (!showPopup) {
+      fetchEvent();
+    }
+  }, [pid, showPopup]);
+
+  if (error) return <div>Event not found!</div>;
+  if (!event) return <div>Loading...</div>;
 
   return (
     <EventBox>
@@ -60,16 +85,18 @@ const Event = ({ event }: { event: QueriedVolunteerEventData }) => {
         </span>
       </CopyButton>
 
-
       <Header />
 
       {/* Book Icon and Event name */}
       <MiddleBox>
-        <BookIcon/>
-        <TextContainer> 
-          <EventName> {event.name}  </EventName> 
-          <SpotsFilled> {event.volunteers.length} / {event.maxSpot} spots filled</SpotsFilled>
-          <ButtonContainer> 
+        <BookIcon />
+        <TextContainer>
+          <EventName> {event.name}</EventName>
+          <SpotsFilled>
+            {' '}
+            {event.volunteers.length} / {event.maxSpot} spots filled
+          </SpotsFilled>
+          <ButtonContainer>
             <EditButton onClick={() => setShowPopup(prev => !prev)}>
               Edit
             </EditButton>
@@ -80,7 +107,9 @@ const Event = ({ event }: { event: QueriedVolunteerEventData }) => {
       </MiddleBox>
 
       {/* edit button */}
-      {showPopup && <EditEventPopupWindowForm setShowPopup={setShowPopup} />}
+      {showPopup && (
+        <EditEventPopupWindowForm event={event} setShowPopup={setShowPopup} />
+      )}
 
       {/* Time and Place of the event */}
       <TimeAndPlace eventDate={event.startDate} location={event.location} />

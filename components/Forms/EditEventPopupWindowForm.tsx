@@ -1,18 +1,8 @@
 import {
   EditEventForm,
-  FormHeader,
-  FormLabel,
-  FormLogistics,
-  FormInput,
-  InputFlex,
-  ShortFormInput,
-  LongFormInput,
-  LargeFormInput,
-  AboutEvent,
   EditEventContainer,
 } from '@/styles/components/editEventPopupWindowForm.styles';
 import React, { useEffect, useState } from 'react';
-// import { useForm } from 'react-hook-form';
 import PopupWindow from '@/components/PopupWindow';
 import {
   QueriedVolunteerEventDTO,
@@ -21,246 +11,208 @@ import {
   VolunteerEventLocation,
 } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
+import dayjs from 'dayjs';
+import { QueriedTagData } from 'bookem-shared/src/types/database';
+
 import {
-  SubmitButton,
-  ButtonCenter,
-} from '@/styles/components/windowFlow.styles';
-import { DatePicker, Select, Space, DatePickerProps } from 'antd';
+  Form,
+  Input,
+  Button,
+  Select,
+  DatePicker,
+  InputNumber,
+  Typography,
+  Space,
+  Flex,
+} from 'antd';
+import { time } from 'console';
 
 interface ModifiedVolunteerEventData
   extends Omit<VolunteerEventData, 'volunteers'> {}
 
 const EditEventPopupWindowForm = ({
   setShowPopup,
+  event,
 }: {
   setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  event: QueriedVolunteerEventDTO;
 }) => {
   const router = useRouter();
   const { pid } = router.query;
   const { RangePicker } = DatePicker;
-
-  const [eventData, setEventData] = useState<QueriedVolunteerEventDTO>();
-  const [tags, setTags] = useState([]);
-  const [startDate, setStartDate] = useState<any>();
-  const [endDate, setEndDate] = useState<any>();
-  const [name, setName] = useState<string>();
-  const [program, setProgram] = useState<string>();
-  const [max, setMax] = useState<string>();
-  const [street, setStreet] = useState<string>();
-  const [city, setCity] = useState<string>();
-  const [state, setState] = useState<string>();
-  const [zip, setZip] = useState<string>();
-  const [description, setDescription] = useState<string>();
-  const [phone, setPhone] = useState<string>();
-  const [email, setEmail] = useState<string>();
-  const [error, setError] = useState<Error>();
-
-  const handleTagChange = (value: string[]) => {
-    // TODO: handle tag change
-  };
-
-  const tagArray: string[] =
-    eventData?.tags?.map(tag => String(tag.tagName)) ?? [];
-
-  // create a options that include all the tags
-  const options: string[] = [];
-
-  for (let i = 0; i < tagArray.length; i++) {
-    options.push(tagArray[i]);
-  }
+  const [allTags, setAllTags] = useState<QueriedTagData[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch('/api/event/' + pid);
-      const data = await response.json();
-      setEventData(data);
-      setName(data?.name);
-      setProgram(data?.program?.name);
-      setMax(data?.maxSpot);
-      setStreet(data?.location?.street);
-      setCity(data?.location?.city);
-      setState(data?.location?.state);
-      setZip(data?.location?.zip);
-      setDescription(data?.description);
-      setPhone(data?.phone);
-      setEmail(data?.email);
-    };
-
-    fetchData();
-  }, [pid]);
-
-  // TODO:fetch tags data from database
-  // useEffect(() => {
-  //   if (pid) {
-  //     fetch('/api/event/' + pid)
-  //       .then(res => {
-  //         if (!res.ok) {
-  //           throw new Error(
-  //             'An error has occurred while fetching: ' + res.statusText
-  //           );
-  //         }
-  //         return res.json();
-  //       })
-  //       .then(eventData => {
-  //         // Access the tags field from the eventData
-  //         if (eventData && eventData.tags) {
-  //           console.log(eventData.tags);
-  //           setTags(eventData.tags);
-  //         } else {
-  //           // Handle the case where tags are not present
-  //           console.log('tags not fetched');
-  //           setTags([]);
-  //         }
-  //       })
-  //       .catch(err => setError(err));
-  //   } else setError(new Error('No pid found'));
-  // }, [pid]);
+    // get all tags
+    fetch('/api/tags')
+      .then(response => response.json())
+      .then(data => setAllTags(data));
+  }, []);
 
   const onSubmit = (data: any) => {
-    // VolunteerEventData
-    const location: VolunteerEventLocation = {
-      street: data.street,
-      city: data.city,
-      state: data.state,
-      zip: data.zip,
-    };
+    setLoading(true);
+    // find tag ids from tag names
+    const tagIds = allTags
+      .filter(tag => data.tags.includes(tag.tagName))
+      .map(tag => tag._id);
 
-    const dataToSave: ModifiedVolunteerEventData = {
+    const modifiedData: ModifiedVolunteerEventData = {
       name: data.name,
-      description: data.description,
-      startDate: data.startDate,
-      endDate: data.startDate,
+      tags: tagIds,
       maxSpot: data.maxSpot,
-      location: location,
+      requireApplication: event.requireApplication,
+      program: event.program?._id,
+      location: {
+        street: data.location.street,
+        city: data.location.city,
+        state: data.location.state,
+        zip: data.location.zip,
+      },
+      description: data.description,
       phone: data.phone,
       email: data.email,
-      program: data.program,
-      requireApplication: false,
-      tags: [],
+      startDate: data.dateRange[0].format(),
+      endDate: data.dateRange[1].format(),
     };
-
-    // TODO: save the data to the database
-  };
-
-  const onDateChange = (
-    value: DatePickerProps['value'],
-    type: 'start' | 'end'
-  ) => {
-    if (type === 'start') {
-      setStartDate(value);
-    } else {
-      setEndDate(value);
-    }
+    console.log(modifiedData);
+    fetch(`/api/event/${pid}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(modifiedData),
+    }).then(() => {
+      setLoading(false);
+      setShowPopup(false);
+    });
   };
 
   return (
     <PopupWindow hidePopup={() => setShowPopup(false)}>
       <EditEventContainer>
         <EditEventForm>
-          <FormHeader>Edit Event</FormHeader>
+          <Typography.Title level={3} style={{ textAlign: 'center' }}>
+            Edit Event
+          </Typography.Title>
+          <Typography.Title level={5} style={{ textAlign: 'center' }}>
+            Overview
+          </Typography.Title>
+          <Form
+            onChange={() => setIsDirty(true)}
+            initialValues={{
+              name: event.name,
+              program: { name: event.program?.name },
+              tags: event.tags.map(tag => tag.tagName),
+              maxSpot: event.maxSpot,
+              location: {
+                street: event.location.street,
+                city: event.location.city,
+                state: event.location.state,
+                zip: event.location.zip,
+              },
+              description: event.description,
+              phone: event.phone,
+              email: event.email,
+              dateRange: [dayjs(event.startDate), dayjs(event.endDate)],
+            }}
+            layout="horizontal"
+            onFinish={onSubmit}
+            labelCol={{ flex: '120px' }}
+            labelAlign="left"
+            labelWrap
+            colon={false}>
+            <Form.Item label="Event Name" name="name" required>
+              <Input placeholder="Event Name" />
+            </Form.Item>
 
-          <FormLabel>Event Name</FormLabel>
-          <InputFlex>
-            <FormInput
-              type="text"
-              placeholder="Event Name"
-              pattern="[A-Za-z]"
-              title="Input must be text"
-              defaultValue={name}></FormInput>
-            <FormInput
-              type="text"
-              placeholder="Event Category (optional)"
-              pattern="[A-Za-z]"
-              title="Input must be text"
-              defaultValue={program}></FormInput>
-          </InputFlex>
+            <Form.Item label="Program Name" name={['program', 'name']}>
+              <Input placeholder="Program Name {Optional)" />
+            </Form.Item>
 
-          <InputFlex>
-            <Space style={{ width: '100%' }} direction="vertical">
+            <Form.Item name="tags" label="Event Tags" required>
               <Select
                 mode="multiple"
                 allowClear
-                style={{ width: '100%' }}
                 placeholder="Please select tags"
-                // defaultValue={tagArray}
-                // Todo: change the hard coded tags to tags from database
-                defaultValue={['hidden', 'saved']}
-                onChange={handleTagChange}
-                options={tags}
+                options={allTags.map(tag => ({
+                  label: tag.tagName,
+                  value: tag.tagName,
+                }))}
               />
-            </Space>
-          </InputFlex>
+            </Form.Item>
 
-          <FormLabel>Logistics</FormLabel>
+            <Typography.Title level={5} style={{ textAlign: 'center' }}>
+              Logistics
+            </Typography.Title>
 
-          <RangePicker
-            showTime
-            onOk={value => {
-              onDateChange(value[0], 'start');
-              onDateChange(value[1], 'end');
-            }}
-            placeholder={['Start Date', 'End Date']}
-          />
+            <Form.Item name="dateRange" label="Date Range" required>
+              <RangePicker showTime placeholder={['Start Date', 'End Date']} />
+            </Form.Item>
 
-          <InputFlex>
-            <ShortFormInput
-              type="text"
-              placeholder="#"
-              pattern="^[0-9]*$"
-              title="Input must be a whole number"
-              defaultValue={max}></ShortFormInput>
-            <FormLogistics>max spots</FormLogistics>
-          </InputFlex>
-          <FormLabel>Address</FormLabel>
-          <LongFormInput
-            type="text"
-            placeholder="Street"
-            pattern="[A-Za-z0-9]"
-            title="Input must be in address format"
-            defaultValue={street}></LongFormInput>
-          <InputFlex>
-            <FormInput
-              type="text"
-              placeholder="City"
-              pattern="[A-Za-z]"
-              title="Input must be a valid city"
-              defaultValue={city}></FormInput>
-            <FormInput
-              type="text"
-              placeholder="State"
-              pattern="[A-Za-z]"
-              title="Input must be a valid state"
-              defaultValue={state}></FormInput>
-          </InputFlex>
-          <FormInput
-            type="text"
-            placeholder="Zip Code"
-            pattern="^(?(^00000(|-0000))|(\d{5}(|-\d{4})))$"
-            title="Input must be in proper zip code format"
-            defaultValue={zip}></FormInput>
+            <Form.Item name="maxSpot" label="Max Spots" required>
+              <InputNumber placeholder="#" />
+            </Form.Item>
 
-          <FormLabel>About the event</FormLabel>
-          <AboutEvent>
-            <LargeFormInput
-              placeholder="About..."
-              defaultValue={description}></LargeFormInput>
-          </AboutEvent>
-          <FormLabel>Contact</FormLabel>
-          <FormInput
-            type="text"
-            placeholder="Phone number"
-            pattern="/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/"
-            title="Input must be a valid phone number"
-            defaultValue={phone}></FormInput>
-          <FormInput
-            type="text"
-            placeholder="Email address"
-            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-            title="Input must be a valid email address"
-            defaultValue={email}></FormInput>
-          <ButtonCenter>
-            <SubmitButton onClick={onSubmit}>Save</SubmitButton>
-          </ButtonCenter>
+            <Typography.Title level={5} style={{ textAlign: 'center' }}>
+              Address
+            </Typography.Title>
+            <Form.Item label="Street" name={['location', 'street']} required>
+              <Input placeholder="2301 Vanderbilt Place" />
+            </Form.Item>
+            <Form.Item label="City" name={['location', 'city']} required>
+              <Input placeholder="Nashville" />
+            </Form.Item>
+            <Form.Item label="State" name={['location', 'state']} required>
+              <Input placeholder="TN" />
+            </Form.Item>
+            <Form.Item label="Zip" name={['location', 'zip']} required>
+              <Input placeholder="37235" />
+            </Form.Item>
+
+            <Typography.Title level={5} style={{ textAlign: 'center' }}>
+              Event Description
+            </Typography.Title>
+            <Form.Item name="description">
+              <Input.TextArea placeholder="About..." />
+            </Form.Item>
+            <Typography.Title level={5}>Contact</Typography.Title>
+            <Form.Item name="phone" label="Phone">
+              <Input placeholder="xxx-xxx-xxxx" />
+            </Form.Item>
+            <Form.Item
+              name="email"
+              label="Email"
+              rules={[
+                {
+                  type: 'email',
+                  message: 'Invalid email',
+                },
+              ]}>
+              <Input placeholder="johndoe@bookem.org" />
+            </Form.Item>
+            <Form.Item>
+              <Flex justify="space-around">
+                <Button
+                  type="default"
+                  htmlType="button"
+                  style={{ width: '45%' }}
+                  onClick={() => setShowPopup(false)}>
+                  Close
+                </Button>
+                <Space size={10} />
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                  disabled={!isDirty}
+                  style={{ width: '45%' }}>
+                  Save Changes
+                </Button>
+              </Flex>
+            </Form.Item>
+          </Form>
         </EditEventForm>
       </EditEventContainer>
     </PopupWindow>

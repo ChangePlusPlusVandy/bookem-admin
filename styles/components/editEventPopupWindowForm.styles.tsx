@@ -12,7 +12,7 @@ export const EditEventForm = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  margin: 30px;
+  margin: 10px;
   padding-bottom: 50px;
 `;
 

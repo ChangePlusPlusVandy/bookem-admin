@@ -122,6 +122,13 @@ export default async function handler(
           return res.status(400).json({ message: 'Invalid id' });
 
         // validate that req.body follows the VolunteerEventSchema
+        const newEvent = new VolunteerEvents(req.body);
+
+        try {
+          await newEvent.validate();
+        } catch (error: any) {
+          return res.status(400).json({ message: error.message });
+        }
 
         // update event based on input
         const event = await VolunteerEvents.findByIdAndUpdate(id, req.body);
