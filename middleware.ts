@@ -1,3 +1,5 @@
+import { testingAPI } from './utils/api-testing';
+
 /**
  * THIS FILE HAS TO STAY HERE!
  * Use the default next-auth middleware pattern.
@@ -12,3 +14,9 @@ export { default } from 'next-auth/middleware';
 export const config = {
   matcher: ['/api/:function*'],
 };
+
+function middleware() {}
+// when in development, export the empty middleware function
+if (testingAPI) {
+  module.exports = { ...module.exports, middleware };
+}

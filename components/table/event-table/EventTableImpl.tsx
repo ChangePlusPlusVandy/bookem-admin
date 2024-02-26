@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableProps, Tag } from 'antd';
+import { Table, TableProps, Tag, Input, Popover } from 'antd';
 import type {
   ColumnType,
   ColumnsType,
@@ -10,8 +10,16 @@ import Link from 'next/link';
 import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import { EventDataIndex, EventRowData } from '@/utils/table-types';
-import { handleExport } from '@/utils/utils';
+import { fetcher } from '@/utils/utils';
 import TableHeader from '@/components/table/event-table/TableHeader';
+import { convertEventDataToRowData } from '@/utils/table-utils';
+import useSWR from 'swr';
+import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
+import { FilterOutlined } from '@ant-design/icons';
+import {
+  FilterIcon,
+  TagTitle,
+} from '@/styles/components/Table/EventTable.styles';
 
 /**
  * Contains the "UI" part of Event Table
@@ -21,15 +29,45 @@ const EventTableImpl = ({
   getColumnSearchProps,
   sortedInfo,
   handleChange,
-  dataForTable,
+  filteredDataByTags,
+  setFilteredDataByTags,
+  handleFilterByTags,
 }: {
   getColumnSearchProps: (dataIndex: EventDataIndex) => ColumnType<EventRowData>;
   sortedInfo: SorterResult<EventRowData>;
   handleChange: TableProps<EventRowData>['onChange'];
-  dataForTable: EventRowData[];
+  filteredDataByTags: EventRowData[];
+  setFilteredDataByTags: (data: EventRowData[]) => void;
+  handleFilterByTags: (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    dataForTable: EventRowData[]
+  ) => void;
 }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
+
+  const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
+  const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
+    '/api/event/',
+    fetcher,
+    {
+      onSuccess: data => {
+        setDataForTable(convertEventDataToRowData(data));
+        setFilteredDataByTags(dataForTable);
+      },
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+    }
+  );
+
+  // Extra defense to refetch data if needed
+  useEffect(() => {
+    mutate();
+  }, [mutate, data, filteredDataByTags]);
+
+  // check for errors and loading
+  if (error) return <div>Failed to load event table</div>;
+  if (isLoading) return <div>Loading...</div>;
 
   // Define columns for the Ant Design table
   const columns: ColumnsType<EventRowData> = [
@@ -88,7 +126,23 @@ const EventTableImpl = ({
     },
     {
       // Column for 'Tags'
-      title: 'Tags',
+      title: (
+        <TagTitle>
+          <span>Tags</span>
+          <Popover
+            content={
+              <Input
+                placeholder="Enter tags separated by commas"
+                onPressEnter={e => handleFilterByTags(e, dataForTable)}
+                style={{ width: '300px' }}
+              />
+            }
+            trigger="click"
+            title="Filter by Tags">
+            <FilterIcon />
+          </Popover>
+        </TagTitle>
+      ),
       dataIndex: 'tags',
       key: 'tags',
 
@@ -143,7 +197,7 @@ const EventTableImpl = ({
       <TableContainer>
         <div id="table-container">
           <Table
-            dataSource={dataForTable}
+            dataSource={filteredDataByTags}
             onChange={handleChange}
             columns={columns}
             pagination={false}
