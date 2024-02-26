@@ -6,9 +6,8 @@ import React, { useEffect, useState } from 'react';
 import PopupWindow from '@/components/PopupWindow';
 import {
   QueriedVolunteerEventDTO,
-  QueriedVolunteerEventData,
+  QueriedVolunteerProgramData,
   VolunteerEventData,
-  VolunteerEventLocation,
 } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
 import dayjs from 'dayjs';
@@ -25,7 +24,6 @@ import {
   Space,
   Flex,
 } from 'antd';
-import { time } from 'console';
 
 interface ModifiedVolunteerEventData
   extends Omit<VolunteerEventData, 'volunteers'> {}
@@ -41,14 +39,21 @@ const EditEventPopupWindowForm = ({
   const { pid } = router.query;
   const { RangePicker } = DatePicker;
   const [allTags, setAllTags] = useState<QueriedTagData[]>([]);
+  const [allPrograms, setAllPrograms] = useState<QueriedVolunteerProgramData[]>(
+    []
+  );
   const [loading, setLoading] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
     // get all tags
     fetch('/api/tags')
       .then(response => response.json())
       .then(data => setAllTags(data));
+
+    // get all programs
+    fetch('/api/program')
+      .then(response => response.json())
+      .then(data => setAllPrograms(data));
   }, []);
 
   const onSubmit = (data: any) => {
@@ -58,12 +63,17 @@ const EditEventPopupWindowForm = ({
       .filter(tag => data.tags.includes(tag.tagName))
       .map(tag => tag._id);
 
+    // find program id from program name
+    const programId = allPrograms.find(
+      program => program.name === data.program
+    )?._id;
+
     const modifiedData: ModifiedVolunteerEventData = {
       name: data.name,
       tags: tagIds,
       maxSpot: data.maxSpot,
-      requireApplication: event.requireApplication,
-      program: event.program?._id,
+      requireApplication: false, // TODO: change when implementing application
+      program: programId,
       location: {
         street: data.location.street,
         city: data.location.city,
@@ -100,10 +110,9 @@ const EditEventPopupWindowForm = ({
             Overview
           </Typography.Title>
           <Form
-            onChange={() => setIsDirty(true)}
             initialValues={{
               name: event.name,
-              program: { name: event.program?.name },
+              program: event.program?.name,
               tags: event.tags.map(tag => tag.tagName),
               maxSpot: event.maxSpot,
               location: {
@@ -127,15 +136,22 @@ const EditEventPopupWindowForm = ({
               <Input placeholder="Event Name" />
             </Form.Item>
 
-            <Form.Item label="Program Name" name={['program', 'name']}>
-              <Input placeholder="Program Name {Optional)" />
+            <Form.Item name="program" label="Program Name">
+              <Select
+                allowClear
+                placeholder="Please select a program (Optional)"
+                options={allPrograms.map(program => ({
+                  label: program.name,
+                  value: program.name,
+                }))}
+              />
             </Form.Item>
 
-            <Form.Item name="tags" label="Event Tags" required>
+            <Form.Item name="tags" label="Event Tags">
               <Select
                 mode="multiple"
                 allowClear
-                placeholder="Please select tags"
+                placeholder="Please select tags (Optional)"
                 options={allTags.map(tag => ({
                   label: tag.tagName,
                   value: tag.tagName,
@@ -206,7 +222,6 @@ const EditEventPopupWindowForm = ({
                   type="primary"
                   htmlType="submit"
                   loading={loading}
-                  disabled={!isDirty}
                   style={{ width: '45%' }}>
                   Save Changes
                 </Button>
