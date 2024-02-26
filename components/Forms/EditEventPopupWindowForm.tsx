@@ -99,7 +99,7 @@ const EditEventPopupWindowForm = ({
       startDate: data.dateRange[0].format(),
       endDate: data.dateRange[1].format(),
     };
-    console.log(modifiedData);
+    // console.log(modifiedData);
     fetch(`/api/event/${pid}`, {
       method: 'PATCH',
       headers: {

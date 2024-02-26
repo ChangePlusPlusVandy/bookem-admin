@@ -12,7 +12,7 @@ import {
 const Header = () => {
   return (
     <HeaderBox>
-      <Link href="/">
+      <Link href="#" onClick={() => window.history.back()}>
         <Image src="/event/arrow-left.png" alt="" width={48} height={48} />
       </Link>
       <EventDetailText>Event Details</EventDetailText>

@@ -132,8 +132,6 @@ export default async function handler(
 
         // update event based on input
         const event = await VolunteerEvents.findByIdAndUpdate(id, req.body);
-        console.log('before update: ', event);
-        console.log('after update: ', req.body);
 
         // if event is not found
         if (!event)
