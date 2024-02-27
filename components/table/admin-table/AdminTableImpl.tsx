@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Button, Table, TableProps } from 'antd';
-import type { ColumnType, SorterResult } from 'antd/es/table/interface';
+import type {
+  ColumnType,
+  ColumnsType,
+  SorterResult,
+} from 'antd/es/table/interface';
 import { ArrowRightOutlined } from '@ant-design/icons';
 import { TableContainer } from '@/styles/table.styles';
 import CreateAdminPopupWindow from '@/components/Forms/CreateAdminPopupWindow';
@@ -28,7 +32,7 @@ const AdminTableImpl = ({
   const [showPopupTag, setShowPopupTag] = useState(false);
 
   // Define columns for the Ant Design table
-  const columns: any = [
+  const columns: ColumnsType<AdminRowData> = [
     {
       title: 'First Name',
       dataIndex: 'firstName',
@@ -53,11 +57,10 @@ const AdminTableImpl = ({
       key: 'phone',
       ...getColumnSearchProps('phone'),
     },
-    { title: 'Role', dataIndex: 'role', key: 'role' },
+    { title: 'Role', dataIndex: 'status', key: 'status' },
     {
       title: 'View',
       dataIndex: '',
-      key: 'x',
       render: () => (
         <a>
           <Button

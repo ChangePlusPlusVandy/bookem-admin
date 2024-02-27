@@ -13,8 +13,7 @@ import { convertAdminDataToRowData } from '@/utils/table-utils';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import { AdminDataIndex, AdminRowData } from '@/utils/table-types';
 import AdminTableImpl from './AdminTableImpl';
-
-const fetcher = (url: string) => fetch(url).then(res => res.json());
+import { fetcher } from '@/utils/utils';
 
 const AdminTable = () => {
   const { data, error, isLoading } = useSWR<QueriedAdminData[]>(
@@ -101,17 +100,6 @@ const AdminTable = () => {
             size="small"
             style={{ width: 90 }}>
             Reset
-          </Button>
-          {/* Filter and close buttons */}
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({ closeDropdown: false });
-              setSearchText((selectedKeys as string[])[0]);
-              setSearchedColumn(dataIndex);
-            }}>
-            Filter
           </Button>
           <Button
             type="link"

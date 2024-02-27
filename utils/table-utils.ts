@@ -34,17 +34,8 @@ export const convertProgramDataToRowData = (
   return result;
 };
 
-export const convertAdminDataToRowData = (data: QueriedAdminData[]) => {
-  const result = data.map((user, index) => {
-    return {
-      key: index,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      phone: user.phone,
-      role: user.status,
-      id: user._id,
-    };
-  });
-  return result;
+export const convertAdminDataToRowData = (
+  data: QueriedAdminData[]
+): AdminRowData[] => {
+  return data.map(admin => ({ ...admin, key: admin._id.toString() }));
 };

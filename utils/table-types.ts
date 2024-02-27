@@ -25,13 +25,8 @@ export interface ProgramRowData
 }
 export type ProgramDataIndex = keyof ProgramRowData;
 
-export interface AdminRowData {
-  key: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  role: string;
-  id: ObjectId;
+// Admin row
+export interface AdminRowData extends QueriedAdminData {
+  key: string;
 }
 export type AdminDataIndex = keyof AdminRowData;
