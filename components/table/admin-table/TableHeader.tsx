@@ -25,19 +25,12 @@ const TableHeader = ({
     <>
       <div>
         <SearchContainter style={{ marginLeft: 0 }}>
-          <Input
-            ref={searchInput}
-            placeholder={'Search'}
-            onChange={e => (e.target.value ? [e.target.value] : [])}
-            prefix={<SearchOutlined rev={undefined} />}
-            style={{ width: 1000, display: 'flex' }}
-          />
           <Button
             icon={<PlusOutlined rev={undefined} />}
             onClick={() => setShowPopup(!showPopup)}
             style={{
               width: 50,
-              marginLeft: 10,
+              marginLeft: 1000,
               borderRadius: 100,
               backgroundColor: 'darkgray',
               color: 'whitesmoke',
