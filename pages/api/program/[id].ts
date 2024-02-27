@@ -124,8 +124,6 @@ export default async function handler(
 
         // update program based on input
         const program = await VolunteerPrograms.findByIdAndUpdate(id, req.body);
-        console.log('before update: ', program);
-        console.log('after update: ', req.body);
 
         // if program is not found
         if (!program)
