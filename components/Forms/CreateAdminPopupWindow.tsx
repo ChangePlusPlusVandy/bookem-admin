@@ -48,7 +48,7 @@ const CreateEventPopupWindow = ({
 
   const createAdmin = async (data: any) => {
     console.log('Here is the data: ', data);
-    await fetch('/api/create', {
+    await fetch('/api/admin', {
       method: 'POST',
       headers: {
         // Specify the content type in the headers
@@ -57,6 +57,8 @@ const CreateEventPopupWindow = ({
       // Stringify the JSON body
       body: data,
     });
+
+    setShowPopup(false);
   };
 
   return (
@@ -97,13 +99,6 @@ const CreateEventPopupWindow = ({
             title="Input must be a valid phone number"
             // defaultValue={eventData?.phone}
           ></LongFormInput>
-
-          <LongFormInput
-            {...register('role')}
-            type="text"
-            placeholder="Role"
-            pattern="[A-Za-z]"
-            title="Input must be text"></LongFormInput>
 
           <LongFormInput
             {...register('password')}
