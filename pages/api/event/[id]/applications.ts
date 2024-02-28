@@ -27,24 +27,18 @@ export default async function handler(
       try {
         await dbConnect();
 
-        const event = (await VolunteerEvents.findById(
-          id
-        )) as QueriedVolunteerEventData;
-
-        await Users.find();
         await ApplicationResponse.find();
+        await Users.find();
 
-        if (!event.applicationId)
-          return res.status(500).json({ message: 'Application not found' });
-
-        const application = await VolunteerApplications.findById(
-          event.applicationId
-        )
+        const application = await VolunteerApplications.find({
+          event: id,
+        })
           .populate({
             path: 'responses',
             populate: {
               path: 'user',
               model: 'User',
+              select: 'name email',
             },
           })
           .exec();
