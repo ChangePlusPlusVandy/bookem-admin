@@ -26,7 +26,6 @@ export const convertProgramDataToRowData = (
     return {
       ...program,
       key: program._id.toString(),
-      numEvents: program.events.length,
       description: program.description ?? '',
     };
   });
