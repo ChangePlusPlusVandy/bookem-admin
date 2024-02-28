@@ -69,7 +69,7 @@ const TagEventPopupWindow = ({
     confirm({
       title: 'Are you sure about deleting this tags?',
       icon: <ExclamationCircleFilled />,
-      content: 'Some descriptions',
+      content: '',
       okText: 'Yes',
       okType: 'danger',
       cancelText: 'No',
