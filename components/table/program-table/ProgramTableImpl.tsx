@@ -31,11 +31,6 @@ const ProgramTableImpl = ({
       key: 'description',
     },
     {
-      title: 'Number of Events',
-      dataIndex: 'numEvents',
-      key: 'numEvents',
-    },
-    {
       title: 'Events',
       dataIndex: 'events',
       key: 'events',
