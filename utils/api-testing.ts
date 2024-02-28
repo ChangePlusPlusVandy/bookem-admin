@@ -1,7 +1,7 @@
 // common utils for simple API testing in development phase
 
 // change this var to true when you are testing the API endpoints without logging in
-export const testingAPI = false;
+export const testingAPI = true;
 
 const fakeAdminSession = {
   user: {
