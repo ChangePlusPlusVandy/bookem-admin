@@ -1,4 +1,8 @@
-import { SearchContainter, TableButton } from '@/styles/table.styles';
+import {
+  SearchContainter,
+  TableButton,
+  TableIcon,
+} from '@/styles/table.styles';
 import React from 'react';
 import Image from 'next/image';
 import { Button } from 'antd';
@@ -9,17 +13,21 @@ const TableHeader = ({
   showPopup,
   setShowPopupTag,
   showPopupTag,
+  hasSelected,
+  numSelected,
 }: {
   setShowPopup: (a: boolean) => void;
   showPopup: boolean;
   setShowPopupTag: (a: boolean) => void;
   showPopupTag: boolean;
+  hasSelected: boolean;
+  numSelected: number;
 }) => {
   return (
     <>
       <div>
         <SearchContainter>
-          <TableButton>
+          <TableIcon>
             <Image
               onClick={() => setShowPopup(!showPopup)}
               src="/table/addbutton.png"
@@ -28,8 +36,8 @@ const TableHeader = ({
               height={32}
               style={{ marginRight: 20 }}
             />
-          </TableButton>
-          <TableButton>
+          </TableIcon>
+          <TableIcon>
             <Image
               onClick={() => {
                 setShowPopup(false);
@@ -40,17 +48,13 @@ const TableHeader = ({
               width={32}
               height={32}
             />
+          </TableIcon>
+          <TableButton disabled={!hasSelected}>
+            {numSelected > 0 ? `Add ${numSelected} events` : 'Add event'}
           </TableButton>
-          <Button
-            onClick={() => handleExport('events')}
-            style={{
-              width: 250,
-              marginLeft: 90,
-              backgroundColor: 'darkgray',
-              color: 'whitesmoke',
-            }}>
+          <TableButton onClick={() => handleExport('events')}>
             Export
-          </Button>
+          </TableButton>
         </SearchContainter>
       </div>
     </>
