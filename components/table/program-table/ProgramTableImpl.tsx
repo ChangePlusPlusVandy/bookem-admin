@@ -2,7 +2,7 @@ import CreateProgramPopupWindow from '@/components/Forms/CreateProgramPopupWindo
 import React, { useState } from 'react';
 import TableHeader from './TableHeader';
 import { TableContainer } from '@/styles/table.styles';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import { ProgramDataIndex, ProgramRowData } from '@/utils/table-types';
 import { ColumnType, ColumnsType } from 'antd/es/table';
 import { Table } from 'antd';
@@ -17,6 +17,7 @@ const ProgramTableImpl = ({
   dataForTable: ProgramRowData[];
 }) => {
   const [showPopUp, setShowPopUp] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const columns: ColumnsType<ProgramRowData> = [
     {
@@ -39,7 +40,13 @@ const ProgramTableImpl = ({
   ];
   return (
     <>
-      {showPopUp && <CreateProgramPopupWindow setShowPopup={setShowPopUp} />}
+      {contextHolder}
+      {showPopUp && (
+        <CreateProgramPopupWindow
+          messageApi={messageApi}
+          setShowPopup={setShowPopUp}
+        />
+      )}
       <div>
         <TableHeader setShowPopUp={setShowPopUp} showPopUp={showPopUp} />
         <TableContainer>

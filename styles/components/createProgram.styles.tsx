@@ -23,7 +23,7 @@ export const FormHeader = styled.legend`
   margin: 20px 0;
 `;
 
-export const CreateEventForm = styled.div`
+export const CreateEventForm = styled.form`
   display: flex;
   flex-direction: column;
   height: 100%;
