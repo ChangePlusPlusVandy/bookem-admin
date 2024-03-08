@@ -22,8 +22,10 @@ import { Modal, message } from 'antd';
 
 const CreateProgramPopupWindow = ({
   setShowPopup,
+  messageApi,
 }: {
   setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  messageApi: any;
 }) => {
   const {
     data: allPrograms,
@@ -36,7 +38,6 @@ const CreateProgramPopupWindow = ({
     },
   });
   // ANTD message
-  const [messageApi, contextHolder] = message.useMessage();
   const [programName, setProgramName] = useState('');
   const [programDescription, setProgramDescription] = useState('');
 
@@ -62,12 +63,13 @@ const CreateProgramPopupWindow = ({
       });
       if (response.ok) {
         const resObj = await response.json();
-        console.log('OK');
+        console.log(resObj);
         messageApi.open({
           type: 'success',
-          content: 'Program created successfully',
+          content: resObj.message,
         });
         mutate();
+        setShowPopup(false);
       } else {
         messageApi.open({
           type: 'error',
@@ -79,7 +81,6 @@ const CreateProgramPopupWindow = ({
 
   return (
     <>
-      {contextHolder}
       <PopupWindow hidePopup={() => setShowPopup(false)}>
         <CreateProgramContainer>
           <CreateEventForm onSubmit={handleSubmit}>

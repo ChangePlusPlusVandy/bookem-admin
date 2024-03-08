@@ -13,9 +13,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Get session user
-  const session = await getServerSession(req, res, authOptions);
-
   switch (req.method) {
     /**
      * @route GET /api/program/
@@ -42,7 +39,9 @@ export default async function handler(
           description: description,
         });
         await program.save();
-        return res.status(200).json(program);
+        return res
+          .status(200)
+          .json({ message: 'Program created successfully' });
       } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
