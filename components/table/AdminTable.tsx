@@ -20,7 +20,7 @@ import { QueriedAdminData } from 'bookem-shared/src/types/database';
 import { SearchContainter, TableContainer } from '@/styles/table.styles';
 import Link from 'next/link';
 import { ObjectId } from 'mongodb';
-import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
+import EventPopupWindowForm from '@/components/Forms/EventPopupWindowForm';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 
 interface AdminRowData {
@@ -281,7 +281,7 @@ const AdminTable = () => {
 
   return (
     <>
-      {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
+      {showPopup && <EventPopupWindowForm setShowPopup={setShowPopup} />}
 
       <SearchContainter style={{ marginLeft: 0 }}>
         <Input

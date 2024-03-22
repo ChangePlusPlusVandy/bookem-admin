@@ -19,7 +19,7 @@ import {
   SeeSignUpButton,
   ButtonContainer,
 } from '@/styles/components/Event/event.styles';
-import EditEventPopupWindowForm from '../Forms/EditEventPopupWindowForm';
+import EventPopupWindowForm from '../Forms/EventPopupWindowForm';
 
 /**
  * Event Detail
@@ -108,7 +108,7 @@ const Event = ({ pid }: { pid: string }) => {
 
       {/* edit button */}
       {showPopup && (
-        <EditEventPopupWindowForm event={event} setShowPopup={setShowPopup} />
+        <EventPopupWindowForm event={event} setShowPopup={setShowPopup} />
       )}
 
       {/* Time and Place of the event */}

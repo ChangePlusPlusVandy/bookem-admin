@@ -28,12 +28,12 @@ import {
 interface ModifiedVolunteerEventData
   extends Omit<VolunteerEventData, 'volunteers'> {}
 
-const EditEventPopupWindowForm = ({
+const EventPopupWindowForm = ({
   setShowPopup,
   event,
 }: {
   setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
-  event: QueriedVolunteerEventDTO;
+  event?: QueriedVolunteerEventDTO;
 }) => {
   const router = useRouter();
   const { pid } = router.query;
@@ -51,12 +51,12 @@ const EditEventPopupWindowForm = ({
     // get all tags
     fetch('/api/tags')
       .then(response => response.json())
-      .then(data => setAllTags(data));
+      .then(data => setAllTags(data || []));
 
     // get all programs
     fetch('/api/program')
       .then(response => response.json())
-      .then(data => setAllPrograms(data));
+      .then(data => setAllPrograms(data || []));
   }, []);
 
   // Watch all values
@@ -69,11 +69,56 @@ const EditEventPopupWindowForm = ({
       .catch(() => setSubmittable(false));
   }, [form, values]);
 
+  const initialValues = event
+    ? {
+        name: event.name,
+        program: event.program?.name,
+        tags: event.tags.map(tag => tag.tagName),
+        maxSpot: event.maxSpot,
+        location: {
+          street: event.location.street,
+          city: event.location.city,
+          state: event.location.state,
+          zip: event.location.zip,
+        },
+        description: event.description,
+        phone: event.phone,
+        email: event.email,
+        dateRange: [dayjs(event.startDate), dayjs(event.endDate)],
+      }
+    : {};
+
+  const handleEditEvent = (data: ModifiedVolunteerEventData) => {
+    fetch(`/api/event/${pid}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }).then(() => {
+      setLoading(false);
+      setShowPopup(false);
+    });
+  };
+
+  const handleCreateEvent = (data: ModifiedVolunteerEventData) => {
+    fetch('/api/event', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }).then(() => {
+      setLoading(false);
+      setShowPopup(false);
+    });
+  };
+
   const onSubmit = (data: any) => {
     setLoading(true);
     // find tag ids from tag names
     const tagIds = allTags
-      .filter(tag => data.tags.includes(tag.tagName))
+      .filter(tag => data.tags?.includes(tag.tagName))
       .map(tag => tag._id);
 
     // find program id from program name
@@ -99,17 +144,15 @@ const EditEventPopupWindowForm = ({
       startDate: data.dateRange[0].format(),
       endDate: data.dateRange[1].format(),
     };
-    // console.log(modifiedData);
-    fetch(`/api/event/${pid}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(modifiedData),
-    }).then(() => {
-      setLoading(false);
-      setShowPopup(false);
-    });
+    console.log(modifiedData);
+
+    if (event) {
+      // if event exists, then it's an edit
+      handleEditEvent(modifiedData);
+    } else {
+      // if event doesn't exist, then it's a new event
+      handleCreateEvent(modifiedData);
+    }
   };
 
   return (
@@ -117,29 +160,14 @@ const EditEventPopupWindowForm = ({
       <EditEventContainer>
         <EditEventForm>
           <Typography.Title level={3} style={{ textAlign: 'center' }}>
-            Edit Event
+            {event ? 'Edit Event' : 'Create Event'}
           </Typography.Title>
           <Typography.Title level={5} style={{ textAlign: 'center' }}>
             Overview
           </Typography.Title>
           <Form
             form={form}
-            initialValues={{
-              name: event.name,
-              program: event.program?.name,
-              tags: event.tags.map(tag => tag.tagName),
-              maxSpot: event.maxSpot,
-              location: {
-                street: event.location.street,
-                city: event.location.city,
-                state: event.location.state,
-                zip: event.location.zip,
-              },
-              description: event.description,
-              phone: event.phone,
-              email: event.email,
-              dateRange: [dayjs(event.startDate), dayjs(event.endDate)],
-            }}
+            initialValues={initialValues}
             layout="horizontal"
             onFinish={onSubmit}
             labelCol={{ flex: '120px' }}
@@ -272,7 +300,7 @@ const EditEventPopupWindowForm = ({
                   loading={loading}
                   disabled={!submittable}
                   style={{ width: '45%' }}>
-                  Save Changes
+                  {event ? 'Save Changes' : 'Create Event'}
                 </Button>
               </Flex>
             </Form.Item>
@@ -283,4 +311,4 @@ const EditEventPopupWindowForm = ({
   );
 };
 
-export default EditEventPopupWindowForm;
+export default EventPopupWindowForm;
