@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableProps, Tag } from 'antd';
+import { Table, TableProps, Tag, Input, Popover, Button } from 'antd';
 import type {
   ColumnType,
   ColumnsType,
@@ -10,8 +10,16 @@ import Link from 'next/link';
 import EventPopupWindowForm from '@/components/Forms/EventPopupWindowForm';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import { EventDataIndex, EventRowData } from '@/utils/table-types';
-import { handleExport } from '@/utils/utils';
+import { fetcher } from '@/utils/utils';
 import TableHeader from '@/components/table/event-table/TableHeader';
+import { convertEventDataToRowData } from '@/utils/table-utils';
+import useSWR from 'swr';
+import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
+import { FilterOutlined } from '@ant-design/icons';
+import {
+  FilterIcon,
+  TagTitle,
+} from '@/styles/components/Table/EventTable.styles';
 
 /**
  * Contains the "UI" part of Event Table
@@ -21,15 +29,63 @@ const EventTableImpl = ({
   getColumnSearchProps,
   sortedInfo,
   handleChange,
-  dataForTable,
+  filteredDataByTags,
+  setFilteredDataByTags,
+  handleFilterByTags,
 }: {
   getColumnSearchProps: (dataIndex: EventDataIndex) => ColumnType<EventRowData>;
   sortedInfo: SorterResult<EventRowData>;
   handleChange: TableProps<EventRowData>['onChange'];
-  dataForTable: EventRowData[];
+  filteredDataByTags: EventRowData[];
+  setFilteredDataByTags: (data: EventRowData[]) => void;
+  handleFilterByTags: (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    dataForTable: EventRowData[]
+  ) => void;
 }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
+
+  const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
+  const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
+    '/api/event/',
+    fetcher,
+    {
+      onSuccess: data => {
+        setDataForTable(convertEventDataToRowData(data));
+        setFilteredDataByTags(dataForTable);
+      },
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
+
+  // Refetch data when data is updated
+  useEffect(() => {
+    mutate();
+  }, [mutate, data]);
+
+  //Reset filtered data if data is updated
+  useEffect(() => {
+    setFilteredDataByTags(dataForTable);
+  }, [dataForTable, setFilteredDataByTags]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  const onSelectChange = newSelectedRowKeys => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  // const hasSelected = selectedRowKeys.length > 0;
+  const handleAddEvent = () => {
+    console.log(selectedRowKeys);
+  };
+
+  // check for errors and loading
+  if (error) return <div>Failed to load event table</div>;
+  if (isLoading) return <div>Loading...</div>;
 
   // Define columns for the Ant Design table
   const columns: ColumnsType<EventRowData> = [
@@ -88,7 +144,23 @@ const EventTableImpl = ({
     },
     {
       // Column for 'Tags'
-      title: 'Tags',
+      title: (
+        <TagTitle>
+          <span>Tags</span>
+          <Popover
+            content={
+              <Input
+                placeholder="Enter tags separated by commas"
+                onPressEnter={e => handleFilterByTags(e, dataForTable)}
+                style={{ width: '300px' }}
+              />
+            }
+            trigger="click"
+            title="Filter by Tags">
+            <FilterIcon />
+          </Popover>
+        </TagTitle>
+      ),
       dataIndex: 'tags',
       key: 'tags',
 
@@ -134,16 +206,22 @@ const EventTableImpl = ({
     <>
       {showPopup && <EventPopupWindowForm setShowPopup={setShowPopup} />}
       {showPopupTag && <TagEventPopupWindow setShowPopup={setShowPopupTag} />}
+      {/* <Button type="primary" onClick={handleAddEvent} disabled={!hasSelected} /> */}
+      {/* {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''} */}
+
       <TableHeader
         setShowPopup={setShowPopup}
         showPopup={showPopup}
         setShowPopupTag={setShowPopupTag}
         showPopupTag={showPopup}
-      />
+        hasSelected={selectedRowKeys.length > 0}
+        numSelected={selectedRowKeys.length}></TableHeader>
+
       <TableContainer>
         <div id="table-container">
           <Table
-            dataSource={dataForTable}
+            rowSelection={rowSelection}
+            dataSource={filteredDataByTags}
             onChange={handleChange}
             columns={columns}
             pagination={false}

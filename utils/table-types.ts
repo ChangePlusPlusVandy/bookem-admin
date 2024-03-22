@@ -18,7 +18,6 @@ export type EventDataIndex = keyof EventRowData;
 export interface ProgramRowData
   extends Omit<QueriedVolunteerProgramData, 'description'> {
   key: string;
-  numEvents: number;
   description: string;
 }
 export type ProgramDataIndex = keyof ProgramRowData;
