@@ -17,24 +17,26 @@ import useSWR from 'swr';
 import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
 
 /**
- * Contains the "UI" part of Event Table
+ * Contains the "UI" part of Program Event Table
  * @returns
  */
-const EventTableImpl = ({
+const ProgramEventTableImpl = ({
   getColumnSearchProps,
   sortedInfo,
   handleChange,
+  programID,
 }: {
   getColumnSearchProps: (dataIndex: EventDataIndex) => ColumnType<EventRowData>;
   sortedInfo: SorterResult<EventRowData>;
   handleChange: TableProps<EventRowData>['onChange'];
+  programID: string;
 }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
 
   const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
   const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
-    '/api/event/',
+    '/api/events/program/' + programID,
     fetcher,
     {
       onSuccess: data => {
@@ -65,35 +67,19 @@ const EventTableImpl = ({
       ...getColumnSearchProps('name'),
     },
     {
-      // Column for 'Start Date'
-      title: 'Start Date',
-      dataIndex: 'startDate',
-      key: 'startDate',
+      // Column for 'Date'
+      title: 'Date',
+      dataIndex: 'date',
+      key: 'date',
       // Custom sorter based on date values
       sorter: (a: EventRowData, b: EventRowData) => {
         return a.startDate.getTime() - b.startDate.getTime();
       },
       // Configuring the sort order based on the 'date' column
-      sortOrder: sortedInfo.columnKey === 'startDate' ? sortedInfo.order : null,
+      sortOrder: sortedInfo.columnKey === 'date' ? sortedInfo.order : null,
       ellipsis: true,
       render(_: any, { startDate }: EventRowData) {
         return <>{startDate.toLocaleDateString()}</>;
-      },
-    },
-    {
-      // Column for 'End Date'
-      title: 'End Date',
-      dataIndex: 'endDate',
-      key: 'endDate',
-      // Custom sorter based on date values
-      sorter: (a: EventRowData, b: EventRowData) => {
-        return a.endDate.getTime() - b.endDate.getTime();
-      },
-      // Configuring the sort order based on the 'date' column
-      sortOrder: sortedInfo.columnKey === 'endDate' ? sortedInfo.order : null,
-      ellipsis: true,
-      render(_: any, { endDate }: EventRowData) {
-        return <>{endDate.toLocaleDateString()}</>;
       },
     },
     {
@@ -135,7 +121,7 @@ const EventTableImpl = ({
       // Render function to display a link to the detailed view of the event
       render: (_: any, { _id, name }: EventRowData) => (
         <>
-          <Link key={name} href={`/event/${_id.toString()}`}>
+          <Link key={name} href={`/events/program/${_id.toString()}`}>
             See more
           </Link>
         </>
@@ -168,4 +154,4 @@ const EventTableImpl = ({
   );
 };
 
-export default EventTableImpl;
+export default ProgramEventTableImpl;

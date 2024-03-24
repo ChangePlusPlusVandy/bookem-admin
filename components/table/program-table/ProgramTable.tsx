@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Space, InputRef } from 'antd';
+import { Button, Input, Space, InputRef, TableProps } from 'antd';
 import type { ColumnType } from 'antd/es/table';
-import type { FilterConfirmProps } from 'antd/es/table/interface';
+import type { FilterConfirmProps, SorterResult } from 'antd/es/table/interface';
 import { QueriedVolunteerProgramData } from 'bookem-shared/src/types/database';
 import useSWR from 'swr';
 import { ProgramDataIndex, ProgramRowData } from '@/utils/table-types';
@@ -28,7 +28,9 @@ const ProgramTable = () => {
   }, [mutate, data]);
 
   const [dataForTable, setDataForTable] = useState<ProgramRowData[]>([]);
-
+  const [sortedInfo, setSortedInfo] = useState<SorterResult<ProgramRowData>>(
+    {}
+  );
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
@@ -36,6 +38,20 @@ const ProgramTable = () => {
   // check for errors and loading
   if (error) return <div>Failed to load event table</div>;
   if (isLoading) return <div>Loading...</div>;
+
+  /**
+   * Used for sort and filters
+   * @param _pagination
+   * @param _filters
+   * @param sorter
+   */
+  const handleChange: TableProps<ProgramRowData>['onChange'] = (
+    _pagination,
+    _filters,
+    sorter
+  ) => {
+    setSortedInfo(sorter as SorterResult<ProgramRowData>);
+  };
 
   const handleSearch = (
     selectedKeys: string[],
@@ -136,6 +152,8 @@ const ProgramTable = () => {
     <>
       <ProgramTableImpl
         getColumnSearchProps={getColumnSearchProps}
+        sortedInfo={sortedInfo}
+        handleChange={handleChange}
         dataForTable={dataForTable}
       />
     </>

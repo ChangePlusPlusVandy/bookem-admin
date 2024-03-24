@@ -34,6 +34,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@next/swc-darwin-arm64": "^14.1.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@types/bcrypt": "^5.0.0",
