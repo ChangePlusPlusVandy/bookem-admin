@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Table, TableProps } from 'antd';
+import { Button, Table, TableProps, message } from 'antd';
 import type {
   ColumnType,
   ColumnsType,
@@ -30,6 +30,7 @@ const AdminTableImpl = ({
 }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   // Define columns for the Ant Design table
   const columns: ColumnsType<AdminRowData> = [
@@ -81,7 +82,13 @@ const AdminTableImpl = ({
 
   return (
     <>
-      {showPopup && <CreateAdminPopupWindow setShowPopup={setShowPopup} />}
+      {contextHolder}
+      {showPopup && (
+        <CreateAdminPopupWindow
+          messageApi={messageApi}
+          setShowPopup={setShowPopup}
+        />
+      )}
 
       <TableHeader
         setShowPopup={setShowPopup}

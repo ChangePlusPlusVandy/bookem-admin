@@ -16,16 +16,13 @@ export default async function handler(
         //Get current session of the user an check if the user is superadmin
         const session = await getServerSession(req, res, authOptions);
 
-        console.log(session?.user);
-
         if (session.user.status !== 'superadmin') {
           res.status(401).json({ message: 'Not authorized' });
           throw new Error('Not authorized');
         }
+
         // start a try catch block to catch any errors in parsing the request body
         const admin = req.body as QueriedAdminData;
-
-        console.log('Here is the request body: ', admin);
 
         // Get the user's email and password from the request body
         const { firstName, lastName, email, password } = admin;

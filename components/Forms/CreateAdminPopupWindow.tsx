@@ -18,13 +18,15 @@ import {
 import React, { useState } from 'react';
 import PopupWindow from '@/components/PopupWindow';
 import Dayjs from 'dayjs';
-import { DatePicker, TimePicker } from 'antd';
+import { DatePicker, TimePicker, message } from 'antd';
 import { useForm } from 'react-hook-form';
 
 const CreateEventPopupWindow = ({
   setShowPopup,
+  messageApi,
 }: {
   setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  messageApi: any;
 }) => {
   const { RangePicker } = DatePicker;
 
@@ -47,8 +49,7 @@ const CreateEventPopupWindow = ({
   };
 
   const createAdmin = async (data: any) => {
-    console.log('Here is the data: ', data);
-    await fetch('/api/admin', {
+    const res = await fetch('/api/admin', {
       method: 'POST',
       headers: {
         // Specify the content type in the headers
@@ -58,71 +59,87 @@ const CreateEventPopupWindow = ({
       body: data,
     });
 
+    if (res.ok) {
+      const resObj = await res.json();
+      messageApi.open({
+        type: 'success',
+        content: resObj.message,
+      });
+    } else {
+      const resObj = await res.json();
+      messageApi.open({
+        type: 'error',
+        content: resObj.message,
+      });
+    }
+
     setShowPopup(false);
   };
 
   return (
-    <PopupWindow hidePopup={() => setShowPopup(false)}>
-      <CreateEventContainer>
-        <CreateEventForm>
-          <FormHeader>Add new account</FormHeader>
+    <>
+      <PopupWindow hidePopup={() => setShowPopup(false)}>
+        <CreateEventContainer>
+          <CreateEventForm>
+            <FormHeader>Add new account</FormHeader>
 
-          <InputFlex>
-            <FormInput
-              {...register('firstName')}
+            <InputFlex>
+              <FormInput
+                {...register('firstName')}
+                type="text"
+                placeholder="First Name"
+                pattern="[A-Za-z]"
+                title="Input must be text"></FormInput>
+              <FormInput
+                {...register('lastName')}
+                type="text"
+                placeholder="Last Name"
+                pattern="[A-Za-z]"
+                title="Input must be text"></FormInput>
+            </InputFlex>
+
+            <LongFormInput
+              {...register('email')}
               type="text"
-              placeholder="First Name"
-              pattern="[A-Za-z]"
-              title="Input must be text"></FormInput>
-            <FormInput
-              {...register('lastName')}
+              placeholder="Email"
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+              title="Input must be a valid email address"
+              // defaultValue={eventData?.email}
+            ></LongFormInput>
+
+            <LongFormInput
+              {...register('phone')}
               type="text"
-              placeholder="Last Name"
-              pattern="[A-Za-z]"
-              title="Input must be text"></FormInput>
-          </InputFlex>
+              placeholder="Phone number"
+              pattern="/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/"
+              title="Input must be a valid phone number"
+              // defaultValue={eventData?.phone}
+            ></LongFormInput>
 
-          <LongFormInput
-            {...register('email')}
-            type="text"
-            placeholder="Email"
-            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-            title="Input must be a valid email address"
-            // defaultValue={eventData?.email}
-          ></LongFormInput>
+            <LongFormInput
+              {...register('password')}
+              type="password"
+              placeholder="Password"
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+              title="Input must be a valid password"
+              // defaultValue={eventData?.email}
+            ></LongFormInput>
+            <LongFormInput
+              // {...register('email')}
+              type="password"
+              placeholder="Confirm Password"
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+              title="Input must be a valid password"
+              // defaultValue={eventData?.email}
+            ></LongFormInput>
 
-          <LongFormInput
-            {...register('phone')}
-            type="text"
-            placeholder="Phone number"
-            pattern="/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/"
-            title="Input must be a valid phone number"
-            // defaultValue={eventData?.phone}
-          ></LongFormInput>
-
-          <LongFormInput
-            {...register('password')}
-            type="password"
-            placeholder="Password"
-            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-            title="Input must be a valid password"
-            // defaultValue={eventData?.email}
-          ></LongFormInput>
-          <LongFormInput
-            // {...register('email')}
-            type="password"
-            placeholder="Confirm Password"
-            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-            title="Input must be a valid password"
-            // defaultValue={eventData?.email}
-          ></LongFormInput>
-
-          <ButtonCenter>
-            <SubmitButton onClick={handleSubmit(onSubmit)}>Add</SubmitButton>
-          </ButtonCenter>
-        </CreateEventForm>
-      </CreateEventContainer>
-    </PopupWindow>
+            <ButtonCenter>
+              <SubmitButton onClick={handleSubmit(onSubmit)}>Add</SubmitButton>
+            </ButtonCenter>
+          </CreateEventForm>
+        </CreateEventContainer>
+      </PopupWindow>
+    </>
   );
 };
 
