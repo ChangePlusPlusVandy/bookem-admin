@@ -1,8 +1,9 @@
 import {
   QueriedVolunteerEventDTO,
   QueriedVolunteerProgramData,
+  QueriedAdminData,
 } from 'bookem-shared/src/types/database';
-import { EventRowData, ProgramRowData } from './table-types';
+import { EventRowData, ProgramRowData, AdminRowData } from './table-types';
 
 export const convertEventDataToRowData = (
   data: QueriedVolunteerEventDTO[]
@@ -30,4 +31,10 @@ export const convertProgramDataToRowData = (
     };
   });
   return result;
+};
+
+export const convertAdminDataToRowData = (
+  data: QueriedAdminData[]
+): AdminRowData[] => {
+  return data.map(admin => ({ ...admin, key: admin._id.toString() }));
 };

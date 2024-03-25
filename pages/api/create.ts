@@ -1,37 +1,28 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-
 import dbConnect from '@/lib/dbConnect';
-
-import { getSession } from 'next-auth/react';
+import { hash } from 'bcrypt';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import Admins from 'bookem-shared/src/models/Admins';
 import { QueriedAdminData, AdminData } from 'bookem-shared/src/types/database';
-import { hash } from 'bcrypt';
+import { getServerSession } from 'next-auth';
+import { authOptions } from './auth/[...nextauth]';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
   switch (req.method) {
-    case 'GET':
-      // Connect to the database
-      await dbConnect();
-
-      try {
-        const allUsers = (await Admins.find()) as QueriedAdminData[];
-        res.status(200).json(allUsers);
-      } catch (e) {
-        console.error('An error has occurred in index.ts', e);
-        res.status(500).json({
-          error: 'Sorry, an error occurred while connecting to the database',
-        });
-      }
-
     case 'POST':
       try {
+        //Get current session of the user an check if the user is superadmin
+        const session = await getServerSession(req, res, authOptions);
+
+        if (session.user.status !== 'superadmin') {
+          res.status(401).json({ message: 'Not authorized' });
+          throw new Error('Not authorized');
+        }
+
         // start a try catch block to catch any errors in parsing the request body
         const admin = req.body as QueriedAdminData;
-
-        console.log('Here is the request body: ', admin);
 
         // Get the user's email and password from the request body
         const { firstName, lastName, email, password } = admin;
@@ -78,10 +69,9 @@ export default async function handler(
         console.log('Here is the error: ', e);
         res.status(500).json({ message: 'An error occurred', error: e });
       }
+      break;
     default:
-      res.status(405).json({
-        error: 'Sorry, only GET requests are supported',
-      });
+      res.status(400).json({ message: 'Invalid request method' });
       break;
   }
 }
