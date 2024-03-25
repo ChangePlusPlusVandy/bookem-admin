@@ -1,4 +1,8 @@
-import { SearchContainter, TableButton } from '@/styles/table.styles';
+import {
+  SearchContainter,
+  TableButton,
+  TableIcon,
+} from '@/styles/table.styles';
 import React from 'react';
 import Image from 'next/image';
 import { Button } from 'antd';
@@ -14,7 +18,7 @@ const TableHeader = ({
   return (
     <>
       <SearchContainter>
-        <TableButton onClick={() => setShowPopUp(!showPopUp)}>
+        <TableIcon onClick={() => setShowPopUp(!showPopUp)}>
           <Image
             src="/table/addbutton.png"
             alt=""
@@ -22,17 +26,10 @@ const TableHeader = ({
             height={32}
             style={{ marginLeft: 150 }}
           />
-        </TableButton>
-        <Button
-          onClick={() => handleExport('programs')}
-          style={{
-            width: 250,
-            marginLeft: 90,
-            backgroundColor: 'darkgray',
-            color: 'whitesmoke',
-          }}>
+        </TableIcon>
+        <TableButton onClick={() => handleExport('programs')}>
           Export
-        </Button>
+        </TableButton>
       </SearchContainter>
     </>
   );

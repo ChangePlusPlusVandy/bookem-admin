@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableProps, Tag, Input, Popover } from 'antd';
+import { Table, TableProps, Tag, Input, Popover, Button } from 'antd';
 import type {
   ColumnType,
   ColumnsType,
@@ -7,7 +7,7 @@ import type {
 } from 'antd/es/table/interface';
 import { TableContainer } from '@/styles/table.styles';
 import Link from 'next/link';
-import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
+import EventPopupWindowForm from '@/components/Forms/EventPopupWindowForm';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import { EventDataIndex, EventRowData } from '@/utils/table-types';
 import { fetcher } from '@/utils/utils';
@@ -69,6 +69,19 @@ const EventTableImpl = ({
   useEffect(() => {
     setFilteredDataByTags(dataForTable);
   }, [dataForTable, setFilteredDataByTags]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  const onSelectChange = newSelectedRowKeys => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  // const hasSelected = selectedRowKeys.length > 0;
+  const handleAddEvent = () => {
+    console.log(selectedRowKeys);
+  };
 
   // check for errors and loading
   if (error) return <div>Failed to load event table</div>;
@@ -191,17 +204,23 @@ const EventTableImpl = ({
 
   return (
     <>
-      {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
+      {showPopup && <EventPopupWindowForm setShowPopup={setShowPopup} />}
       {showPopupTag && <TagEventPopupWindow setShowPopup={setShowPopupTag} />}
+      {/* <Button type="primary" onClick={handleAddEvent} disabled={!hasSelected} /> */}
+      {/* {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''} */}
+
       <TableHeader
         setShowPopup={setShowPopup}
         showPopup={showPopup}
         setShowPopupTag={setShowPopupTag}
         showPopupTag={showPopup}
-      />
+        hasSelected={selectedRowKeys.length > 0}
+        numSelected={selectedRowKeys.length}></TableHeader>
+
       <TableContainer>
         <div id="table-container">
           <Table
+            rowSelection={rowSelection}
             dataSource={filteredDataByTags}
             onChange={handleChange}
             columns={columns}

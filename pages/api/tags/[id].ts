@@ -35,7 +35,7 @@ export default async function handler(
         if (!deletedTag) {
           await session.abortTransaction();
           session.endSession();
-          return res.status(500).json({ message: 'Tag not found' });
+          return res.status(400).json({ message: 'Tag not found' });
         }
 
         // Delete tag from Events collection
