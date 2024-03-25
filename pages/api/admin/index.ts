@@ -25,6 +25,7 @@ export default async function handler(
           error: 'Sorry, an error occurred while connecting to the database',
         });
       }
+      break;
 
     case 'POST':
       try {
@@ -78,6 +79,7 @@ export default async function handler(
         console.log('Here is the error: ', e);
         res.status(500).json({ message: 'An error occurred', error: e });
       }
+      break;
     default:
       res.status(405).json({
         error: 'Sorry, only GET requests are supported',

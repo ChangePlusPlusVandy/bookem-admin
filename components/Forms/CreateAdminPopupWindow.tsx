@@ -17,9 +17,8 @@ import {
 } from '@/styles/components/windowFlow.styles';
 import React, { useState } from 'react';
 import PopupWindow from '@/components/PopupWindow';
-import Dayjs from 'dayjs';
-import { DatePicker, TimePicker, message } from 'antd';
 import { useForm } from 'react-hook-form';
+import { Form, type FormProps } from 'antd';
 
 const CreateEventPopupWindow = ({
   setShowPopup,
@@ -28,11 +27,6 @@ const CreateEventPopupWindow = ({
   setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
   messageApi: any;
 }) => {
-  const { RangePicker } = DatePicker;
-
-  const [startTime, setStartTime] = useState('12:00');
-  const [endTime, setEndTime] = useState('12:00');
-
   const { register, handleSubmit } = useForm({});
 
   const onSubmit = (data: any) => {
