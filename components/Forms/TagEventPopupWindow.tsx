@@ -47,6 +47,10 @@ const TagEventPopupWindow = ({
     },
   });
 
+  useEffect(() => {
+    mutate();
+  }, [allTags, mutate]);
+
   const [showInfo, setShowInfo] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredTags, setFilteredTags] = useState<QueriedTagData[]>([]);
