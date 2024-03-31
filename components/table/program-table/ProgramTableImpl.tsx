@@ -90,8 +90,8 @@ const ProgramTableImpl = ({
       key: 'delete',
       render: (_: any, { _id }: ProgramRowData) => (
         <Popconfirm
-          title="Delete the event"
-          description="Are you sure to delete this event?"
+          title="Delete the program"
+          description="Are you sure to delete this program?"
           okText="Yes"
           cancelText="No"
           onConfirm={() => handleDeleteProgram(_id)}>
