@@ -1,5 +1,5 @@
 import CreateProgramPopupWindow from '@/components/Forms/CreateProgramPopupWindow';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TableHeader from './TableHeader';
 import {
   SpaceBetweenFlexContainer,
@@ -11,18 +11,36 @@ import { ColumnType, ColumnsType } from 'antd/es/table';
 import { Table } from 'antd';
 import Link from 'next/link';
 import mongoose from 'mongoose';
+import { QueriedVolunteerProgramData } from 'bookem-shared/src/types/database';
+import { fetcher } from '@/utils/utils';
+import { convertProgramDataToRowData } from '@/utils/table-utils';
+import useSWR from 'swr';
 
 const ProgramTableImpl = ({
   getColumnSearchProps,
-  dataForTable,
 }: {
   getColumnSearchProps: (
     dataIndex: ProgramDataIndex
   ) => ColumnType<ProgramRowData>;
-  dataForTable: ProgramRowData[];
 }) => {
   const [showPopUp, setShowPopUp] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const [dataForTable, setDataForTable] = useState<ProgramRowData[]>([]);
+
+  const { data, error, isLoading, mutate } = useSWR<
+    QueriedVolunteerProgramData[]
+  >('/api/program/', fetcher, {
+    onSuccess: data => {
+      setDataForTable(convertProgramDataToRowData(data));
+    },
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+  });
+
+  // Extra defense to refetch data if needed
+  useEffect(() => {
+    mutate();
+  }, [mutate, data]);
 
   const handleDeleteProgram = async (_id: mongoose.Types.ObjectId) => {
     console.log(_id);
@@ -82,6 +100,11 @@ const ProgramTableImpl = ({
       ),
     },
   ];
+
+  // check for errors and loading
+  if (error) return <div>Failed to load event table</div>;
+  if (isLoading) return <div>Loading...</div>;
+
   return (
     <>
       {contextHolder}
