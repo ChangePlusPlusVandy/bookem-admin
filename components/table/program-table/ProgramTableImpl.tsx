@@ -1,11 +1,16 @@
 import CreateProgramPopupWindow from '@/components/Forms/CreateProgramPopupWindow';
 import React, { useState } from 'react';
 import TableHeader from './TableHeader';
-import { TableContainer } from '@/styles/table.styles';
-import { Button, message } from 'antd';
+import {
+  SpaceBetweenFlexContainer,
+  TableContainer,
+} from '@/styles/table.styles';
+import { Button, Popconfirm, message } from 'antd';
 import { ProgramDataIndex, ProgramRowData } from '@/utils/table-types';
 import { ColumnType, ColumnsType } from 'antd/es/table';
 import { Table } from 'antd';
+import Link from 'next/link';
+import mongoose from 'mongoose';
 
 const ProgramTableImpl = ({
   getColumnSearchProps,
@@ -18,6 +23,26 @@ const ProgramTableImpl = ({
 }) => {
   const [showPopUp, setShowPopUp] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+
+  const handleDeleteProgram = async (_id: mongoose.Types.ObjectId) => {
+    console.log(_id);
+    // const res = await fetch(`/api/program/${_id}`, {
+    //   method: 'DELETE',
+    // });
+    // if (res.ok) {
+    //   const resObj = await res.json();
+    //   messageApi.open({
+    //     type: 'success',
+    //     content: resObj.message,
+    //   });
+    //   mutate();
+    // } else {
+    //   messageApi.open({
+    //     type: 'error',
+    //     content: 'There was an error deleting the tag',
+    //   });
+    // }
+  };
 
   const columns: ColumnsType<ProgramRowData> = [
     {
@@ -35,7 +60,26 @@ const ProgramTableImpl = ({
       title: 'Events',
       dataIndex: 'events',
       key: 'events',
-      render: () => <Button type="link">See Events</Button>,
+      render: (_: any, { _id }: ProgramRowData) => (
+        <Link key={_id.toString()} href="#">
+          See Events
+        </Link>
+      ),
+    },
+    {
+      title: '',
+      dataIndex: 'delete',
+      key: 'delete',
+      render: (_: any, { _id }: ProgramRowData) => (
+        <Popconfirm
+          title="Delete the event"
+          description="Are you sure to delete this event?"
+          okText="Yes"
+          cancelText="No"
+          onConfirm={() => handleDeleteProgram(_id)}>
+          <Button danger>Delete</Button>
+        </Popconfirm>
+      ),
     },
   ];
   return (
