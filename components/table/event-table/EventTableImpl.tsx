@@ -1,11 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableProps, Tag, Input, Popover, Button } from 'antd';
+import {
+  Table,
+  TableProps,
+  Tag,
+  Input,
+  Popover,
+  Button,
+  Popconfirm,
+  message,
+} from 'antd';
 import type {
   ColumnType,
   ColumnsType,
   SorterResult,
 } from 'antd/es/table/interface';
-import { TableContainer } from '@/styles/table.styles';
+import {
+  SpaceBetweenFlexContainer,
+  TableContainer,
+} from '@/styles/table.styles';
 import Link from 'next/link';
 import EventPopupWindowForm from '@/components/Forms/EventPopupWindowForm';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
@@ -20,6 +32,7 @@ import {
   FilterIcon,
   TagTitle,
 } from '@/styles/components/Table/EventTable.styles';
+import mongoose from 'mongoose';
 
 /**
  * Contains the "UI" part of Event Table
@@ -45,6 +58,7 @@ const EventTableImpl = ({
 }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
   const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
@@ -81,6 +95,25 @@ const EventTableImpl = ({
   // const hasSelected = selectedRowKeys.length > 0;
   const handleAddEvent = () => {
     console.log(selectedRowKeys);
+  };
+
+  const handleDeleteEvent = async (_id: mongoose.Types.ObjectId) => {
+    const res = await fetch(`/api/event/${_id}`, {
+      method: 'DELETE',
+    });
+    if (res.ok) {
+      const resObj = await res.json();
+      messageApi.open({
+        type: 'success',
+        content: resObj.message,
+      });
+      mutate();
+    } else {
+      messageApi.open({
+        type: 'error',
+        content: 'There was an error deleting the tag',
+      });
+    }
   };
 
   // check for errors and loading
@@ -188,15 +221,25 @@ const EventTableImpl = ({
     },
     {
       // Column for 'View' with a link to see more details
-      title: 'View',
+      title: '',
       dataIndex: 'view',
       key: 'view',
       // Render function to display a link to the detailed view of the event
       render: (_: any, { _id, name }: EventRowData) => (
         <>
-          <Link key={name} href={`/event/${_id.toString()}`}>
-            See more
-          </Link>
+          <SpaceBetweenFlexContainer>
+            <Link key={name} href={`/event/${_id.toString()}`}>
+              See more
+            </Link>
+            <Popconfirm
+              title="Delete the event"
+              description="Are you sure to delete this event?"
+              okText="Yes"
+              cancelText="No"
+              onConfirm={() => handleDeleteEvent(_id)}>
+              <Button danger>Delete</Button>
+            </Popconfirm>
+          </SpaceBetweenFlexContainer>
         </>
       ),
     },
@@ -204,6 +247,7 @@ const EventTableImpl = ({
 
   return (
     <>
+      {contextHolder}
       {showPopup && <EventPopupWindowForm setShowPopup={setShowPopup} />}
       {showPopupTag && <TagEventPopupWindow setShowPopup={setShowPopupTag} />}
       {/* <Button type="primary" onClick={handleAddEvent} disabled={!hasSelected} /> */}

@@ -58,53 +58,6 @@ export default async function handler(
       break;
 
     /**
-     * @route POST /api/event/[id]
-     * @desc Signup/Unsignup the user
-     * @req event id, user in session
-     * @res Success message
-     */
-    case 'POST':
-      try {
-        await dbConnect();
-
-        // Query event
-        const event = await VolunteerEvents.findById(id);
-
-        // Query logged in user
-        const user = await Users.findById(session.user._id);
-
-        // Find the index of logged in user in event.volunteers
-        const userIndex = event.volunteers.indexOf(user._id);
-
-        // Find the index of event in user.events
-        const eventIndex = user.events.indexOf(event._id);
-
-        if (userIndex === -1 && eventIndex === -1) {
-          // Register to the event
-          event.volunteers.unshift(user._id);
-          user.events.unshift(event._id);
-        } else if (userIndex === -1 || eventIndex === -1) {
-          throw new Error('Inconsistency between collections!');
-        } else {
-          // Unregister
-          // Remove the user and event
-          event.volunteers.splice(userIndex, 1);
-          user.events.splice(eventIndex, 1);
-        }
-
-        // Resave both document
-        await user.save();
-        await event.save();
-
-        return res.status(200).json('Register Success');
-      } catch (error: any) {
-        res.status(500).json({ message: error.message });
-        console.error(error);
-      }
-
-      break;
-
-    /**
      * @route PATCH /api/event/[id]
      * @desc Update the event by id
      * @req event id, user in session
@@ -144,8 +97,18 @@ export default async function handler(
       }
 
       break;
-    // case 'PUT':
-    // case 'DELETE':
+    case 'DELETE':
+      try {
+        const deletedEvent = await VolunteerEvents.findByIdAndDelete(id);
+        if (!deletedEvent) {
+          return res.status(400).json({ message: 'Event not found' });
+        }
+        res.status(200).json({ message: 'Event deleted successfully' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Sorry an error occurred' });
+      }
+      break;
     // default:
     // res.setHeader('Allow', ['GET', 'PUT', 'DELETE', 'POST']);
     // res.status(405).end(`Method ${method} Not Allowed`);
