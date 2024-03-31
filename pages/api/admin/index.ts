@@ -32,8 +32,6 @@ export default async function handler(
         // start a try catch block to catch any errors in parsing the request body
         const admin = req.body as QueriedAdminData;
 
-        console.log('Here is the request body: ', admin);
-
         // Get the user's email and password from the request body
         const { firstName, lastName, email, password } = admin;
 
@@ -76,7 +74,7 @@ export default async function handler(
         // Return the status of the user creation
         res.status(201).json({ message: 'Admin created', ...status });
       } catch (e) {
-        console.log('Here is the error: ', e);
+        console.error('Here is the error: ', e);
         res.status(500).json({ message: 'An error occurred', error: e });
       }
       break;
