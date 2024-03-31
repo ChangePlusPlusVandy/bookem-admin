@@ -9,7 +9,7 @@ import {
   FormLabel,
   CreateEventForm,
   FormHeader,
-  CreateEventContainer,
+  CreateAdminContainer,
 } from '@/styles/components/event.styles';
 import {
   SubmitButton,
@@ -17,9 +17,10 @@ import {
 } from '@/styles/components/windowFlow.styles';
 import React, { useState } from 'react';
 import PopupWindow from '@/components/PopupWindow';
-import Dayjs from 'dayjs';
-import { DatePicker, TimePicker, message } from 'antd';
 import { useForm } from 'react-hook-form';
+import { Form, type FormProps, Input, Button, message } from 'antd';
+import { Typography } from 'antd';
+const { Title } = Typography;
 
 const CreateEventPopupWindow = ({
   setShowPopup,
@@ -28,10 +29,41 @@ const CreateEventPopupWindow = ({
   setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
   messageApi: any;
 }) => {
-  const { RangePicker } = DatePicker;
+  const [form] = Form.useForm();
 
-  const [startTime, setStartTime] = useState('12:00');
-  const [endTime, setEndTime] = useState('12:00');
+  const onFinish = async values => {
+    try {
+      const res = await fetch('/api/admin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (res.ok) {
+        const resObj = await res.json();
+        messageApi.open({
+          type: 'success',
+          content: resObj.message,
+        });
+      } else {
+        const resObj = await res.json();
+        messageApi.open({
+          type: 'error',
+          content: resObj.message,
+        });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      messageApi.open({
+        type: 'error',
+        content: 'Sorry an internal error exists, please try again later',
+      });
+    }
+
+    setShowPopup(false);
+  };
 
   const { register, handleSubmit } = useForm({});
 
@@ -79,65 +111,94 @@ const CreateEventPopupWindow = ({
   return (
     <>
       <PopupWindow hidePopup={() => setShowPopup(false)}>
-        <CreateEventContainer>
-          <CreateEventForm>
-            <FormHeader>Add new account</FormHeader>
+        <CreateAdminContainer>
+          <Title>Add new account</Title>
+          <Form style={{ width: '50%' }} form={form} onFinish={onFinish}>
+            <Form.Item
+              name="firstName"
+              rules={[
+                { required: true, message: 'Please input your first name!' },
+              ]}>
+              <Input placeholder="First Name" />
+            </Form.Item>
 
-            <InputFlex>
-              <FormInput
-                {...register('firstName')}
-                type="text"
-                placeholder="First Name"
-                pattern="[A-Za-z]"
-                title="Input must be text"></FormInput>
-              <FormInput
-                {...register('lastName')}
-                type="text"
-                placeholder="Last Name"
-                pattern="[A-Za-z]"
-                title="Input must be text"></FormInput>
-            </InputFlex>
+            <Form.Item
+              name="lastName"
+              rules={[
+                { required: true, message: 'Please input your last name!' },
+              ]}>
+              <Input placeholder="Last Name" />
+            </Form.Item>
 
-            <LongFormInput
-              {...register('email')}
-              type="text"
-              placeholder="Email"
-              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-              title="Input must be a valid email address"
-              // defaultValue={eventData?.email}
-            ></LongFormInput>
+            <Form.Item
+              name="email"
+              rules={[
+                {
+                  required: true,
+                  type: 'email',
+                  message: 'Please input a valid email!',
+                },
+              ]}>
+              <Input placeholder="Email" />
+            </Form.Item>
 
-            <LongFormInput
-              {...register('phone')}
-              type="text"
-              placeholder="Phone number"
-              pattern="/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/"
-              title="Input must be a valid phone number"
-              // defaultValue={eventData?.phone}
-            ></LongFormInput>
+            <Form.Item
+              name="phone"
+              rules={[
+                { required: true, message: 'Please input your phone number!' },
+                {
+                  pattern: /^[0-9]{10}$/,
+                  message: 'Please input a valid phone number!',
+                },
+              ]}>
+              <Input placeholder="Phone number" />
+            </Form.Item>
 
-            <LongFormInput
-              {...register('password')}
-              type="password"
-              placeholder="Password"
-              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-              title="Input must be a valid password"
-              // defaultValue={eventData?.email}
-            ></LongFormInput>
-            <LongFormInput
-              // {...register('email')}
-              type="password"
-              placeholder="Confirm Password"
-              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-              title="Input must be a valid password"
-              // defaultValue={eventData?.email}
-            ></LongFormInput>
+            <Form.Item
+              name="password"
+              rules={[
+                { required: true, message: 'Please input your password!' },
+                {
+                  min: 6,
+                  message: 'Password must be at least 6 characters long!',
+                },
+              ]}>
+              <Input.Password placeholder="Password" />
+            </Form.Item>
+            <Form.Item
+              name="confirm"
+              dependencies={['password']}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please confirm your password!',
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('password') === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error(
+                        'The new password that you entered do not match!'
+                      )
+                    );
+                  },
+                }),
+              ]}>
+              <Input.Password placeholder="Confirm Password" />
+            </Form.Item>
 
-            <ButtonCenter>
-              <SubmitButton onClick={handleSubmit(onSubmit)}>Add</SubmitButton>
-            </ButtonCenter>
-          </CreateEventForm>
-        </CreateEventContainer>
+            <Form.Item>
+              {/* <Button type="primary" htmlType="submit">
+                Add
+              </Button> */}
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <SubmitButton type="submit">Add</SubmitButton>
+              </div>
+            </Form.Item>
+          </Form>
+        </CreateAdminContainer>
       </PopupWindow>
     </>
   );

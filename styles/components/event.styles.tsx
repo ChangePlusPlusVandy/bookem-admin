@@ -8,6 +8,15 @@ export const CreateEventContainer = styled.div`
   height: 100%;
 `;
 
+export const CreateAdminContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: scroll;
+  height: 100%;
+`;
+
 export const CreateProgramContainer = styled.div`
   width: 100%;
   display: flex;
