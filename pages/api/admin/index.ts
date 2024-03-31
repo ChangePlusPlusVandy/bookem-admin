@@ -6,11 +6,14 @@ import { getSession } from 'next-auth/react';
 import Admins from 'bookem-shared/src/models/Admins';
 import { QueriedAdminData, AdminData } from 'bookem-shared/src/types/database';
 import { hash } from 'bcrypt';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
+  const session = await getServerSession(req, res, authOptions);
   switch (req.method) {
     case 'GET':
       // Connect to the database
@@ -29,6 +32,12 @@ export default async function handler(
 
     case 'POST':
       try {
+        if (session.user.status !== 'superadmin') {
+          res.status(401).json({
+            message: 'Sorry, only super admin is allowed to create new admins',
+          });
+          throw new Error('Only super admin is allowed to create new admins');
+        }
         // start a try catch block to catch any errors in parsing the request body
         const admin = req.body as QueriedAdminData;
 
