@@ -44,22 +44,22 @@ const ProgramTableImpl = ({
 
   const handleDeleteProgram = async (_id: mongoose.Types.ObjectId) => {
     console.log(_id);
-    // const res = await fetch(`/api/program/${_id}`, {
-    //   method: 'DELETE',
-    // });
-    // if (res.ok) {
-    //   const resObj = await res.json();
-    //   messageApi.open({
-    //     type: 'success',
-    //     content: resObj.message,
-    //   });
-    //   mutate();
-    // } else {
-    //   messageApi.open({
-    //     type: 'error',
-    //     content: 'There was an error deleting the tag',
-    //   });
-    // }
+    const res = await fetch(`/api/program/${_id}`, {
+      method: 'DELETE',
+    });
+    if (res.ok) {
+      const resObj = await res.json();
+      messageApi.open({
+        type: 'success',
+        content: resObj.message,
+      });
+      mutate();
+    } else {
+      messageApi.open({
+        type: 'error',
+        content: 'There was an error deleting the tag',
+      });
+    }
   };
 
   const columns: ColumnsType<ProgramRowData> = [
