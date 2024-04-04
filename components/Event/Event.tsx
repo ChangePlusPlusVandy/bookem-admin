@@ -20,6 +20,7 @@ import {
   ButtonContainer,
 } from '@/styles/components/Event/event.styles';
 import EventPopupWindowForm from '../Forms/EventPopupWindowForm';
+import { useRouter } from 'next/router';
 
 /**
  * Event Detail
@@ -31,6 +32,7 @@ const Event = ({ pid }: { pid: string }) => {
 
   const [event, setEvent] = useState<QueriedVolunteerEventDTO>();
   const [error, setError] = useState<Error>();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchEvent = () => {
@@ -100,7 +102,10 @@ const Event = ({ pid }: { pid: string }) => {
             <EditButton onClick={() => setShowPopup(prev => !prev)}>
               Edit
             </EditButton>
-            <SeeSignUpButton> See sign-Ups </SeeSignUpButton>
+            <SeeSignUpButton
+              onClick={() => router.push('/volunteers/event/' + pid)}>
+              See sign-Ups
+            </SeeSignUpButton>
             <Image src="/event/bookmarks.png" alt="" width={50} height={50} />
           </ButtonContainer>
         </TextContainer>

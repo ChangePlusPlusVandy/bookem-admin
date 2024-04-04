@@ -1,4 +1,4 @@
-import VolunteerTable from '@/components/table/VolunteerTable';
+import VolunteerTable from '@/components/table/volunteer-table/VolunteerTable';
 import { PageLayout, PageTitle } from '@/styles/table.styles';
 import React from 'react';
 
