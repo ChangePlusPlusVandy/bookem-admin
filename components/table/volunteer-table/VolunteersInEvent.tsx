@@ -11,7 +11,7 @@ import { Table } from 'antd';
 
 const VolunteersInEvent = ({ eventId }: { eventId?: string }) => {
   const { data, error, isLoading, mutate } = useSWR<QueriedUserData[]>(
-    '/api/users/',
+    '/api/users/event/' + eventId,
     fetcher,
     {
       onSuccess: data => {
