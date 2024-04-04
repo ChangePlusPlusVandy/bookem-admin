@@ -29,3 +29,13 @@ export interface AdminRowData extends QueriedAdminData {
   key: string;
 }
 export type AdminDataIndex = keyof AdminRowData;
+
+export interface VolunteerRowData {
+  key: number;
+  name: string;
+  email: string;
+  phone: string;
+  id: ObjectId;
+}
+
+export type VolunteerDataIndex = keyof VolunteerRowData;

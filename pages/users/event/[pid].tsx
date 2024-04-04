@@ -1,4 +1,4 @@
-import VolunteerTable from '@/components/table/VolunteerTable';
+import VolunteerTable from '@/components/table/volunteer-table/VolunteerTable';
 import EventTable from '@/components/table/event-table/EventTable';
 import { PageLayout, PageTitle } from '@/styles/table.styles';
 import { useRouter } from 'next/router';

@@ -22,28 +22,16 @@ import {
 import { ObjectId } from 'mongodb';
 import Link from 'next/link';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
-import { clear } from 'console';
-
-// TODO: extract to utils/types in the future
-interface VolunteerRowData {
-  key: number;
-  name: string;
-  email: string;
-  phone: string;
-  // tags: string[];
-  id: ObjectId;
-}
-
-type DataIndex = keyof VolunteerRowData;
-
-const fetcher = (url: string) => fetch(url).then(res => res.json());
+import { fetcher } from '@/utils/utils';
+import { convertUserDataToRowData } from '@/utils/table-utils';
+import { VolunteerDataIndex, VolunteerRowData } from '@/utils/table-types';
 
 const VolunteerTable = ({ eventId }: { eventId?: string | undefined }) => {
   const { data, error, isLoading } = useSWR<QueriedUserData[]>(
     '/api/users/',
     fetcher
   );
-  const { data: totalHours } = useSWR<number>('/api/users/totalHours', fetcher);
+  // const { data: totalHours } = useSWR<number>('/api/users/totalHours', fetcher);
   const [dataForTable, setDataForTable] = useState<VolunteerRowData[]>([]);
   const [filterTable, setFilterTable] = useState<VolunteerRowData[]>([]);
   const [totalVolunteers, setTotalVolunteers] = useState(dataForTable.length);
@@ -71,7 +59,7 @@ const VolunteerTable = ({ eventId }: { eventId?: string | undefined }) => {
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex
+    dataIndex: VolunteerDataIndex
   ) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -85,7 +73,7 @@ const VolunteerTable = ({ eventId }: { eventId?: string | undefined }) => {
 
   // Function to get column search properties for VolunteerRowData
   const getColumnSearchProps = (
-    dataIndex: DataIndex
+    dataIndex: VolunteerDataIndex
   ): ColumnType<VolunteerRowData> => ({
     // Configuration for the filter dropdown
     filterDropdown: ({
@@ -191,11 +179,11 @@ const VolunteerTable = ({ eventId }: { eventId?: string | undefined }) => {
     setFilteredInfo({});
   };
 
-  useEffect(() => {
-    if (!isLoading && totalHours) {
-      setHours(totalHours);
-    }
-  }, [totalHours, isLoading]);
+  // useEffect(() => {
+  //   if (!isLoading && totalHours) {
+  //     setHours(totalHours);
+  //   }
+  // }, [totalHours, isLoading]);
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -294,46 +282,6 @@ const VolunteerTable = ({ eventId }: { eventId?: string | undefined }) => {
       key: 'phone',
       ...getColumnSearchProps('phone'),
     },
-    // {
-    //   title: 'Tags',
-    //   dataIndex: 'tags',
-    //   key: 'tags',
-    //   render: (_: any, { tags }: any) => (
-    //     <>
-    //       {tags.map((tag: string) => {
-    //         // TODO: add documentation for this
-    //         try {
-    //           let color = 'green';
-    //           if (tag.toLowerCase() === 'rfr') {
-    //             color = 'blue';
-    //           }
-    //           if (tag === 'rif') {
-    //             color = 'volcano';
-    //           }
-    //           return (
-    //             <Tag color={color} key={tag}>
-    //               {tag.toUpperCase()}
-    //             </Tag>
-    //           );
-    //         } catch (e: any) {
-    //           console.log('Error loading tags: ' + e.what());
-    //         }
-    //       })}
-    //     </>
-    //   ),
-    //   filters: [
-    //     {
-    //       text: 'RFR',
-    //       value: 'RFR',
-    //     },
-    //     {
-    //       text: 'RIF',
-    //       value: 'RIF',
-    //     },
-    //   ],
-    //   onFilter: (value: string, record: { tags: string }) =>
-    //     record.tags.includes(value),
-    // },
     {
       title: 'View',
       dataIndex: 'view',
@@ -380,21 +328,6 @@ const VolunteerTable = ({ eventId }: { eventId?: string | undefined }) => {
       </TableContainer>
     </>
   );
-};
-
-// TODO: move to utils folder
-const convertUserDataToRowData = (data: QueriedUserData[]) => {
-  const result = data.map((user, index) => {
-    return {
-      key: index,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      // tags: user.tags,
-      id: user._id,
-    };
-  });
-  return result;
 };
 
 export default VolunteerTable;
