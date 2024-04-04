@@ -14,6 +14,8 @@ import { TableContainer } from '@/styles/table.styles';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import { VolunteerDataIndex, VolunteerRowData } from '@/utils/table-types';
 import VolunteerTableImpl from './VolunteerTableImpl';
+import { useActiveRoute } from '@/lib/useActiveRoute';
+import VolunteersInEvent from './VolunteersInEvent';
 
 export const VolunteerTableContext = createContext<{
   getColumnSearchProps: (
@@ -29,7 +31,7 @@ export const VolunteerTableContext = createContext<{
   filterTable: [],
 });
 
-const VolunteerTable = ({ eventId }: { eventId?: string | undefined }) => {
+const VolunteerTable = ({ eventId }: { eventId?: string }) => {
   // const { data: totalHours } = useSWR<number>('/api/users/totalHours', fetcher);
   const [filterTable, setFilterTable] = useState<VolunteerRowData[]>([]);
   const [isFiltering, setIsFilter] = useState<boolean>(false);
@@ -42,6 +44,8 @@ const VolunteerTable = ({ eventId }: { eventId?: string | undefined }) => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
+
+  const route = useActiveRoute();
 
   const handleChange: TableProps<VolunteerRowData>['onChange'] = (
     pagination,
@@ -230,7 +234,10 @@ const VolunteerTable = ({ eventId }: { eventId?: string | undefined }) => {
             }}>
             Export
           </Button>
-          <VolunteerTableImpl />
+          {route === '/volunteer' && <VolunteerTableImpl />}
+          {route === '/volunteers/event/[pid]' && (
+            <VolunteersInEvent eventId={eventId} />
+          )}
         </TableContainer>
       </VolunteerTableContext.Provider>
     </>

@@ -102,7 +102,8 @@ const Event = ({ pid }: { pid: string }) => {
             <EditButton onClick={() => setShowPopup(prev => !prev)}>
               Edit
             </EditButton>
-            <SeeSignUpButton onClick={() => router.push('/users/event/' + pid)}>
+            <SeeSignUpButton
+              onClick={() => router.push('/volunteers/event/' + pid)}>
               See sign-Ups
             </SeeSignUpButton>
             <Image src="/event/bookmarks.png" alt="" width={50} height={50} />
