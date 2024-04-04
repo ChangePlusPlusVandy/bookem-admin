@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, createContext } from 'react';
 import type { TableProps } from 'antd';
 import { Button, Space, Table, Input, Tag, InputRef } from 'antd';
 import type {
   ColumnType,
   FilterValue,
   SorterResult,
+  TablePaginationConfig,
 } from 'antd/es/table/interface';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
@@ -25,17 +26,25 @@ import type { FilterConfirmProps } from 'antd/es/table/interface';
 import { fetcher } from '@/utils/utils';
 import { convertUserDataToRowData } from '@/utils/table-utils';
 import { VolunteerDataIndex, VolunteerRowData } from '@/utils/table-types';
+import VolunteerTableImpl from './VolunteerTableImpl';
+
+export const VolunteerTableContext = createContext<{
+  getColumnSearchProps: (
+    dataIndex: VolunteerDataIndex
+  ) => ColumnType<VolunteerRowData>;
+  handleChange: TableProps<VolunteerRowData>['onChange'];
+  isFiltering: boolean;
+  filterTable: VolunteerRowData[];
+}>({
+  getColumnSearchProps: () => ({}),
+  handleChange: () => {},
+  isFiltering: false,
+  filterTable: [],
+});
 
 const VolunteerTable = ({ eventId }: { eventId?: string | undefined }) => {
-  const { data, error, isLoading } = useSWR<QueriedUserData[]>(
-    '/api/users/',
-    fetcher
-  );
   // const { data: totalHours } = useSWR<number>('/api/users/totalHours', fetcher);
-  const [dataForTable, setDataForTable] = useState<VolunteerRowData[]>([]);
   const [filterTable, setFilterTable] = useState<VolunteerRowData[]>([]);
-  const [totalVolunteers, setTotalVolunteers] = useState(dataForTable.length);
-  const [hours, setHours] = useState<number>();
   const [isFiltering, setIsFilter] = useState<boolean>(false);
   const [filteredInfo, setFilteredInfo] = useState<
     Record<string, FilterValue | null>
@@ -185,50 +194,6 @@ const VolunteerTable = ({ eventId }: { eventId?: string | undefined }) => {
   //   }
   // }, [totalHours, isLoading]);
 
-  useEffect(() => {
-    if (!isLoading && data) {
-      setDataForTable(convertUserDataToRowData(data));
-      setTotalVolunteers(dataForTable.length);
-    }
-  }, [data, isLoading, dataForTable.length]);
-
-  // check for errors and loading
-  if (error) return <div>Failed to load volunteer table</div>;
-  if (isLoading) return <div>Loading...</div>;
-
-  // function that determines what the table looks like after a search by the user
-  const onTableSearch = async (value: string) => {
-    if (value === '') {
-      setFilterTable([]);
-      setTotalVolunteers(dataForTable.length);
-      setIsFilter(false);
-      return;
-    }
-
-    let filterTable = dataForTable.filter((o: { [x: string]: any }) =>
-      Object.keys(o).some(k =>
-        String(o[k]).toLowerCase().includes(value.toLowerCase())
-      )
-    );
-
-    // make a fetch request to get gotal hours for the filtered table
-    const ids = filterTable.map(obj => obj.id);
-    const newHours = await queryTotalHours(ids);
-
-    // handle error if newHours is an error object
-    if ('error' in newHours) {
-      alert(
-        'Error: could not get total hours for filtered table. Please contact for support'
-      );
-      return;
-    }
-
-    setHours(newHours);
-    setFilterTable(filterTable);
-    setTotalVolunteers(filterTable.length);
-    setIsFilter(true);
-  };
-
   const queryTotalHours = async (ids: any[]) => {
     const totalHours = await fetch('/api/users/totalHours', {
       method: 'POST',
@@ -297,35 +262,27 @@ const VolunteerTable = ({ eventId }: { eventId?: string | undefined }) => {
   return (
     <>
       {/* <Button onClick={clearFilters}>Clear filters</Button> */}
-      <TableContainer>
-        <Button
-          onClick={handleExport}
-          style={{
-            width: 250,
-            float: 'right',
-            backgroundColor: 'darkgray',
-            color: 'whitesmoke',
-          }}>
-          Export
-        </Button>
-        <div id="table-container">
-          <Table
-            dataSource={isFiltering ? filterTable : dataForTable}
-            onChange={handleChange}
-            columns={columns}
-            pagination={false}
-            scroll={{ y: 550 }}
-          />
-        </div>
-        <BottomRow>
-          <StyledTypography>
-            Total volunteers: {totalVolunteers}
-          </StyledTypography>
-          <StyledTypography>
-            <>Total hours: {hours}</>
-          </StyledTypography>
-        </BottomRow>
-      </TableContainer>
+      <VolunteerTableContext.Provider
+        value={{
+          getColumnSearchProps,
+          handleChange,
+          isFiltering,
+          filterTable,
+        }}>
+        <TableContainer>
+          <Button
+            onClick={handleExport}
+            style={{
+              width: 250,
+              float: 'right',
+              backgroundColor: 'darkgray',
+              color: 'whitesmoke',
+            }}>
+            Export
+          </Button>
+          <VolunteerTableImpl />
+        </TableContainer>
+      </VolunteerTableContext.Provider>
     </>
   );
 };
