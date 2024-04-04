@@ -2,6 +2,7 @@ import {
   QueriedVolunteerEventDTO,
   QueriedVolunteerProgramData,
   QueriedAdminData,
+  QueriedUserData,
 } from 'bookem-shared/src/types/database';
 import { ObjectId } from 'mongodb';
 
@@ -30,12 +31,8 @@ export interface AdminRowData extends QueriedAdminData {
 }
 export type AdminDataIndex = keyof AdminRowData;
 
-export interface VolunteerRowData {
-  key: number;
-  name: string;
-  email: string;
-  phone: string;
-  id: ObjectId;
+export interface VolunteerRowData extends QueriedUserData {
+  key: string;
 }
 
 export type VolunteerDataIndex = keyof VolunteerRowData;

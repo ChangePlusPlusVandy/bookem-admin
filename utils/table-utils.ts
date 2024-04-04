@@ -41,15 +41,5 @@ export const convertAdminDataToRowData = (
 };
 
 export const convertUserDataToRowData = (data: QueriedUserData[]) => {
-  const result = data.map((user, index) => {
-    return {
-      key: index,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      // tags: user.tags,
-      id: user._id,
-    };
-  });
-  return result;
+  return data.map(user => ({ ...user, key: user._id.toString() }));
 };

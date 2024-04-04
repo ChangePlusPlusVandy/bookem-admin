@@ -5,26 +5,13 @@ import type {
   ColumnType,
   FilterValue,
   SorterResult,
-  TablePaginationConfig,
 } from 'antd/es/table/interface';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import useSWR from 'swr';
-import { QueriedUserData, UserData } from 'bookem-shared/src/types/database';
-import {
-  BottomRow,
-  SearchContainter,
-  StyledTable,
-  StyledTypography,
-  TableContainer,
-} from '@/styles/table.styles';
-import { ObjectId } from 'mongodb';
-import Link from 'next/link';
+import { TableContainer } from '@/styles/table.styles';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
-import { fetcher } from '@/utils/utils';
-import { convertUserDataToRowData } from '@/utils/table-utils';
 import { VolunteerDataIndex, VolunteerRowData } from '@/utils/table-types';
 import VolunteerTableImpl from './VolunteerTableImpl';
 
@@ -159,7 +146,7 @@ const VolunteerTable = ({ eventId }: { eventId?: string | undefined }) => {
     ),
     // Filtering logic applied on each record
     onFilter: (value, record) =>
-      record[dataIndex]
+      (record[dataIndex] ?? '')
         .toString()
         .toLowerCase()
         .includes((value as string).toLowerCase()),
@@ -221,43 +208,6 @@ const VolunteerTable = ({ eventId }: { eventId?: string | undefined }) => {
     // TODO: automatically add date to file name for easier organization
     saveAs(blob, 'volunteers.xlsx');
   };
-
-  // TODO: extract to utils/constants in the future
-  const columns: any = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      onFilter: (value: string, record: any) => record.name.includes(value),
-      ellipsis: true,
-      ...getColumnSearchProps('name'),
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-      ...getColumnSearchProps('email'),
-      render(_: any, { email }: VolunteerRowData) {
-        return <Link href={'mailto:' + email}>{email}</Link>;
-      },
-    },
-    {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
-      ...getColumnSearchProps('phone'),
-    },
-    {
-      title: 'View',
-      dataIndex: 'view',
-      key: 'view',
-      render: (_: any, { id, email }: VolunteerRowData) => (
-        <Link key={email} href={`/volunteer/${id}`}>
-          See more
-        </Link>
-      ),
-    },
-  ];
 
   return (
     <>

@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { Table } from 'antd';
 import { convertUserDataToRowData } from '@/utils/table-utils';
 import { BottomRow, StyledTypography } from '@/styles/table.styles';
+import { ColumnsType, Key } from 'antd/es/table/interface';
 
 const VolunteerTableImpl = () => {
   const { data, error, isLoading, mutate } = useSWR<QueriedUserData[]>(
@@ -29,12 +30,13 @@ const VolunteerTableImpl = () => {
     useContext(VolunteerTableContext);
 
   // TODO: extract to utils/constants in the future
-  const columns: any = [
+  const columns: ColumnsType<VolunteerRowData> = [
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      onFilter: (value: string, record: any) => record.name.includes(value),
+      onFilter: (value: boolean | Key | string, record: VolunteerRowData) =>
+        record.name.includes(value as string),
       ellipsis: true,
       ...getColumnSearchProps('name'),
     },
@@ -57,8 +59,8 @@ const VolunteerTableImpl = () => {
       title: 'View',
       dataIndex: 'view',
       key: 'view',
-      render: (_: any, { id, email }: VolunteerRowData) => (
-        <Link key={email} href={`/volunteer/${id}`}>
+      render: (_: any, { _id, email }: VolunteerRowData) => (
+        <Link key={email} href={`/volunteer/${_id}`}>
           See more
         </Link>
       ),
