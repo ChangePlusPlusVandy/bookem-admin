@@ -80,7 +80,7 @@ export const EditButton = styled.div`
 /**
  * Button for viewing sign-ups
  */
-export const SeeSignUpButton = styled.div`
+export const SeeSignUpButton = styled.button`
   margin-left: 30px;
   margin-right: 30px;
   background: #dad8d8;
