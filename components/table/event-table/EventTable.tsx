@@ -10,10 +10,6 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import EventTableImpl from './EventTableImpl';
-import useSWR from 'swr';
-import { convertEventDataToRowData } from '@/utils/table-utils';
-import { fetcher } from '@/utils/utils';
-import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
 
 /**
  * Contains the "Functionality" part of Event Table including data fetching, search, filter and sort
