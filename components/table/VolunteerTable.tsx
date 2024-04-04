@@ -38,7 +38,7 @@ type DataIndex = keyof VolunteerRowData;
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
-const VolunteerTable = () => {
+const VolunteerTable = ({ eventId }: { eventId?: string | undefined }) => {
   const { data, error, isLoading } = useSWR<QueriedUserData[]>(
     '/api/users/',
     fetcher
