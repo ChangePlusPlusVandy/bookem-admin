@@ -10,17 +10,18 @@ import { ColumnsType, Key } from 'antd/es/table/interface';
 import { Table } from 'antd';
 
 const VolunteersInEvent = ({ eventId }: { eventId?: string }) => {
-  const { data, error, isLoading, mutate } = useSWR<QueriedUserData[]>(
-    '/api/users/event/' + eventId,
-    fetcher,
-    {
-      onSuccess: data => {
-        setDataForTable(convertUserDataToRowData(data));
-      },
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
+  const {
+    data: users,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<QueriedUserData[]>('/api/users/event/' + eventId, fetcher, {
+    onSuccess: data => {
+      setDataForTable(convertUserDataToRowData(data));
+    },
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
   const [dataForTable, setDataForTable] = useState<VolunteerRowData[]>([]);
   const { getColumnSearchProps, isFiltering, filterTable, handleChange } =
     useContext(VolunteerTableContext);
@@ -69,7 +70,7 @@ const VolunteersInEvent = ({ eventId }: { eventId?: string }) => {
   // Refetch data when data is updated
   useEffect(() => {
     mutate();
-  }, [mutate, data]);
+  }, [mutate, users]);
 
   // check for errors and loading
   if (error) return <div>Failed to load event table</div>;
