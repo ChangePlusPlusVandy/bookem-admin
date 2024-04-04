@@ -56,6 +56,11 @@ const VolunteerTableImpl = () => {
       ...getColumnSearchProps('phone'),
     },
     {
+      title: 'Address',
+      dataIndex: 'address',
+      key: 'address',
+    },
+    {
       title: 'View',
       dataIndex: 'view',
       key: 'view',
