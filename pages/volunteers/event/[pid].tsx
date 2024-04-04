@@ -33,7 +33,7 @@ const UsersInEvent = () => {
   if (isLoading) return <div>Loading...</div>;
   return (
     <PageLayout>
-      <PageTitle>Volunteer in {eventName} </PageTitle>
+      <PageTitle>Volunteers in {eventName} </PageTitle>
       <VolunteerTable eventId={pid as string} />
     </PageLayout>
   );
