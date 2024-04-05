@@ -5,7 +5,7 @@ import type {
   ColumnsType,
   SorterResult,
 } from 'antd/es/table/interface';
-import { TableContainer } from '@/styles/table.styles';
+import { TableContainer, PageLayout } from '@/styles/table.styles';
 import Link from 'next/link';
 import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
@@ -25,11 +25,13 @@ const ProgramEventTableImpl = ({
   sortedInfo,
   handleChange,
   programID,
+  programName,
 }: {
   getColumnSearchProps: (dataIndex: EventDataIndex) => ColumnType<EventRowData>;
   sortedInfo: SorterResult<EventRowData>;
   handleChange: TableProps<EventRowData>['onChange'];
   programID: string;
+  programName: string;
 }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
@@ -121,7 +123,7 @@ const ProgramEventTableImpl = ({
       // Render function to display a link to the detailed view of the event
       render: (_: any, { _id, name }: EventRowData) => (
         <>
-          <Link key={name} href={`/events/program/${_id.toString()}`}>
+          <Link key={name} href={`/event/${_id.toString()}`}>
             See more
           </Link>
         </>

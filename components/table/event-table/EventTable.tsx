@@ -21,7 +21,13 @@ import ProgramEventTableImpl from './ProgramEventTableImpl';
  * Contains the "Functionality" part of Event Table including data fetching, search, filter and sort
  * @returns
  */
-const EventTable = ({ programId }: { programId?: string }) => {
+const EventTable = ({
+  programId,
+  programname,
+}: {
+  programId?: string;
+  programname?: string;
+}) => {
   const [sortedInfo, setSortedInfo] = useState<SorterResult<EventRowData>>({});
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
@@ -175,6 +181,7 @@ const EventTable = ({ programId }: { programId?: string }) => {
       {route.startsWith('/events/program') && (
         <ProgramEventTableImpl
           programID={programId as string}
+          programName={programname as string}
           getColumnSearchProps={getColumnSearchProps}
           sortedInfo={sortedInfo}
           handleChange={handleChange}
