@@ -7,7 +7,7 @@ import type {
 } from 'antd/es/table/interface';
 import { TableContainer, PageLayout } from '@/styles/table.styles';
 import Link from 'next/link';
-import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
+import CreateEventPopupWindow from '@/components/Forms/EventPopupWindowForm';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import { EventDataIndex, EventRowData } from '@/utils/table-types';
 import { fetcher, handleExport } from '@/utils/utils';
@@ -25,7 +25,6 @@ const ProgramEventTableImpl = ({
   sortedInfo,
   handleChange,
   programID,
-  programName,
 }: {
   getColumnSearchProps: (dataIndex: EventDataIndex) => ColumnType<EventRowData>;
   sortedInfo: SorterResult<EventRowData>;
@@ -48,6 +47,15 @@ const ProgramEventTableImpl = ({
       revalidateOnReconnect: true,
     }
   );
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  const onSelectChange = newSelectedRowKeys => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
 
   // Extra defense to refetch data if needed
   useEffect(() => {
@@ -140,10 +148,13 @@ const ProgramEventTableImpl = ({
         showPopup={showPopup}
         setShowPopupTag={setShowPopupTag}
         showPopupTag={showPopup}
+        hasSelected={selectedRowKeys.length > 0}
+        numSelected={selectedRowKeys.length}
       />
       <TableContainer>
         <div id="table-container">
           <Table
+            rowSelection={rowSelection}
             dataSource={dataForTable}
             onChange={handleChange}
             columns={columns}

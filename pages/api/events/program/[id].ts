@@ -41,10 +41,11 @@ export default async function handler(
         await Tags.find({});
 
         // query program and populate fields with mongoose refs
-        const events = await VolunteerEvents.find({program: id})
+        const events = await VolunteerEvents.find({ program: id })
+          .populate('tags')
           .exec();
 
-        console.log(events)
+        console.log(events);
 
         // if program is not found
         if (!events)
@@ -56,5 +57,5 @@ export default async function handler(
         res.status(500).json({ message: error });
       }
       break;
-    }
+  }
 }

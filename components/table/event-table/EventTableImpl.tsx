@@ -214,6 +214,16 @@ const EventTableImpl = ({
       },
     },
     {
+      // Column for 'Programs'
+      title: 'Program',
+      dataIndex: 'programName',
+      key: 'programName',
+      ...getColumnSearchProps('programName'),
+      render(_: any, { programName }: EventRowData) {
+        return <>{programName}</>;
+      },
+    },
+    {
       // Column for 'View' with a link to see more details
       title: '',
       dataIndex: 'view',
