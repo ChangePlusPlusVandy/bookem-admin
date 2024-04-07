@@ -42,7 +42,7 @@ export default async function handler(
           // .populate({ path: 'program' })
           .exec();
 
-          console.log(program)
+        console.log(program);
 
         // if program is not found
         if (!program)
