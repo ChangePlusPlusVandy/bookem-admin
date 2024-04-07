@@ -35,6 +35,9 @@ const EventTable = ({
 
   // Get current route string
   const route = useActiveRoute();
+  const [filteredDataByTags, setFilteredDataByTags] = useState<EventRowData[]>(
+    []
+  );
 
   /**
    * Used for sort and filters
@@ -48,6 +51,26 @@ const EventTable = ({
     sorter
   ) => {
     setSortedInfo(sorter as SorterResult<EventRowData>);
+  };
+
+  // Tag filter
+  const handleFilterByTags = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    dataForTable: EventRowData[]
+  ) => {
+    // Logic to handle tag input, similar to your existing onChange
+    const tags = e.currentTarget.value
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(tag => tag !== '');
+    const filteredData = dataForTable.filter(
+      event =>
+        tags.length === 0 || // Show all events if no tags are selected
+        tags.every(tag =>
+          event.tags.some(eventTag => eventTag.tagName.includes(tag))
+        )
+    );
+    setFilteredDataByTags(filteredData);
   };
 
   /**
@@ -176,6 +199,9 @@ const EventTable = ({
           getColumnSearchProps={getColumnSearchProps}
           sortedInfo={sortedInfo}
           handleChange={handleChange}
+          filteredDataByTags={filteredDataByTags}
+          setFilteredDataByTags={setFilteredDataByTags}
+          handleFilterByTags={handleFilterByTags}
         />
       )}
       {route.startsWith('/events/program') && (

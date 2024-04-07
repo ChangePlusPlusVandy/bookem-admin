@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Space, InputRef, TableProps } from 'antd';
@@ -7,51 +7,12 @@ import type { FilterConfirmProps, SorterResult } from 'antd/es/table/interface';
 import { QueriedVolunteerProgramData } from 'bookem-shared/src/types/database';
 import useSWR from 'swr';
 import { ProgramDataIndex, ProgramRowData } from '@/utils/table-types';
-import { convertProgramDataToRowData } from '@/utils/table-utils';
-import { fetcher } from '@/utils/utils';
 import ProgramTableImpl from './ProgramTableImpl';
 
 const ProgramTable = () => {
-  const { data, error, isLoading, mutate } = useSWR<
-    QueriedVolunteerProgramData[]
-  >('/api/program/', fetcher, {
-    onSuccess: data => {
-      setDataForTable(convertProgramDataToRowData(data));
-    },
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
-  });
-
-  // Extra defense to refetch data if needed
-  useEffect(() => {
-    mutate();
-  }, [mutate, data]);
-
-  const [dataForTable, setDataForTable] = useState<ProgramRowData[]>([]);
-  const [sortedInfo, setSortedInfo] = useState<SorterResult<ProgramRowData>>(
-    {}
-  );
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
-
-  // check for errors and loading
-  if (error) return <div>Failed to load event table</div>;
-  if (isLoading) return <div>Loading...</div>;
-
-  /**
-   * Used for sort and filters
-   * @param _pagination
-   * @param _filters
-   * @param sorter
-   */
-  const handleChange: TableProps<ProgramRowData>['onChange'] = (
-    _pagination,
-    _filters,
-    sorter
-  ) => {
-    setSortedInfo(sorter as SorterResult<ProgramRowData>);
-  };
 
   const handleSearch = (
     selectedKeys: string[],
@@ -150,12 +111,7 @@ const ProgramTable = () => {
 
   return (
     <>
-      <ProgramTableImpl
-        getColumnSearchProps={getColumnSearchProps}
-        sortedInfo={sortedInfo}
-        handleChange={handleChange}
-        dataForTable={dataForTable}
-      />
+      <ProgramTableImpl getColumnSearchProps={getColumnSearchProps} />
     </>
   );
 };

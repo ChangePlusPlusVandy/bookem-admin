@@ -1,3 +1,4 @@
+import { AdminStatus } from 'bookem-shared/src/types/database';
 import NextAuth from 'next-auth';
 
 declare module 'next-auth' {
@@ -14,6 +15,8 @@ declare module 'next-auth' {
       image: string;
       /** The user's name. */
       name: string;
+      /** The user's status. */
+      status: AdminStatus;
     };
   }
 }

@@ -1,20 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableProps, Tag } from 'antd';
+import {
+  Table,
+  TableProps,
+  Tag,
+  Input,
+  Popover,
+  Button,
+  Popconfirm,
+  message,
+} from 'antd';
 import type {
   ColumnType,
   ColumnsType,
   SorterResult,
 } from 'antd/es/table/interface';
-import { TableContainer } from '@/styles/table.styles';
+import {
+  SpaceBetweenFlexContainer,
+  TableContainer,
+} from '@/styles/table.styles';
 import Link from 'next/link';
-import CreateEventPopupWindow from '@/components/Forms/CreateEventPopupWindow';
+import EventPopupWindowForm from '@/components/Forms/EventPopupWindowForm';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import { EventDataIndex, EventRowData } from '@/utils/table-types';
-import { fetcher, handleExport } from '@/utils/utils';
+import { fetcher } from '@/utils/utils';
 import TableHeader from '@/components/table/event-table/TableHeader';
 import { convertEventDataToRowData } from '@/utils/table-utils';
 import useSWR from 'swr';
 import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
+import { FilterOutlined } from '@ant-design/icons';
+import {
+  FilterIcon,
+  TagTitle,
+} from '@/styles/components/Table/EventTable.styles';
+import mongoose from 'mongoose';
 
 /**
  * Contains the "UI" part of Event Table
@@ -24,13 +42,23 @@ const EventTableImpl = ({
   getColumnSearchProps,
   sortedInfo,
   handleChange,
+  filteredDataByTags,
+  setFilteredDataByTags,
+  handleFilterByTags,
 }: {
   getColumnSearchProps: (dataIndex: EventDataIndex) => ColumnType<EventRowData>;
   sortedInfo: SorterResult<EventRowData>;
   handleChange: TableProps<EventRowData>['onChange'];
+  filteredDataByTags: EventRowData[];
+  setFilteredDataByTags: (data: EventRowData[]) => void;
+  handleFilterByTags: (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    dataForTable: EventRowData[]
+  ) => void;
 }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
   const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
@@ -39,16 +67,58 @@ const EventTableImpl = ({
     {
       onSuccess: data => {
         setDataForTable(convertEventDataToRowData(data));
+        setFilteredDataByTags(dataForTable);
       },
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     }
   );
 
-  // Extra defense to refetch data if needed
+  // Refetch data when data is updated
   useEffect(() => {
     mutate();
   }, [mutate, data]);
+
+  //Reset filtered data if data is updated
+  useEffect(() => {
+    setFilteredDataByTags(dataForTable);
+  }, [dataForTable, setFilteredDataByTags]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  const onSelectChange = newSelectedRowKeys => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  // const hasSelected = selectedRowKeys.length > 0;
+  const handleAddEvent = () => {
+    console.log(selectedRowKeys);
+  };
+
+  const handleDeleteEvent = async (_id: mongoose.Types.ObjectId) => {
+    const res = await fetch(`/api/event/${_id}`, {
+      method: 'DELETE',
+    });
+    if (res.ok) {
+      const resObj = await res.json();
+      messageApi.open({
+        type: 'success',
+        content: resObj.message,
+      });
+      mutate();
+    } else {
+      messageApi.open({
+        type: 'error',
+        content: 'There was an error deleting the tag',
+      });
+    }
+  };
+
+  // check for errors and loading
+  if (error) return <div>Failed to load event table</div>;
+  if (isLoading) return <div>Loading...</div>;
 
   // check for errors and loading
   if (error) return <div>Failed to load event table</div>;
@@ -111,7 +181,23 @@ const EventTableImpl = ({
     },
     {
       // Column for 'Tags'
-      title: 'Tags',
+      title: (
+        <TagTitle>
+          <span>Tags</span>
+          <Popover
+            content={
+              <Input
+                placeholder="Enter tags separated by commas"
+                onPressEnter={e => handleFilterByTags(e, dataForTable)}
+                style={{ width: '300px' }}
+              />
+            }
+            trigger="click"
+            title="Filter by Tags">
+            <FilterIcon />
+          </Popover>
+        </TagTitle>
+      ),
       dataIndex: 'tags',
       key: 'tags',
 
@@ -129,15 +215,25 @@ const EventTableImpl = ({
     },
     {
       // Column for 'View' with a link to see more details
-      title: 'View',
+      title: '',
       dataIndex: 'view',
       key: 'view',
       // Render function to display a link to the detailed view of the event
       render: (_: any, { _id, name }: EventRowData) => (
         <>
-          <Link key={name} href={`/event/${_id.toString()}`}>
-            See more
-          </Link>
+          <SpaceBetweenFlexContainer>
+            <Link key={name} href={`/event/${_id.toString()}`}>
+              See more
+            </Link>
+            <Popconfirm
+              title="Delete the event"
+              description="Are you sure to delete this event?"
+              okText="Yes"
+              cancelText="No"
+              onConfirm={() => handleDeleteEvent(_id)}>
+              <Button danger>Delete</Button>
+            </Popconfirm>
+          </SpaceBetweenFlexContainer>
         </>
       ),
     },
@@ -145,18 +241,25 @@ const EventTableImpl = ({
 
   return (
     <>
-      {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
+      {contextHolder}
+      {showPopup && <EventPopupWindowForm setShowPopup={setShowPopup} />}
       {showPopupTag && <TagEventPopupWindow setShowPopup={setShowPopupTag} />}
+      {/* <Button type="primary" onClick={handleAddEvent} disabled={!hasSelected} /> */}
+      {/* {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''} */}
+
       <TableHeader
         setShowPopup={setShowPopup}
         showPopup={showPopup}
         setShowPopupTag={setShowPopupTag}
         showPopupTag={showPopup}
-      />
+        hasSelected={selectedRowKeys.length > 0}
+        numSelected={selectedRowKeys.length}></TableHeader>
+
       <TableContainer>
         <div id="table-container">
           <Table
-            dataSource={dataForTable}
+            rowSelection={rowSelection}
+            dataSource={filteredDataByTags}
             onChange={handleChange}
             columns={columns}
             pagination={false}

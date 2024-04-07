@@ -1,5 +1,10 @@
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+
+export const enumChecking = (value: string, enumType: any) => {
+  return Object.values(enumType).includes(value);
+};
+
 export const convertToDate = (str: string) => {
   if (str === '') return str;
   const date = new Date(str);

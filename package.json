@@ -16,6 +16,7 @@
   "dependencies": {
     "@fontsource/inter": "^5.0.15",
     "@next-auth/mongodb-adapter": "^1.1.1",
+    "@types/mongoose": "^5.11.97",
     "antd": "^5.3.0",
     "bcrypt": "^5.1.0",
     "bookem-shared": "github:ChangePlusPlusVandy/bookem-shared",
@@ -40,7 +41,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/file-saver": "^2.0.5",
     "@types/node": "18.11.8",
-    "@types/react": "18.0.24",
+    "@types/react": "^18.2.56",
     "@types/react-dom": "18.0.8",
     "@types/react-highlight-words": "^0.16.7",
     "@types/styled-components": "^5.1.26",

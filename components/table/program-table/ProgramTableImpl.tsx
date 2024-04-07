@@ -1,28 +1,66 @@
 import CreateProgramPopupWindow from '@/components/Forms/CreateProgramPopupWindow';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TableHeader from './TableHeader';
-import { TableContainer } from '@/styles/table.styles';
-import { Button } from 'antd';
+import {
+  SpaceBetweenFlexContainer,
+  TableContainer,
+} from '@/styles/table.styles';
+import { Button, Popconfirm, message } from 'antd';
 import { ProgramDataIndex, ProgramRowData } from '@/utils/table-types';
 import Link from 'next/link';
 import { ColumnType, ColumnsType } from 'antd/es/table';
-import { SorterResult } from 'antd/es/table/interface';
-import { Table, TableProps } from 'antd';
+import { Table } from 'antd';
+import mongoose from 'mongoose';
+import { QueriedVolunteerProgramData } from 'bookem-shared/src/types/database';
+import { fetcher } from '@/utils/utils';
+import { convertProgramDataToRowData } from '@/utils/table-utils';
+import useSWR from 'swr';
 
 const ProgramTableImpl = ({
   getColumnSearchProps,
-  sortedInfo,
-  dataForTable,
-  handleChange,
 }: {
   getColumnSearchProps: (
     dataIndex: ProgramDataIndex
   ) => ColumnType<ProgramRowData>;
-  dataForTable: ProgramRowData[];
-  sortedInfo: SorterResult<ProgramRowData>;
-  handleChange: TableProps<ProgramRowData>['onChange'];
 }) => {
   const [showPopUp, setShowPopUp] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+  const [dataForTable, setDataForTable] = useState<ProgramRowData[]>([]);
+
+  const { data, error, isLoading, mutate } = useSWR<
+    QueriedVolunteerProgramData[]
+  >('/api/program/', fetcher, {
+    onSuccess: data => {
+      setDataForTable(convertProgramDataToRowData(data));
+    },
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+  });
+
+  // Extra defense to refetch data if needed
+  useEffect(() => {
+    mutate();
+  }, [mutate, data]);
+
+  const handleDeleteProgram = async (_id: mongoose.Types.ObjectId) => {
+    console.log(_id);
+    const res = await fetch(`/api/program/${_id}`, {
+      method: 'DELETE',
+    });
+    if (res.ok) {
+      const resObj = await res.json();
+      messageApi.open({
+        type: 'success',
+        content: resObj.message,
+      });
+      mutate();
+    } else {
+      messageApi.open({
+        type: 'error',
+        content: 'There was an error deleting the tag',
+      });
+    }
+  };
 
   const columns: ColumnsType<ProgramRowData> = [
     {
@@ -37,18 +75,6 @@ const ProgramTableImpl = ({
       key: 'description',
     },
     {
-      // Column for 'Number of Events'
-      title: 'Number of Events',
-      dataIndex: 'numEvents',
-      key: 'numEvents',
-      // Custom sorter based on the number of events
-      sorter: (a: ProgramRowData, b: ProgramRowData) =>
-        a.numEvents - b.numEvents,
-      // Configuring the sort order based on the 'numEvents' column
-      sortOrder: sortedInfo.columnKey === 'numEvents' ? sortedInfo.order : null,
-      ellipsis: true,
-    },
-    {
       title: 'Events',
       dataIndex: 'events',
       key: 'events',
@@ -61,10 +87,36 @@ const ProgramTableImpl = ({
         </>
       ),
     },
+    {
+      title: '',
+      dataIndex: 'delete',
+      key: 'delete',
+      render: (_: any, { _id }: ProgramRowData) => (
+        <Popconfirm
+          title="Delete the program"
+          description="Are you sure to delete this program?"
+          okText="Yes"
+          cancelText="No"
+          onConfirm={() => handleDeleteProgram(_id)}>
+          <Button danger>Delete</Button>
+        </Popconfirm>
+      ),
+    },
   ];
+
+  // check for errors and loading
+  if (error) return <div>Failed to load event table</div>;
+  if (isLoading) return <div>Loading...</div>;
+
   return (
     <>
-      {showPopUp && <CreateProgramPopupWindow setShowPopup={setShowPopUp} />}
+      {contextHolder}
+      {showPopUp && (
+        <CreateProgramPopupWindow
+          messageApi={messageApi}
+          setShowPopup={setShowPopUp}
+        />
+      )}
       <div>
         <TableHeader setShowPopUp={setShowPopUp} showPopUp={showPopUp} />
         <TableContainer>
@@ -72,7 +124,6 @@ const ProgramTableImpl = ({
             <Table
               dataSource={dataForTable}
               columns={columns}
-              onChange={handleChange}
               pagination={false}
               scroll={{ y: 550 }}
             />

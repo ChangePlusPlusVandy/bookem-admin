@@ -1,4 +1,4 @@
-import { Table, Typography } from 'antd';
+import { Button, Table, Typography } from 'antd';
 import styled from 'styled-components';
 
 export const PageLayout = styled.div`
@@ -14,7 +14,8 @@ export const PageTitle = styled.p`
 
 export const SearchContainter = styled.div`
   display: flex;
-  margin-left: 1000px;
+  justify-content: flex-end;
+  /* margin-left: 1000px; */
 `;
 
 export const TableContainer = styled.div`
@@ -40,8 +41,25 @@ export const BottomRow = styled.div`
   border-radius: 10px;
 `;
 
-export const TableButton = styled.div`
+export const TableIcon = styled.div`
   &:hover {
     cursor: pointer;
   }
+  /* margin: 0 5px; */
+`;
+
+export const TableButton = styled(Button)`
+  width: 150px;
+  padding: 10px;
+  margin: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${props => props.theme.colors.BOOKEM_LIGHT_GRAY};
+`;
+
+export const SpaceBetweenFlexContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
