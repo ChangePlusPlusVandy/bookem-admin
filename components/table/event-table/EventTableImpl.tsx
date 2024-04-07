@@ -120,6 +120,10 @@ const EventTableImpl = ({
   if (error) return <div>Failed to load event table</div>;
   if (isLoading) return <div>Loading...</div>;
 
+  // check for errors and loading
+  if (error) return <div>Failed to load event table</div>;
+  if (isLoading) return <div>Loading...</div>;
+
   // Define columns for the Ant Design table
   const columns: ColumnsType<EventRowData> = [
     {

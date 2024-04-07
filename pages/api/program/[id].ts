@@ -39,8 +39,10 @@ export default async function handler(
 
         // query program and populate fields with mongoose refs
         const program = await VolunteerPrograms.findById(id)
-          .populate({ path: 'program' })
+          // .populate({ path: 'program' })
           .exec();
+
+        console.log(program);
 
         // if program is not found
         if (!program)

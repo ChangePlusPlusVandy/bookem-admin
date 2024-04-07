@@ -7,9 +7,9 @@ import {
 } from '@/styles/table.styles';
 import { Button, Popconfirm, message } from 'antd';
 import { ProgramDataIndex, ProgramRowData } from '@/utils/table-types';
+import Link from 'next/link';
 import { ColumnType, ColumnsType } from 'antd/es/table';
 import { Table } from 'antd';
-import Link from 'next/link';
 import mongoose from 'mongoose';
 import { QueriedVolunteerProgramData } from 'bookem-shared/src/types/database';
 import { fetcher } from '@/utils/utils';
@@ -78,10 +78,13 @@ const ProgramTableImpl = ({
       title: 'Events',
       dataIndex: 'events',
       key: 'events',
-      render: (_: any, { _id }: ProgramRowData) => (
-        <Link key={_id.toString()} href="#">
-          See Events
-        </Link>
+      // Render function to display a link to the detailed view of the event
+      render: (_: any, { _id, name }: ProgramRowData) => (
+        <>
+          <Link key={name} href={`/events/program/${_id.toString()}`}>
+            See events
+          </Link>
+        </>
       ),
     },
     {

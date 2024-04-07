@@ -39,26 +39,31 @@ export const SIDEBAR_ICON_PARAMS: SidebarIconParams[] = [
     defaultSrc: '/sidebar/home-white.png',
     hoveredsrc: '/sidebar/home-black.png',
     linkTo: '/',
+    text: 'Home',
   },
   {
     defaultSrc: '/sidebar/volunteer-management-white.png',
     hoveredsrc: '/sidebar/volunteer-management-black.png',
     linkTo: '/volunteer',
+    text: 'Volunteers',
   },
   {
     defaultSrc: '/sidebar/event-management-white.png',
     hoveredsrc: '/sidebar/event-management-black.png',
     linkTo: '/event',
+    text: 'Events',
   },
   {
-    defaultSrc: '/sidebar/program-management-white.png',
-    hoveredsrc: '/sidebar/program-management-black.png',
+    defaultSrc: '/sidebar/program-management-white.svg',
+    hoveredsrc: '/sidebar/program-management-black.svg',
     linkTo: '/program',
+    text: 'Programs',
   },
   {
     defaultSrc: '/sidebar/setting-white.png',
     hoveredsrc: '/sidebar/setting-black.png',
     linkTo: '/settings',
+    text: 'Settings',
   },
 ];
 

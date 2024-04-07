@@ -21,3 +21,14 @@ export const Name = styled.div`
   font-size: 20px;
   line-height: 30px;
 `;
+
+export const UserIconContainer = styled.div`
+  @media (min-width: 768px) {
+    margin: 20px 0 0 0;
+  }
+
+  @media (max-width: 767px) {
+    margin: 76px 0 100px 29px;
+    width: 100px;
+  }
+`;

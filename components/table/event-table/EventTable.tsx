@@ -10,16 +10,31 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import EventTableImpl from './EventTableImpl';
+import useSWR from 'swr';
+import { convertEventDataToRowData } from '@/utils/table-utils';
+import { fetcher } from '@/utils/utils';
+import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
+import { useActiveRoute } from '@/lib/useActiveRoute';
+import ProgramEventTableImpl from './ProgramEventTableImpl';
 
 /**
  * Contains the "Functionality" part of Event Table including data fetching, search, filter and sort
  * @returns
  */
-const EventTable = () => {
+const EventTable = ({
+  programId,
+  programname,
+}: {
+  programId?: string;
+  programname?: string;
+}) => {
   const [sortedInfo, setSortedInfo] = useState<SorterResult<EventRowData>>({});
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
+
+  // Get current route string
+  const route = useActiveRoute();
   const [filteredDataByTags, setFilteredDataByTags] = useState<EventRowData[]>(
     []
   );
@@ -179,14 +194,25 @@ const EventTable = () => {
   });
   return (
     <>
-      <EventTableImpl
-        getColumnSearchProps={getColumnSearchProps}
-        sortedInfo={sortedInfo}
-        handleChange={handleChange}
-        filteredDataByTags={filteredDataByTags}
-        setFilteredDataByTags={setFilteredDataByTags}
-        handleFilterByTags={handleFilterByTags}
-      />
+      {route === '/event' && (
+        <EventTableImpl
+          getColumnSearchProps={getColumnSearchProps}
+          sortedInfo={sortedInfo}
+          handleChange={handleChange}
+          filteredDataByTags={filteredDataByTags}
+          setFilteredDataByTags={setFilteredDataByTags}
+          handleFilterByTags={handleFilterByTags}
+        />
+      )}
+      {route.startsWith('/events/program') && (
+        <ProgramEventTableImpl
+          programID={programId as string}
+          programName={programname as string}
+          getColumnSearchProps={getColumnSearchProps}
+          sortedInfo={sortedInfo}
+          handleChange={handleChange}
+        />
+      )}
     </>
   );
 };
