@@ -18,8 +18,15 @@ export const Container = styled.div`
 /**
  * Container of icon
  */
-export const IconContainer = styled.div`
+export const IconContainer = styled.div<{
+  hoveredColor?: string;
+  color?: string;
+}>`
   padding-top: 20px;
+  color: ${props => props.color || 'white'};
+  &:hover {
+    color: ${props => props.hoveredColor};
+  }
 `;
 
 /**
@@ -71,8 +78,7 @@ export const IconFlexBox = styled.div`
  * Text associated with an icon
  * @color Color of the text
  */
-export const IconText = styled.span<{ color: string }>`
-  color: ${props => props.color};
+export const IconText = styled.span`
   font-family: ${props => props.theme.fonts.PRIMARY};
   font-style: normal;
   font-weight: 400;

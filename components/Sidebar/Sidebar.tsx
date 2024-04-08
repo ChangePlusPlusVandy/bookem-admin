@@ -30,15 +30,18 @@ export const Sidebar = () => {
       {/* Iterate through iconParamList to display icons */}
       {SIDEBAR_ICON_PARAMS.map(iconParam => {
         return (
-          <IconContainer key={iconParam.linkTo}>
+          <IconContainer
+            hoveredColor={BOOKEM_THEME.colors.BOOKEM_BLACK}
+            color={
+              activeRoute === iconParam.linkTo
+                ? BOOKEM_THEME.colors.BOOKEM_BLACK
+                : BOOKEM_THEME.colors.WHITE
+            }
+            key={iconParam.linkTo}>
             {/* Link that wraps around the icon */}
             <IconLink
               href={iconParam.linkTo}
-              hoveredsrc={
-                activeRoute === iconParam.linkTo
-                  ? iconParam.defaultSrc
-                  : iconParam.hoveredsrc
-              }
+              hoveredsrc={iconParam.hoveredsrc}
               // Dynamically assign the background color according to the current route
               backgroundcolor={
                 activeRoute === iconParam.linkTo ? '#d9d9d9' : '#6d6d6d'
@@ -46,8 +49,8 @@ export const Sidebar = () => {
               // Dynamically assign the src of the icon according to the current route
               imgsrc={
                 activeRoute === iconParam.linkTo
-                  ? iconParam.defaultSrc
-                  : iconParam.hoveredsrc
+                  ? iconParam.hoveredsrc
+                  : iconParam.defaultSrc
               }>
               {/* Desktop version only displays image */}
               {/* Icon image with default src */}
@@ -58,14 +61,7 @@ export const Sidebar = () => {
                   width={SIDEBAR_ICON_HEIGHT}
                   height={SIDEBAR_ICON_WIDTH}
                 />
-                <IconText
-                  color={
-                    activeRoute === iconParam.linkTo
-                      ? BOOKEM_THEME.colors.WHITE
-                      : BOOKEM_THEME.colors.BOOKEM_BLACK
-                  }>
-                  {iconParam.text}
-                </IconText>
+                <IconText>{iconParam.text}</IconText>
               </IconFlexBox>
             </IconLink>
           </IconContainer>
