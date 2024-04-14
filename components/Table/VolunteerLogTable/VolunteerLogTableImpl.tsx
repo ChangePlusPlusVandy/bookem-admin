@@ -1,67 +1,72 @@
-import { VolunteerRowData } from '@/utils/table-types';
+import { VolunteerLogRowData } from '@/utils/table-types';
 import { fetcher } from '@/utils/utils';
-import { QueriedUserData } from 'bookem-shared/src/types/database';
+import {
+  QueriedUserData,
+  QueriedVolunteerLogDTO,
+} from 'bookem-shared/src/types/database';
 import React, { useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import Link from 'next/link';
 import { Table } from 'antd';
-import { convertUserDataToRowData } from '@/utils/table-utils';
+import {
+  convertUserDataToRowData,
+  convertVolunteerLogDataToRowData,
+} from '@/utils/table-utils';
 import { BottomRow, StyledTypography } from '@/styles/table.styles';
 import { ColumnsType, Key } from 'antd/es/table/interface';
 
 const VolunteerLogTableImpl = () => {
-  const { data, error, isLoading, mutate } = useSWR<QueriedUserData[]>(
-    '/api/users/',
+  const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerLogDTO[]>(
+    '/api/volunteer-logs/',
     fetcher,
     {
       onSuccess: data => {
-        setDataForTable(convertUserDataToRowData(data));
+        setDataForTable(convertVolunteerLogDataToRowData(data));
+        console.log(dataForTable);
       },
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
     }
   );
-  const [dataForTable, setDataForTable] = useState<VolunteerRowData[]>([]);
+  const [dataForTable, setDataForTable] = useState<VolunteerLogRowData[]>([]);
   const [hours, setHours] = useState<number>();
   const [totalVolunteers, setTotalVolunteers] = useState(dataForTable.length);
 
   // TODO: extract to utils/constants in the future
-  const columns: ColumnsType<VolunteerRowData> = [
+  const columns: ColumnsType<VolunteerLogRowData> = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      onFilter: (value: boolean | Key | string, record: VolunteerRowData) =>
-        record.name.includes(value as string),
+      title: 'Volunteer',
+      dataIndex: 'userName',
+      key: 'userName',
+      onFilter: (value: boolean | Key | string, record: VolunteerLogRowData) =>
+        record.userName.includes(value as string),
       ellipsis: true,
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-      render(_: any, { email }: VolunteerRowData) {
-        return <Link href={'mailto:' + email}>{email}</Link>;
+      title: 'Volunteer Email',
+      dataIndex: 'userEmail',
+      key: 'userEmail',
+      render(_: any, { userEmail }: VolunteerLogRowData) {
+        return <Link href={'mailto:' + userEmail}>{userEmail}</Link>;
       },
     },
     {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
+      title: 'Event',
+      dataIndex: 'eventName',
+      key: 'eventName',
+      onFilter: (value: boolean | Key | string, record: VolunteerLogRowData) =>
+        record.eventName.includes(value as string),
+      ellipsis: true,
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
+      title: 'Hours',
+      dataIndex: 'hours',
+      key: 'hours',
     },
     {
-      title: 'View',
-      dataIndex: 'view',
-      key: 'view',
-      render: (_: any, { _id, email }: VolunteerRowData) => (
-        <Link key={email} href={`/volunteer/${_id}`}>
-          See more
-        </Link>
-      ),
+      title: 'Books Donated',
+      dataIndex: 'numBooks',
+      key: 'numBooks',
     },
   ];
   // Refetch data when data is updated

@@ -3,10 +3,9 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '@/lib/dbConnect';
 
 import VolunteerLogs from 'bookem-shared/src/models/VolunteerLogs';
-import { QueriedVolunteerLogData } from 'bookem-shared/src/types/database';
-import { VolunteerLogData } from 'bookem-shared/src/types/database';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]';
+import { QueriedVolunteerLogDTO } from 'bookem-shared/src/types/database';
+import VolunteerEvents from 'bookem-shared/src/models/VolunteerEvents';
+import Users from 'bookem-shared/src/models/Users';
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,7 +16,14 @@ export default async function handler(
       try {
         // Connect to the database
         await dbConnect();
-        const logs = await VolunteerLogs.find();
+
+        // TODO: remove this after development
+
+        const logs = (await VolunteerLogs.find()
+          .populate({ path: 'user' })
+          .populate({ path: 'event' })
+          .exec()) as QueriedVolunteerLogDTO[];
+
         res.status(200).json(logs);
       } catch (e) {
         console.error('An error has occurred in index.ts', e);

@@ -3,6 +3,7 @@ import {
   QueriedVolunteerProgramData,
   QueriedAdminData,
   QueriedUserData,
+  QueriedVolunteerLogDTO,
 } from 'bookem-shared/src/types/database';
 import { EventRowData, ProgramRowData, AdminRowData } from './table-types';
 
@@ -42,4 +43,18 @@ export const convertAdminDataToRowData = (
 
 export const convertUserDataToRowData = (data: QueriedUserData[]) => {
   return data.map(user => ({ ...user, key: user._id.toString() }));
+};
+
+export const convertVolunteerLogDataToRowData = (
+  data: QueriedVolunteerLogDTO[]
+) => {
+  return data.map(log => {
+    return {
+      ...log,
+      key: log._id.toString(),
+      userName: log.user.name,
+      userEmail: log.user.email,
+      eventName: log.event.name,
+    };
+  });
 };
