@@ -54,8 +54,8 @@ export const SIDEBAR_ICON_PARAMS: SidebarIconParams[] = [
     text: 'Volunteers',
   },
   {
-    defaultSrc: '/sidebar/event-management-white.png',
-    hoveredsrc: '/sidebar/event-management-black.png',
+    defaultSrc: '/sidebar/event-management-white.svg',
+    hoveredsrc: '/sidebar/event-management-black.svg',
     linkTo: '/event',
     text: 'Events',
   },
@@ -66,8 +66,8 @@ export const SIDEBAR_ICON_PARAMS: SidebarIconParams[] = [
     text: 'Programs',
   },
   {
-    defaultSrc: '/sidebar/setting-white.png',
-    hoveredsrc: '/sidebar/setting-black.png',
+    defaultSrc: '/sidebar/setting-white.svg',
+    hoveredsrc: '/sidebar/setting-black.svg',
     linkTo: '/settings',
     text: 'Settings',
   },
