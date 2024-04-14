@@ -49,6 +49,7 @@ export const convertVolunteerLogDataToRowData = (
   data: QueriedVolunteerLogDTO[]
 ) => {
   return data.map(log => {
+    log.date = new Date(log.date);
     return {
       ...log,
       key: log._id.toString(),

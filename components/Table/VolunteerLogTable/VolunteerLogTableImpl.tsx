@@ -14,15 +14,19 @@ import {
 } from '@/utils/table-utils';
 import { BottomRow, StyledTypography } from '@/styles/table.styles';
 import { ColumnsType, Key } from 'antd/es/table/interface';
+import { VolunteerLogTableContext } from './VolunteerLogTable';
 
 const VolunteerLogTableImpl = () => {
+  const { getColumnSearchProps, rowSelection, sortedInfo } = useContext(
+    VolunteerLogTableContext
+  );
+
   const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerLogDTO[]>(
     '/api/volunteer-logs/',
     fetcher,
     {
       onSuccess: data => {
         setDataForTable(convertVolunteerLogDataToRowData(data));
-        console.log(dataForTable);
       },
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -38,8 +42,7 @@ const VolunteerLogTableImpl = () => {
       title: 'Volunteer',
       dataIndex: 'userName',
       key: 'userName',
-      onFilter: (value: boolean | Key | string, record: VolunteerLogRowData) =>
-        record.userName.includes(value as string),
+      ...getColumnSearchProps('userName'),
       ellipsis: true,
     },
     {
@@ -54,8 +57,7 @@ const VolunteerLogTableImpl = () => {
       title: 'Event',
       dataIndex: 'eventName',
       key: 'eventName',
-      onFilter: (value: boolean | Key | string, record: VolunteerLogRowData) =>
-        record.eventName.includes(value as string),
+      ...getColumnSearchProps('eventName'),
       ellipsis: true,
     },
     {
@@ -67,6 +69,21 @@ const VolunteerLogTableImpl = () => {
       title: 'Books Donated',
       dataIndex: 'numBooks',
       key: 'numBooks',
+    },
+    {
+      title: 'Date attended',
+      dataIndex: 'date',
+      key: 'date',
+      // Custom sorter based on date values
+      sorter: (a: VolunteerLogRowData, b: VolunteerLogRowData) => {
+        return a.date.getTime() - b.date.getTime();
+      },
+      // Configuring the sort order based on the 'date' column
+      sortOrder: sortedInfo.columnKey === 'endDate' ? sortedInfo.order : null,
+
+      render(_: any, { date }: VolunteerLogRowData) {
+        return <>{date.toLocaleDateString()}</>;
+      },
     },
   ];
   // Refetch data when data is updated
@@ -83,18 +100,13 @@ const VolunteerLogTableImpl = () => {
       <div id="table-container">
         <Table
           dataSource={dataForTable}
+          rowSelection={rowSelection}
           onChange={() => {}}
           columns={columns}
           pagination={false}
           scroll={{ y: 700 }}
         />
       </div>
-      <BottomRow>
-        <StyledTypography>Total volunteers: {totalVolunteers}</StyledTypography>
-        <StyledTypography>
-          <>Total hours: {hours}</>
-        </StyledTypography>
-      </BottomRow>
     </>
   );
 };

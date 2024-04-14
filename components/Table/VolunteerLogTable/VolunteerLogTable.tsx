@@ -12,35 +12,65 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { TableContainer } from '@/styles/table.styles';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
-import { VolunteerDataIndex, VolunteerRowData } from '@/utils/table-types';
+import {
+  VolunteerLogDataIndex,
+  VolunteerLogRowData,
+} from '@/utils/table-types';
 import VolunteerLogTableImpl from './VolunteerLogTableImpl';
 
+export const VolunteerLogTableContext = createContext<{
+  getColumnSearchProps: (
+    dataIndex: VolunteerLogDataIndex
+  ) => ColumnType<VolunteerLogRowData>;
+  rowSelection: any;
+  sortedInfo: SorterResult<VolunteerLogRowData>;
+}>({ getColumnSearchProps: () => ({}), rowSelection: {}, sortedInfo: {} });
+
 const VolunteerLogTable = () => {
-  const [filterTable, setFilterTable] = useState<VolunteerRowData[]>([]);
+  const [filterTable, setFilterTable] = useState<VolunteerLogRowData[]>([]);
   const [isFiltering, setIsFilter] = useState<boolean>(false);
   const [filteredInfo, setFilteredInfo] = useState<
     Record<string, FilterValue | null>
   >({});
-  const [sortedInfo, setSortedInfo] = useState<SorterResult<VolunteerRowData>>(
-    {}
-  );
+  const [sortedInfo, setSortedInfo] = useState<
+    SorterResult<VolunteerLogRowData>
+  >({});
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
 
-  const handleChange: TableProps<VolunteerRowData>['onChange'] = (
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  const onSelectChange = newSelectedRowKeys => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
+  const handleApproveLog = () => {
+    console.log(selectedRowKeys);
+  };
+
+  const handleRejectLog = () => {
+    console.log(selectedRowKeys);
+  };
+
+  const handleChange: TableProps<VolunteerLogRowData>['onChange'] = (
     pagination,
     filters,
     sorter
   ) => {
     setFilteredInfo(filters);
-    setSortedInfo(sorter as SorterResult<VolunteerRowData>);
+    setSortedInfo(sorter as SorterResult<VolunteerLogRowData>);
   };
 
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: VolunteerDataIndex
+    dataIndex: VolunteerLogDataIndex
   ) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -52,10 +82,10 @@ const VolunteerLogTable = () => {
     setSearchText('');
   };
 
-  // Function to get column search properties for VolunteerRowData
+  // Function to get column search properties for VolunteerLogRowData
   const getColumnSearchProps = (
-    dataIndex: VolunteerDataIndex
-  ): ColumnType<VolunteerRowData> => ({
+    dataIndex: VolunteerLogDataIndex
+  ): ColumnType<VolunteerLogRowData> => ({
     // Configuration for the filter dropdown
     filterDropdown: ({
       setSelectedKeys,
@@ -190,19 +220,22 @@ const VolunteerLogTable = () => {
 
   return (
     <>
-      <TableContainer>
-        <Button
-          onClick={handleExport}
-          style={{
-            width: 250,
-            float: 'right',
-            backgroundColor: 'darkgray',
-            color: 'whitesmoke',
-          }}>
-          Export
-        </Button>
-        <VolunteerLogTableImpl />
-      </TableContainer>
+      <VolunteerLogTableContext.Provider
+        value={{ getColumnSearchProps, rowSelection, sortedInfo }}>
+        <TableContainer>
+          <Button
+            onClick={handleExport}
+            style={{
+              width: 250,
+              float: 'right',
+              backgroundColor: 'darkgray',
+              color: 'whitesmoke',
+            }}>
+            Export
+          </Button>
+          <VolunteerLogTableImpl />
+        </TableContainer>
+      </VolunteerLogTableContext.Provider>
     </>
   );
 };
