@@ -20,6 +20,7 @@ export const SearchContainter = styled.div`
 
 export const TableContainer = styled.div`
   margin-top: 20px;
+  z-index: 1;
 `;
 
 export const StyledTypography = styled(Typography)`
