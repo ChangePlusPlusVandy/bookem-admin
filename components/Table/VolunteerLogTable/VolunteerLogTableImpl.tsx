@@ -12,9 +12,14 @@ import {
   convertUserDataToRowData,
   convertVolunteerLogDataToRowData,
 } from '@/utils/table-utils';
-import { BottomRow, StyledTypography } from '@/styles/table.styles';
+import {
+  BottomRow,
+  StyledTypography,
+  TableContainer,
+} from '@/styles/table.styles';
 import { ColumnsType, Key } from 'antd/es/table/interface';
 import { VolunteerLogTableContext } from './VolunteerLogTable';
+import TableHeader from './TableHeader';
 
 const VolunteerLogTableImpl = () => {
   const { getColumnSearchProps, rowSelection, sortedInfo, handleChange } =
@@ -96,16 +101,19 @@ const VolunteerLogTableImpl = () => {
 
   return (
     <>
-      <div id="table-container">
-        <Table
-          dataSource={dataForTable}
-          rowSelection={rowSelection}
-          onChange={handleChange}
-          columns={columns}
-          pagination={false}
-          scroll={{ y: 700 }}
-        />
-      </div>
+      <TableHeader />
+      <TableContainer>
+        <div id="table-container">
+          <Table
+            dataSource={dataForTable}
+            rowSelection={rowSelection}
+            onChange={handleChange}
+            columns={columns}
+            pagination={false}
+            scroll={{ y: 700 }}
+          />
+        </div>
+      </TableContainer>
     </>
   );
 };

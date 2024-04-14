@@ -234,16 +234,6 @@ const VolunteerLogTable = () => {
           handleChange,
         }}>
         <TableContainer>
-          <Button
-            onClick={handleExport}
-            style={{
-              width: 250,
-              float: 'right',
-              backgroundColor: 'darkgray',
-              color: 'whitesmoke',
-            }}>
-            Export
-          </Button>
           <VolunteerLogTableImpl />
         </TableContainer>
       </VolunteerLogTableContext.Provider>
