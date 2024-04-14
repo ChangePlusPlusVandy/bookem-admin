@@ -1,7 +1,17 @@
+import { PageLayout, PageTitle } from '@/styles/table.styles';
 import React from 'react';
 
-const logs = () => {
-  return <div>logs</div>;
+const Logs = () => {
+  return (
+    <>
+      <PageLayout>
+        <PageTitle>Volunteer Log Table</PageTitle>
+      </PageLayout>
+    </>
+  );
 };
 
-export default logs;
+export default Logs;
+
+// perform automatic redirection to login page if user not logged in.
+export { getServerSideProps } from '@/lib/getServerSideProps';
