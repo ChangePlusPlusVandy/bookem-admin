@@ -79,7 +79,7 @@ const MainDashboard: React.FC = () => {
         </InfoIcon>
 
         <Header>
-          Here are some quick stats for
+          Here are some quick stats:
           <span style={{ marginRight: '10px' }}></span>
           {/* <Dropdown menu={menuProps}>
             <Button>

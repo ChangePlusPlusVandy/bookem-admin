@@ -31,22 +31,25 @@ const FeaturedEvents = () => {
       {error && <div>404 Event not found!</div>}
       {!events && !error && <div>Loading...</div>}
       {events && (
-        <FeaturedEventsContainer>
-          <Header>Featured events</Header>
-          <EventsScrollContainer>
-            <Suspense fallback={<Header>Please Wait...</Header>}>
-              {events.map(event => (
-                <EventCard
-                  key={event._id.toString()}
-                  eventData={event}
-                  size={'small'}
-                  href={'/event/' + event._id}
-                />
-              ))}
-            </Suspense>
-            <button onClick={() => router.push('/events/featured')}>Show More</button>
-          </EventsScrollContainer>
-        </FeaturedEventsContainer>
+        <div style={{ marginTop: '50px' }}>
+          <Header>Bookmarked events</Header>
+          <FeaturedEventsContainer>
+            
+            <EventsScrollContainer>
+              <Suspense fallback={<Header>Please Wait...</Header>}>
+                {events.map(event => (
+                  <EventCard
+                    key={event._id.toString()}
+                    eventData={event}
+                    size={'small'}
+                    href={'/event/' + event._id}
+                  />
+                ))}
+              </Suspense>
+              <button onClick={() => router.push('/events/featured')}>Show More</button>
+            </EventsScrollContainer>
+          </FeaturedEventsContainer>
+        </div>
       )}
     </>
   );
