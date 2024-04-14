@@ -43,7 +43,6 @@ const TableHeader = ({
   useSWR<QueriedVolunteerProgramData[]>('/api/program/', fetcher, {
     onSuccess: programData => {
       setPrograms(programData);
-      console.log('programData', programData);
     },
   });
   const [programs, setPrograms] = useState<QueriedVolunteerProgramData[]>([]);
@@ -62,7 +61,6 @@ const TableHeader = ({
       content: selectedTags.join(', '),
       onOk() {
         messageApi.success('Tag added');
-        
       },
       onCancel() {
         console.log('Cancel');
@@ -113,7 +111,12 @@ const TableHeader = ({
 
           <Select
             mode="tags"
-            style={{ width: '15%', marginLeft: '15px' }}
+            disabled={!hasSelected}
+            style={{
+              width: '13%',
+              height: '100%',
+              marginLeft: '15px',
+            }}
             placeholder="Add Tags"
             onChange={value => setSelectedTags(value)}
             dropdownRender={menu => (
@@ -136,7 +139,12 @@ const TableHeader = ({
             }))}
           />
           <Select
-            style={{ width: '15%', marginLeft: '15px' }}
+            style={{
+              width: '13%',
+              height: '100%',
+              marginLeft: '15px',
+            }}
+            disabled={!hasSelected}
             placeholder="Add to Program"
             onChange={value => showAddProgramConfirm(value)}
             options={programs.map(program => ({
