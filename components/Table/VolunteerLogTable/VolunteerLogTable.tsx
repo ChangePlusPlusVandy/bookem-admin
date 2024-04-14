@@ -24,7 +24,13 @@ export const VolunteerLogTableContext = createContext<{
   ) => ColumnType<VolunteerLogRowData>;
   rowSelection: any;
   sortedInfo: SorterResult<VolunteerLogRowData>;
-}>({ getColumnSearchProps: () => ({}), rowSelection: {}, sortedInfo: {} });
+  handleChange: TableProps<VolunteerLogRowData>['onChange'];
+}>({
+  getColumnSearchProps: () => ({}),
+  rowSelection: {},
+  sortedInfo: {},
+  handleChange: () => {},
+});
 
 const VolunteerLogTable = () => {
   const [filterTable, setFilterTable] = useState<VolunteerLogRowData[]>([]);
@@ -221,7 +227,12 @@ const VolunteerLogTable = () => {
   return (
     <>
       <VolunteerLogTableContext.Provider
-        value={{ getColumnSearchProps, rowSelection, sortedInfo }}>
+        value={{
+          getColumnSearchProps,
+          rowSelection,
+          sortedInfo,
+          handleChange,
+        }}>
         <TableContainer>
           <Button
             onClick={handleExport}

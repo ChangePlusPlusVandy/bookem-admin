@@ -17,9 +17,8 @@ import { ColumnsType, Key } from 'antd/es/table/interface';
 import { VolunteerLogTableContext } from './VolunteerLogTable';
 
 const VolunteerLogTableImpl = () => {
-  const { getColumnSearchProps, rowSelection, sortedInfo } = useContext(
-    VolunteerLogTableContext
-  );
+  const { getColumnSearchProps, rowSelection, sortedInfo, handleChange } =
+    useContext(VolunteerLogTableContext);
 
   const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerLogDTO[]>(
     '/api/volunteer-logs/',
@@ -79,7 +78,7 @@ const VolunteerLogTableImpl = () => {
         return a.date.getTime() - b.date.getTime();
       },
       // Configuring the sort order based on the 'date' column
-      sortOrder: sortedInfo.columnKey === 'endDate' ? sortedInfo.order : null,
+      sortOrder: sortedInfo.columnKey === 'date' ? sortedInfo.order : null,
 
       render(_: any, { date }: VolunteerLogRowData) {
         return <>{date.toLocaleDateString()}</>;
@@ -101,7 +100,7 @@ const VolunteerLogTableImpl = () => {
         <Table
           dataSource={dataForTable}
           rowSelection={rowSelection}
-          onChange={() => {}}
+          onChange={handleChange}
           columns={columns}
           pagination={false}
           scroll={{ y: 700 }}
