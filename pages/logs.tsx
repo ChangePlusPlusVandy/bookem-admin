@@ -1,3 +1,4 @@
+import VolunteerLogTable from '@/components/Table/VolunteerLogTable/VolunteerLogTable';
 import { PageLayout, PageTitle } from '@/styles/table.styles';
 import React from 'react';
 
@@ -6,6 +7,7 @@ const Logs = () => {
     <>
       <PageLayout>
         <PageTitle>Volunteer Log Table</PageTitle>
+        <VolunteerLogTable />
       </PageLayout>
     </>
   );
