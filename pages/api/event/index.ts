@@ -48,7 +48,6 @@ export default async function handler(
         res.status(500).json({ message: error });
       }
       break;
-<<<<<<< Updated upstream
     case 'POST':
       try {
         await dbConnect();
@@ -63,34 +62,6 @@ export default async function handler(
         res.status(500).json({ message: error });
       }
       break;
-=======
-
-      case 'POST':
-      try {
-        // Extract data from the request body
-        const eventData = req.body;
-
-        
-
-        // Optionally, add session user info to the event data
-        // e.g., eventData.organizer = session.user.id;
-
-        // Create a new event
-        const event = new VolunteerEvents(eventData);
-
-        // Save the event to the database
-        await event.save();
-
-        // Send a success response
-        res.status(201).json({ success: true, event });
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Error creating event' });
-      }
-      break;
-
-    // case 'PUT':
->>>>>>> Stashed changes
     // case 'DELETE':
     // default:
     // res.setHeader('Allow', ['GET', 'PUT', 'DELETE', 'POST']);
