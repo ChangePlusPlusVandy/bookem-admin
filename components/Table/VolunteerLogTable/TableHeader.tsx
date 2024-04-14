@@ -1,4 +1,7 @@
-import { HeaderContainer } from '@/styles/components/Table/VolunteerLogTable.styles';
+import {
+  HeaderContainer,
+  SelectContainer,
+} from '@/styles/components/Table/VolunteerLogTable.styles';
 import { Button, Select } from 'antd';
 import React from 'react';
 
@@ -9,17 +12,20 @@ const TableHeader = () => {
   return (
     <>
       <HeaderContainer>
-        <Select
-          defaultValue="lucy"
-          style={{ width: 120, marginRight: '30px' }}
-          onChange={handleChange}
-          options={[
-            { value: 'jack', label: 'Jack' },
-            { value: 'lucy', label: 'Lucy' },
-            { value: 'Yiminghe', label: 'yiminghe' },
-            { value: 'disabled', label: 'Disabled', disabled: true },
-          ]}
-        />
+        <SelectContainer>
+          <span style={{ whiteSpace: 'nowrap' }}>Choose status: </span>
+          <Select
+            defaultValue="lucy"
+            style={{ width: 120 }}
+            onChange={handleChange}
+            options={[
+              { value: 'jack', label: 'Jack' },
+              { value: 'lucy', label: 'Lucy' },
+              { value: 'Yiminghe', label: 'yiminghe' },
+              { value: 'disabled', label: 'Disabled', disabled: true },
+            ]}
+          />
+        </SelectContainer>
         <Button style={{ marginRight: '30px' }}>Approve</Button>
         <Button danger>Reject</Button>
       </HeaderContainer>
