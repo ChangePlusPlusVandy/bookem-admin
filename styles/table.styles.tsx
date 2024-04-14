@@ -2,7 +2,7 @@ import { Button, Table, Typography } from 'antd';
 import styled from 'styled-components';
 
 export const PageLayout = styled.div`
-  height: 100vh;
+  /* height: 100vh; */
   overflow: hidden;
   padding: 0 60px;
 `;

@@ -1,6 +1,6 @@
 // import Event from '@/components/Event/Event';
-import EventTable from '@/components/table/event-table/EventTable';
-import ProgramEventTableImpl from '@/components/table/event-table/ProgramEventTableImpl';
+import EventTable from '@/components/Table/EventTable/EventTable';
+import ProgramEventTableImpl from '@/components/Table/EventTable/ProgramEventTableImpl';
 import { PageTitle, PageLayout } from '@/styles/table.styles';
 import { QueriedVolunteerEventData } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';

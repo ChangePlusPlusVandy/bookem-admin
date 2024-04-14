@@ -23,7 +23,7 @@ import EventPopupWindowForm from '@/components/Forms/EventPopupWindowForm';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import { EventDataIndex, EventRowData } from '@/utils/table-types';
 import { fetcher } from '@/utils/utils';
-import TableHeader from '@/components/table/event-table/TableHeader';
+import TableHeader from '@/components/Table/EventTable/TableHeader';
 import { convertEventDataToRowData } from '@/utils/table-utils';
 import useSWR from 'swr';
 import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
