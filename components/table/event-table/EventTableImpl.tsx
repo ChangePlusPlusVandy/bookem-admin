@@ -20,6 +20,7 @@ import {
   FilterIcon,
   TagTitle,
 } from '@/styles/components/Table/EventTable.styles';
+import AddEventPopupWindow from '@/components/Forms/AddEventPopupWindow';
 
 /**
  * Contains the "UI" part of Event Table
@@ -45,6 +46,7 @@ const EventTableImpl = ({
 }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
+  const [showPopupAdd, setShowPopupAdd] = useState(false);
 
   const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
   const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
@@ -206,14 +208,15 @@ const EventTableImpl = ({
     <>
       {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
       {showPopupTag && <TagEventPopupWindow setShowPopup={setShowPopupTag} />}
-      {/* <Button type="primary" onClick={handleAddEvent} disabled={!hasSelected} /> */}
-      {/* {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''} */}
+      {showPopupAdd && <AddEventPopupWindow setShowPopup={setShowPopupAdd} />}
 
       <TableHeader
         setShowPopup={setShowPopup}
         showPopup={showPopup}
         setShowPopupTag={setShowPopupTag}
         showPopupTag={showPopup}
+        setShowAddPopup={setShowPopupAdd}
+        showAddPopup={showPopupAdd}
         hasSelected={selectedRowKeys.length > 0}
         numSelected={selectedRowKeys.length}></TableHeader>
 
