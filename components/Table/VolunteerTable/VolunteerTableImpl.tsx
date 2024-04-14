@@ -88,7 +88,7 @@ const VolunteerTableImpl = () => {
           onChange={handleChange}
           columns={columns}
           pagination={false}
-          scroll={{ y: 550 }}
+          scroll={{ y: 700 }}
         />
       </div>
       <BottomRow>
