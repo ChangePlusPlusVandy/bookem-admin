@@ -36,14 +36,20 @@ export const BOOKEM_THEME = {
  */
 export const SIDEBAR_ICON_PARAMS: SidebarIconParams[] = [
   {
-    defaultSrc: '/sidebar/home-white.png',
-    hoveredsrc: '/sidebar/home-black.png',
+    defaultSrc: '/sidebar/home-white.svg',
+    hoveredsrc: '/sidebar/home-black.svg',
     linkTo: '/',
     text: 'Home',
   },
   {
-    defaultSrc: '/sidebar/volunteer-management-white.png',
-    hoveredsrc: '/sidebar/volunteer-management-black.png',
+    defaultSrc: '/sidebar/logs-white.svg',
+    hoveredsrc: '/sidebar/logs-black.svg',
+    linkTo: '/logs',
+    text: 'Logs',
+  },
+  {
+    defaultSrc: '/sidebar/volunteer-management-white.svg',
+    hoveredsrc: '/sidebar/volunteer-management-black.svg',
     linkTo: '/volunteer',
     text: 'Volunteers',
   },
