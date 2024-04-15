@@ -84,16 +84,6 @@ const VolunteerLogTableImpl = () => {
       ellipsis: true,
     },
     {
-      title: 'Hours',
-      dataIndex: 'hours',
-      key: 'hours',
-    },
-    {
-      title: 'Books Donated',
-      dataIndex: 'numBooks',
-      key: 'numBooks',
-    },
-    {
       title: 'Date attended',
       dataIndex: 'date',
       key: 'date',
@@ -107,6 +97,16 @@ const VolunteerLogTableImpl = () => {
       render(_: any, { date }: VolunteerLogRowData) {
         return <>{date.toLocaleString('en-US', { timeZone: 'UTC' })}</>;
       },
+    },
+    {
+      title: 'Hours',
+      dataIndex: 'hours',
+      key: 'hours',
+    },
+    {
+      title: 'Books Donated',
+      dataIndex: 'numBooks',
+      key: 'numBooks',
     },
     {
       title: 'Status',

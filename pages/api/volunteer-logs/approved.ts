@@ -39,12 +39,10 @@ export default async function handler(
           { status: 'approved' }
         );
 
-        res
-          .status(200)
-          .json({
-            message: 'The hours have been approved!',
-            status: 'success',
-          });
+        res.status(200).json({
+          message: 'The hours have been approved!',
+          status: 'success',
+        });
       } catch (error) {
         console.error('An error has occurred in index.ts', error);
         res.status(500).json({
