@@ -4,21 +4,32 @@ import {
 } from '@/styles/components/Table/VolunteerLogTable.styles';
 import { Button, Popconfirm, Select } from 'antd';
 import { VolunteerLogStatus } from 'bookem-shared/src/types/database';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { VolunteerLogTableContext } from './VolunteerLogTable';
 
 const TableHeader = ({
   handleSelectStatus,
 }: {
   handleSelectStatus: (value: string) => void;
 }) => {
+  const { rowSelection, errorMessage, successMessage } = useContext(
+    VolunteerLogTableContext
+  );
+
   const [statusOptions, setStatusOptions] = useState<any[]>([]);
+
   useEffect(() => {
     setStatusOptions(
       Object.values(VolunteerLogStatus).map(value => ({ value, label: value }))
     );
   }, []);
 
-  const handleApprove = () => {};
+  const handleApprove = () => {
+    if (rowSelection.selectedRowKeys.length === 0) {
+      errorMessage('No rows selected');
+      return;
+    }
+  };
 
   return (
     <>
@@ -39,7 +50,13 @@ const TableHeader = ({
           onConfirm={handleApprove}
           okText="Yes"
           cancelText="No">
-          <Button style={{ marginRight: '30px' }}>Approve</Button>
+          {rowSelection.selectedRowKeys.length === 0 ? (
+            <Button disabled style={{ marginRight: '30px' }}>
+              Approve
+            </Button>
+          ) : (
+            <Button style={{ marginRight: '30px' }}>Approve</Button>
+          )}
         </Popconfirm>
 
         <Popconfirm
@@ -48,7 +65,13 @@ const TableHeader = ({
           onConfirm={handleApprove}
           okText="Yes"
           cancelText="No">
-          <Button danger>Reject</Button>
+          {rowSelection.selectedRowKeys.length === 0 ? (
+            <Button disabled danger>
+              Reject
+            </Button>
+          ) : (
+            <Button danger>Reject</Button>
+          )}
         </Popconfirm>
       </HeaderContainer>
     </>
