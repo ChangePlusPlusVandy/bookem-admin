@@ -24,6 +24,7 @@ const TableHeader = ({
   showPopupTag,
   setShowAddPopup,
   showAddPopup,
+  mutate,
 }: {
   setShowPopup: (a: boolean) => void;
   showPopup: boolean;
@@ -31,6 +32,7 @@ const TableHeader = ({
   showPopupTag: boolean;
   setShowAddPopup?: (a: boolean) => void;
   showAddPopup?: boolean;
+  mutate: () => void;
 }) => {
   const { data: tags } = useSWR<QueriedTagData[]>('/api/tags/', fetcher);
   const { data: programs } = useSWR<QueriedVolunteerProgramData[]>(
@@ -61,9 +63,18 @@ const TableHeader = ({
       // icon: <ExclamationCircleFilled />,
       content: '',
       onOk() {
+        console.log(
+          JSON.stringify({
+            eventIds: rowSelection.selectedRowKeys,
+            programName: value,
+          })
+        );
         fetch('/api/program/add-events', {
           method: 'PUT',
-          body: JSON.stringify(rowSelection.selectedRowKeys),
+          body: JSON.stringify({
+            eventIds: rowSelection.selectedRowKeys,
+            programName: value,
+          }),
         })
           .then(res => {
             if (!res.ok) {
@@ -84,7 +95,10 @@ const TableHeader = ({
               });
             }
           })
-          .then(() => setSelectedRowKeys([]))
+          .then(() => {
+            setSelectedRowKeys([]);
+            mutate();
+          })
           .catch(err => {
             messageApi.open({
               type: 'error',

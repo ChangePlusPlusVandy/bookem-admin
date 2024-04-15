@@ -246,6 +246,7 @@ const EventTableImpl = () => {
         showPopupTag={showPopup}
         setShowAddPopup={setShowPopupAdd}
         showAddPopup={showPopupAdd}
+        mutate={mutate}
       />
 
       <TableContainer>
