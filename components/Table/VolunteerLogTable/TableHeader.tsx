@@ -11,9 +11,11 @@ import { error } from 'console';
 const TableHeader = ({
   handleSelectStatus,
   mutate,
+  status,
 }: {
   handleSelectStatus: (value: string) => void;
   mutate: () => void;
+  status: string;
 }) => {
   const { rowSelection, errorMessage, successMessage } = useContext(
     VolunteerLogTableContext
@@ -98,7 +100,7 @@ const TableHeader = ({
         <SelectContainer>
           <span style={{ whiteSpace: 'nowrap' }}>Choose status: </span>
           <Select
-            defaultValue="pending"
+            defaultValue={status}
             style={{ width: 120 }}
             onChange={handleSelectStatus}
             options={statusOptions}
