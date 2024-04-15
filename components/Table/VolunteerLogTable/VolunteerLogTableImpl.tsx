@@ -113,7 +113,11 @@ const VolunteerLogTableImpl = () => {
 
   return (
     <>
-      <TableHeader handleSelectStatus={handleSelectStatus} mutate={mutate} />
+      <TableHeader
+        handleSelectStatus={handleSelectStatus}
+        mutate={mutate}
+        status={status}
+      />
       <TableContainer>
         <div id="table-container">
           <Table

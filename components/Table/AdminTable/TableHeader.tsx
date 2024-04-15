@@ -7,6 +7,7 @@ import {
   MinusOutlined,
   UserOutlined,
 } from '@ant-design/icons';
+import { BOOKEM_THEME } from '@/utils/constants';
 
 const TableHeader = ({
   setShowPopup,
@@ -32,7 +33,7 @@ const TableHeader = ({
               width: 50,
               marginLeft: 1000,
               borderRadius: 100,
-              backgroundColor: 'darkgray',
+              backgroundColor: BOOKEM_THEME.colors.BOOKEM_BLACK,
               color: 'whitesmoke',
             }}></Button>
           <Button
@@ -42,7 +43,7 @@ const TableHeader = ({
               width: 50,
               marginLeft: 10,
               borderRadius: 100,
-              backgroundColor: 'darkgray',
+              backgroundColor: BOOKEM_THEME.colors.BOOKEM_BLACK,
               color: 'whitesmoke',
             }}></Button>
           <Button
@@ -51,7 +52,7 @@ const TableHeader = ({
             style={{
               width: 250,
               marginLeft: 10,
-              backgroundColor: 'darkgray',
+              backgroundColor: BOOKEM_THEME.colors.BOOKEM_RED,
               color: 'whitesmoke',
             }}>
             Your Account

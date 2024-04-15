@@ -10,7 +10,7 @@ import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { TableContainer } from '@/styles/table.styles';
+import { TableButton, TableContainer } from '@/styles/table.styles';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import { VolunteerDataIndex, VolunteerRowData } from '@/utils/table-types';
 import VolunteerTableImpl from './VolunteerTableImpl';
@@ -224,16 +224,14 @@ const VolunteerTable = ({ eventId }: { eventId?: string }) => {
           filterTable,
         }}>
         <TableContainer>
-          <Button
+          <TableButton
             onClick={handleExport}
             style={{
-              width: 250,
               float: 'right',
-              backgroundColor: 'darkgray',
-              color: 'whitesmoke',
+              marginBottom: '10px',
             }}>
             Export
-          </Button>
+          </TableButton>
           {route === '/volunteer' && <VolunteerTableImpl />}
           {route === '/volunteers/event/[pid]' && (
             <VolunteersInEvent eventId={eventId} />

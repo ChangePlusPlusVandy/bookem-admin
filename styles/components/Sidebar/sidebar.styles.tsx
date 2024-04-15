@@ -12,7 +12,7 @@ export const Container = styled.div`
   text-align: center;
   justify-content: space-between;
   width: 120px;
-  background-color: #6d6d6d;
+  background-color: ${props => props.theme.colors.BOOKEM_LIGHT_GRAY};
 `;
 
 /**
@@ -22,8 +22,8 @@ export const IconContainer = styled.div<{
   hoveredcolor?: string;
   color?: string;
 }>`
-  padding-top: 20px;
   color: ${props => props.color || 'white'};
+  margin-top: 20px;
   &:hover {
     color: ${props => props.hoveredcolor};
   }
@@ -50,7 +50,7 @@ export const IconLink = styled(Link)<{
   }
 
   &:hover {
-    background-color: #d9d9d9;
+    background-color: ${props => props.theme.colors.BOOKEM_BLACK};
     img {
       content: url(${props => props.hoveredsrc});
     }

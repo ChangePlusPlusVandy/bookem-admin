@@ -56,7 +56,8 @@ export const TableButton = styled(Button)`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${props => props.theme.colors.BOOKEM_LIGHT_GRAY};
+  background-color: ${props => props.theme.colors.BOOKEM_RED};
+  color: white;
 `;
 
 export const SpaceBetweenFlexContainer = styled.div`

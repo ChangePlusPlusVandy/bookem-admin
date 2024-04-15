@@ -5,6 +5,7 @@ import { PageLayout, PageTitle } from '@/styles/table.styles';
 import AdminTable from '@/components/Table/AdminTable/AdminTable';
 import { Button } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
+import { BOOKEM_THEME } from '@/utils/constants';
 
 const MainContainer = styled.div`
   width: 100%;
@@ -28,7 +29,7 @@ const settings = () => {
           style={{
             width: 200,
             marginLeft: 90,
-            backgroundColor: 'darkgray',
+            backgroundColor: BOOKEM_THEME.colors.BOOKEM_RED,
             color: 'whitesmoke',
           }}>
           Log Out
