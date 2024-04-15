@@ -1,17 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Table, TableProps, Tag } from 'antd';
-import type {
-  ColumnType,
-  ColumnsType,
-  SorterResult,
-} from 'antd/es/table/interface';
-import { TableContainer, PageLayout } from '@/styles/table.styles';
+import type { ColumnsType } from 'antd/es/table/interface';
+import { TableContainer } from '@/styles/table.styles';
 import Link from 'next/link';
-import CreateEventPopupWindow from '@/components/Forms/EventPopupWindowForm';
-import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
-import { EventDataIndex, EventRowData } from '@/utils/table-types';
-import { fetcher, handleExport } from '@/utils/utils';
-import TableHeader from '@/components/Table/EventTable/TableHeader';
+import { EventRowData } from '@/utils/table-types';
+import { fetcher } from '@/utils/utils';
 import { convertEventDataToRowData } from '@/utils/table-utils';
 import useSWR from 'swr';
 import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
@@ -26,8 +19,8 @@ const ProgramEventTableImpl = ({ programID }: { programID: string }) => {
   const { sortedInfo, handleChange, getColumnSearchProps, rowSelection } =
     useContext(EventTableContext);
 
-  const [showPopup, setShowPopup] = useState(false);
-  const [showPopupTag, setShowPopupTag] = useState(false);
+  // const [showPopup, setShowPopup] = useState(false);
+  // const [showPopupTag, setShowPopupTag] = useState(false);
 
   const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
   const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
@@ -126,15 +119,15 @@ const ProgramEventTableImpl = ({ programID }: { programID: string }) => {
 
   return (
     <>
-      {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />}
-      {showPopupTag && <TagEventPopupWindow setShowPopup={setShowPopupTag} />}
-      <TableHeader
+      {/* {showPopup && <CreateEventPopupWindow setShowPopup={setShowPopup} />} */}
+      {/* {showPopupTag && <TagEventPopupWindow setShowPopup={setShowPopupTag} />} */}
+      {/* <TableHeader
         setShowPopup={setShowPopup}
         showPopup={showPopup}
         setShowPopupTag={setShowPopupTag}
         showPopupTag={showPopup}
         mutate={mutate}
-      />
+      /> */}
       <TableContainer>
         <div id="table-container">
           <Table
