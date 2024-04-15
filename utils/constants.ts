@@ -36,20 +36,26 @@ export const BOOKEM_THEME = {
  */
 export const SIDEBAR_ICON_PARAMS: SidebarIconParams[] = [
   {
-    defaultSrc: '/sidebar/home-white.png',
-    hoveredsrc: '/sidebar/home-black.png',
+    defaultSrc: '/sidebar/home-white.svg',
+    hoveredsrc: '/sidebar/home-black.svg',
     linkTo: '/',
     text: 'Home',
   },
   {
-    defaultSrc: '/sidebar/volunteer-management-white.png',
-    hoveredsrc: '/sidebar/volunteer-management-black.png',
+    defaultSrc: '/sidebar/logs-white.svg',
+    hoveredsrc: '/sidebar/logs-black.svg',
+    linkTo: '/logs',
+    text: 'Logs',
+  },
+  {
+    defaultSrc: '/sidebar/volunteer-management-white.svg',
+    hoveredsrc: '/sidebar/volunteer-management-black.svg',
     linkTo: '/volunteer',
     text: 'Volunteers',
   },
   {
-    defaultSrc: '/sidebar/event-management-white.png',
-    hoveredsrc: '/sidebar/event-management-black.png',
+    defaultSrc: '/sidebar/event-management-white.svg',
+    hoveredsrc: '/sidebar/event-management-black.svg',
     linkTo: '/event',
     text: 'Events',
   },
@@ -60,8 +66,8 @@ export const SIDEBAR_ICON_PARAMS: SidebarIconParams[] = [
     text: 'Programs',
   },
   {
-    defaultSrc: '/sidebar/setting-white.png',
-    hoveredsrc: '/sidebar/setting-black.png',
+    defaultSrc: '/sidebar/setting-white.svg',
+    hoveredsrc: '/sidebar/setting-black.svg',
     linkTo: '/settings',
     text: 'Settings',
   },
@@ -76,3 +82,11 @@ export const EVENT_CONTACT_ICON_WIDTH = 23;
  * Default height of event contact icons
  */
 export const EVENT_CONTACT_ICON_HEIGHT = 23;
+
+export const LOCALE_DATE_FORMAT: any = {
+  // weekday: 'short',
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+  timeZone: 'UTC',
+};

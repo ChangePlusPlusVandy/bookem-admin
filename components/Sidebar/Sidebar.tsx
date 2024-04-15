@@ -31,7 +31,7 @@ export const Sidebar = () => {
       {SIDEBAR_ICON_PARAMS.map(iconParam => {
         return (
           <IconContainer
-            hoveredColor={BOOKEM_THEME.colors.BOOKEM_BLACK}
+            hoveredcolor={BOOKEM_THEME.colors.BOOKEM_BLACK}
             color={
               activeRoute === iconParam.linkTo
                 ? BOOKEM_THEME.colors.BOOKEM_BLACK

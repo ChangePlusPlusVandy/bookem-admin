@@ -19,13 +19,13 @@ export const Container = styled.div`
  * Container of icon
  */
 export const IconContainer = styled.div<{
-  hoveredColor?: string;
+  hoveredcolor?: string;
   color?: string;
 }>`
   padding-top: 20px;
   color: ${props => props.color || 'white'};
   &:hover {
-    color: ${props => props.hoveredColor};
+    color: ${props => props.hoveredcolor};
   }
 `;
 

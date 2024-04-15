@@ -9,7 +9,7 @@ import { ArrowRightOutlined } from '@ant-design/icons';
 import { TableContainer } from '@/styles/table.styles';
 import CreateAdminPopupWindow from '@/components/Forms/CreateAdminPopupWindow';
 import { AdminDataIndex, AdminRowData } from '@/utils/table-types';
-import TableHeader from '../admin-table/TableHeader';
+import TableHeader from './TableHeader';
 
 /**
  * Contains the "UI" part of Event Table
@@ -104,7 +104,7 @@ const AdminTableImpl = ({
             onChange={handleChange}
             columns={columns}
             pagination={false}
-            scroll={{ y: 550 }}
+            scroll={{ y: 700 }}
           />
         </div>
       </TableContainer>
