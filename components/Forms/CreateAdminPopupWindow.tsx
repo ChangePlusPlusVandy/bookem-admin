@@ -1,23 +1,8 @@
-import {
-  AboutEvent,
-  FormLogistics,
-  ShortFormInput,
-  LongFormInput,
-  LargeFormInput,
-  FormInput,
-  FormLabel,
-  CreateEventForm,
-  FormHeader,
-  CreateAdminContainer,
-} from '@/styles/components/event.styles';
-import {
-  SubmitButton,
-  ButtonCenter,
-} from '@/styles/components/windowFlow.styles';
-import React, { useState } from 'react';
+import { CreateAdminContainer } from '@/styles/components/event.styles';
+import { SubmitButton } from '@/styles/components/windowFlow.styles';
+import React from 'react';
 import PopupWindow from '@/components/PopupWindow';
-import { useForm } from 'react-hook-form';
-import { Form, type FormProps, Input, Button, message } from 'antd';
+import { Form, Input } from 'antd';
 import { Typography } from 'antd';
 const { Title } = Typography;
 
@@ -40,16 +25,19 @@ const CreateEventPopupWindow = ({
         body: JSON.stringify(values),
       });
 
-      if (res.ok) {
-        const resObj = await res.json();
+      if (!res.ok) {
+        throw new Error('Failed to add new account');
+      }
+
+      const resObj = await res.json();
+      if (resObj.status === 'error') {
         messageApi.open({
-          type: 'success',
+          type: 'error',
           content: resObj.message,
         });
       } else {
-        const resObj = await res.json();
         messageApi.open({
-          type: 'error',
+          type: 'success',
           content: resObj.message,
         });
       }
@@ -58,49 +46,6 @@ const CreateEventPopupWindow = ({
       messageApi.open({
         type: 'error',
         content: 'Sorry an internal error exists, please try again later',
-      });
-    }
-
-    setShowPopup(false);
-  };
-
-  const { register, handleSubmit } = useForm({});
-
-  const onSubmit = (data: any) => {
-    const results = JSON.stringify({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      phone: data.phone,
-      role: data.role,
-      password: data.password,
-    });
-    console.log('Here are the results: ', results);
-    createAdmin(results);
-  };
-
-  const createAdmin = async (data: any) => {
-    const res = await fetch('/api/admin', {
-      method: 'POST',
-      headers: {
-        // Specify the content type in the headers
-        'Content-Type': 'application/json',
-      },
-      // Stringify the JSON body
-      body: data,
-    });
-
-    if (res.ok) {
-      const resObj = await res.json();
-      messageApi.open({
-        type: 'success',
-        content: resObj.message,
-      });
-    } else {
-      const resObj = await res.json();
-      messageApi.open({
-        type: 'error',
-        content: resObj.message,
       });
     }
 

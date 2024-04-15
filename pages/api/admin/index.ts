@@ -33,8 +33,9 @@ export default async function handler(
     case 'POST':
       try {
         if (session.user.status !== 'superadmin') {
-          res.status(401).json({
+          res.status(200).json({
             message: 'Sorry, only super admin is allowed to create new admins',
+            status: 'error',
           });
           throw new Error('Only super admin is allowed to create new admins');
         }
@@ -46,8 +47,9 @@ export default async function handler(
 
         // Check if the user's email and password are valid
         if (!email || !email.includes('@') || !password) {
-          res.status(422).json({ message: 'Invalid email or password' });
-          throw new Error('Invalid email or password');
+          res
+            .status(200)
+            .json({ message: 'Invalid email or password', status: 'error' });
         }
 
         // Connect to the database
@@ -60,7 +62,9 @@ export default async function handler(
 
         // If the user already exists, return an error
         if (checkExisting) {
-          res.status(422).json({ message: 'Admin email already exists' });
+          res
+            .status(200)
+            .json({ message: 'Admin email already exists', status: 'error' });
           throw new Error('Admin email already exists');
         }
 
