@@ -56,7 +56,7 @@ const ProgramEventDetail = () => {
         <>
           <PageLayout>
             <PageTitle>Events for {programName}</PageTitle>
-            <EventTable programId={pid as string} programname={events.name} />
+            <EventTable programId={pid as string} />
           </PageLayout>
         </>
       )}
