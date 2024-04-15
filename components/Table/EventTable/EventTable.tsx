@@ -29,6 +29,7 @@ export const EventTableContext = createContext<{
   ) => void;
   messageApi: any;
   rowSelection: any;
+  setSelectedRowKeys;
 }>({
   getColumnSearchProps: () => ({}),
   sortedInfo: {},
@@ -38,6 +39,7 @@ export const EventTableContext = createContext<{
   handleFilterByTags: () => {},
   messageApi: {},
   rowSelection: {},
+  setSelectedRowKeys: () => {},
 });
 
 /**
@@ -235,6 +237,7 @@ const EventTable = ({ programId }: { programId?: string }) => {
           handleFilterByTags,
           messageApi,
           rowSelection,
+          setSelectedRowKeys,
         }}>
         {route === '/event' && <EventTableImpl />}
         {route.startsWith('/events/program') && (

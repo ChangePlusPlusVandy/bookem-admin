@@ -38,7 +38,8 @@ const TableHeader = ({
     fetcher
   );
 
-  const { rowSelection, messageApi } = useContext(EventTableContext);
+  const { rowSelection, messageApi, setSelectedRowKeys } =
+    useContext(EventTableContext);
 
   const [selectedProgram, setSelectedProgram] =
     useState<QueriedVolunteerProgramData>();
@@ -87,7 +88,13 @@ const TableHeader = ({
               });
             }
           })
-          .catch(err => {});
+          .then(() => setSelectedRowKeys([]))
+          .catch(err => {
+            messageApi.open({
+              type: 'error',
+              content: err.message,
+            });
+          });
       },
     });
   };

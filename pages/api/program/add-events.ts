@@ -14,7 +14,10 @@ export default async function handler(
 
         return res
           .status(200)
-          .json({ message: 'Event added to program successfully' });
+          .json({
+            message: 'Event added to program successfully',
+            status: 'success',
+          });
       } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
