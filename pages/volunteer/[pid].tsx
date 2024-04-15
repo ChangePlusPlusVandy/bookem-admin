@@ -94,7 +94,7 @@ export default function Volunteer() {
 
   const getVolunteerLogs = async () => {
     try {
-      const path = '/api/volunteerLogs/' + pid;
+      const path = '/api/volunteer-logs/' + pid;
       const res = await fetch(path, {
         method: 'GET',
       });
