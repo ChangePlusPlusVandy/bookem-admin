@@ -50,20 +50,53 @@ const TableHeader = ({
       title: 'Do you want to add the selected events to the following tag(s): ',
       content: selectedTags.join(', '),
       onOk() {
-        messageApi.success('Tag added');
-      },
-      onCancel() {
-        console.log('Cancel');
+        fetch('/api/tags/add-events', {
+          method: 'PUT',
+          body: JSON.stringify({
+            eventIds: rowSelection.selectedRowKeys,
+            tagNames: selectedTags,
+          }),
+        })
+          .then(res => {
+            if (!res.ok) {
+              throw new Error('Failed to add event to tag');
+            }
+            return res.json();
+          })
+          .then(data => {
+            if (data.status === 'error') {
+              messageApi.open({
+                type: 'error',
+                content: data.message,
+              });
+            } else {
+              messageApi.open({
+                type: 'success',
+                content: data.message,
+              });
+            }
+          })
+          .then(() => {
+            setSelectedRowKeys([]);
+            mutate();
+          })
+          .catch(err => {
+            messageApi.open({
+              type: 'error',
+              content: err.message,
+            });
+          });
       },
     });
   };
 
   const convertProgramToItems = (programs: QueriedVolunteerProgramData[]) => {
+    if (!programs) return [];
     const programItems = programs?.map(program => ({
       label: program.name,
       value: program.name,
     }));
-    programItems.unshift({ label: 'None', value: 'None' });
+    programItems.push({ label: 'None', value: 'None' });
     return programItems;
   };
   const showAddProgramConfirm = value => {
