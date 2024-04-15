@@ -11,10 +11,11 @@ import CreateEventPopupWindow from '@/components/Forms/EventPopupWindowForm';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import { EventDataIndex, EventRowData } from '@/utils/table-types';
 import { fetcher, handleExport } from '@/utils/utils';
-import TableHeader from '@/components/table/event-table/TableHeader';
+import TableHeader from '@/components/Table/EventTable/TableHeader';
 import { convertEventDataToRowData } from '@/utils/table-utils';
 import useSWR from 'swr';
 import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
+import { LOCALE_DATE_FORMAT } from '@/utils/constants';
 
 /**
  * Contains the "UI" part of Program Event Table
@@ -89,7 +90,7 @@ const ProgramEventTableImpl = ({
       sortOrder: sortedInfo.columnKey === 'date' ? sortedInfo.order : null,
       ellipsis: true,
       render(_: any, { startDate }: EventRowData) {
-        return <>{startDate.toLocaleDateString()}</>;
+        return <>{startDate.toLocaleDateString('en-US', LOCALE_DATE_FORMAT)}</>;
       },
     },
     {
@@ -159,7 +160,7 @@ const ProgramEventTableImpl = ({
             onChange={handleChange}
             columns={columns}
             pagination={false}
-            scroll={{ y: 550 }}
+            scroll={{ y: 700 }}
           />
         </div>
       </TableContainer>

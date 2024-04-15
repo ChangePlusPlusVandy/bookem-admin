@@ -1,5 +1,5 @@
-import VolunteerTable from '@/components/table/volunteer-table/VolunteerTable';
-import EventTable from '@/components/table/event-table/EventTable';
+import VolunteerTable from '@/components/Table/VolunteerTable/VolunteerTable';
+import EventTable from '@/components/Table/EventTable/EventTable';
 import { PageLayout, PageTitle } from '@/styles/table.styles';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';

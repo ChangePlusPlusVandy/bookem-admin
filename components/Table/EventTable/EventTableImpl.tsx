@@ -23,7 +23,7 @@ import EventPopupWindowForm from '@/components/Forms/EventPopupWindowForm';
 import TagEventPopupWindow from '@/components/Forms/TagEventPopupWindow';
 import { EventDataIndex, EventRowData } from '@/utils/table-types';
 import { fetcher } from '@/utils/utils';
-import TableHeader from '@/components/table/event-table/TableHeader';
+import TableHeader from '@/components/Table/EventTable/TableHeader';
 import { convertEventDataToRowData } from '@/utils/table-utils';
 import useSWR from 'swr';
 import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
@@ -33,6 +33,7 @@ import {
   TagTitle,
 } from '@/styles/components/Table/EventTable.styles';
 import mongoose from 'mongoose';
+import { LOCALE_DATE_FORMAT } from '@/utils/constants';
 
 /**
  * Contains the "UI" part of Event Table
@@ -147,7 +148,7 @@ const EventTableImpl = ({
       sortOrder: sortedInfo.columnKey === 'startDate' ? sortedInfo.order : null,
       ellipsis: true,
       render(_: any, { startDate }: EventRowData) {
-        return <>{startDate.toLocaleDateString()}</>;
+        return <>{startDate.toLocaleDateString('en-US', LOCALE_DATE_FORMAT)}</>;
       },
     },
     {
@@ -163,7 +164,7 @@ const EventTableImpl = ({
       sortOrder: sortedInfo.columnKey === 'endDate' ? sortedInfo.order : null,
       ellipsis: true,
       render(_: any, { endDate }: EventRowData) {
-        return <>{endDate.toLocaleDateString()}</>;
+        return <>{endDate.toLocaleDateString('en-US', LOCALE_DATE_FORMAT)}</>;
       },
     },
     {
@@ -273,7 +274,7 @@ const EventTableImpl = ({
             onChange={handleChange}
             columns={columns}
             pagination={false}
-            scroll={{ y: 550 }}
+            scroll={{ y: 700 }}
           />
         </div>
       </TableContainer>
