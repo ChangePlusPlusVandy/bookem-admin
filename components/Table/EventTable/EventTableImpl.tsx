@@ -246,8 +246,7 @@ const EventTableImpl = () => {
         showPopupTag={showPopup}
         setShowAddPopup={setShowPopupAdd}
         showAddPopup={showPopupAdd}
-        hasSelected={rowSelection.selectedRowKeys.length > 0}
-        numSelected={rowSelection.selectedRowKeys.length}></TableHeader>
+      />
 
       <TableContainer>
         <div id="table-container">

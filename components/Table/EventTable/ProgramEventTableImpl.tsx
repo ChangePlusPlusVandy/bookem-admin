@@ -133,8 +133,6 @@ const ProgramEventTableImpl = ({ programID }: { programID: string }) => {
         showPopup={showPopup}
         setShowPopupTag={setShowPopupTag}
         showPopupTag={showPopup}
-        hasSelected={rowSelection.selectedRowKeys.length > 0}
-        numSelected={rowSelection.selectedRowKeys.length}
       />
       <TableContainer>
         <div id="table-container">

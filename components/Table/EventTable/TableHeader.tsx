@@ -3,7 +3,7 @@ import {
   TableButton,
   TableIcon,
 } from '@/styles/table.styles';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Button, Select, Divider, Space } from 'antd';
 import { handleExport } from '@/utils/utils';
@@ -15,6 +15,7 @@ import {
 } from 'bookem-shared/src/types/database';
 import { PlusOutlined } from '@ant-design/icons';
 import { Modal, message } from 'antd';
+import { EventTableContext } from './EventTable';
 
 const TableHeader = ({
   setShowPopup,
@@ -23,8 +24,6 @@ const TableHeader = ({
   showPopupTag,
   setShowAddPopup,
   showAddPopup,
-  hasSelected,
-  numSelected,
 }: {
   setShowPopup: (a: boolean) => void;
   showPopup: boolean;
@@ -32,27 +31,19 @@ const TableHeader = ({
   showPopupTag: boolean;
   setShowAddPopup?: (a: boolean) => void;
   showAddPopup?: boolean;
-  hasSelected: boolean;
-  numSelected: number;
 }) => {
-  useSWR<QueriedTagData[]>('/api/tags/', fetcher, {
-    onSuccess: data => {
-      setTags(data);
-    },
-  });
-  useSWR<QueriedVolunteerProgramData[]>('/api/program/', fetcher, {
-    onSuccess: programData => {
-      setPrograms(programData);
-    },
-  });
-  const [programs, setPrograms] = useState<QueriedVolunteerProgramData[]>([]);
-  const [tags, setTags] = useState<QueriedTagData[]>([]);
+  const { data: tags } = useSWR<QueriedTagData[]>('/api/tags/', fetcher);
+  const { data: programs } = useSWR<QueriedVolunteerProgramData[]>(
+    '/api/program/',
+    fetcher
+  );
+
+  const { rowSelection, messageApi } = useContext(EventTableContext);
+
   const [selectedProgram, setSelectedProgram] =
     useState<QueriedVolunteerProgramData>();
   const [selectedTags, setSelectedTags] = useState<QueriedTagData[]>([]);
 
-  // ANTD message
-  const [messageApi, contextHolder] = message.useMessage();
   // ANTD Modal
   const { confirm } = Modal;
   const showAddTagConfirm = () => {
@@ -79,7 +70,6 @@ const TableHeader = ({
   return (
     <>
       <div>
-        {contextHolder}
         <SearchContainter>
           <TableIcon>
             <Image
@@ -106,7 +96,7 @@ const TableHeader = ({
 
           <Select
             mode="tags"
-            disabled={!hasSelected}
+            disabled={rowSelection.selectedRowKeys.length === 0}
             style={{
               width: '13%',
               height: '100%',
@@ -128,7 +118,7 @@ const TableHeader = ({
                 </Space>
               </>
             )}
-            options={tags.map(tag => ({
+            options={tags?.map(tag => ({
               label: tag.tagName,
               value: tag.tagName,
             }))}
@@ -139,10 +129,10 @@ const TableHeader = ({
               height: '100%',
               marginLeft: '15px',
             }}
-            disabled={!hasSelected}
+            disabled={rowSelection.selectedRowKeys.length === 0}
             placeholder="Add to Program"
             onChange={value => showAddProgramConfirm(value)}
-            options={programs.map(program => ({
+            options={programs?.map(program => ({
               label: program.name,
               value: program.name,
             }))}
