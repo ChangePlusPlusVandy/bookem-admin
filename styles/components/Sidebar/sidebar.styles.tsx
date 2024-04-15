@@ -22,7 +22,6 @@ export const IconContainer = styled.div<{
   hoveredcolor?: string;
   color?: string;
 }>`
-  padding-top: 20px;
   color: ${props => props.color || 'white'};
   &:hover {
     color: ${props => props.hoveredcolor};
