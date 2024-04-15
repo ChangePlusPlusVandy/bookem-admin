@@ -2,7 +2,7 @@ import { Button, Table, Typography } from 'antd';
 import styled from 'styled-components';
 
 export const PageLayout = styled.div`
-  height: 100vh;
+  /* height: 100vh; */
   overflow: hidden;
   padding: 0 60px;
 `;
@@ -56,4 +56,10 @@ export const TableButton = styled(Button)`
   align-items: center;
   justify-content: center;
   background-color: ${props => props.theme.colors.BOOKEM_LIGHT_GRAY};
+`;
+
+export const SpaceBetweenFlexContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;

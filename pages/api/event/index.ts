@@ -46,7 +46,20 @@ export default async function handler(
         res.status(500).json({ message: error });
       }
       break;
-    // case 'PUT':
+    case 'POST':
+      try {
+        await dbConnect();
+
+        // Create new event
+        const newEvent = new VolunteerEvents(req.body);
+        const savedEvent = await newEvent.save();
+
+        return res.status(201).json(savedEvent);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: error });
+      }
+      break;
     // case 'DELETE':
     // default:
     // res.setHeader('Allow', ['GET', 'PUT', 'DELETE', 'POST']);

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import styled from 'styled-components';
 
@@ -17,8 +18,15 @@ export const Container = styled.div`
 /**
  * Container of icon
  */
-export const IconContainer = styled.div`
+export const IconContainer = styled.div<{
+  hoveredcolor?: string;
+  color?: string;
+}>`
   padding-top: 20px;
+  color: ${props => props.color || 'white'};
+  &:hover {
+    color: ${props => props.hoveredcolor};
+  }
 `;
 
 /**
@@ -47,4 +55,38 @@ export const IconLink = styled(Link)<{
       content: url(${props => props.hoveredsrc});
     }
   }
+`;
+
+/**
+ * Contains the icon image + the text
+ * Flex horizontally
+ */
+export const IconFlexBox = styled.div`
+  display: flex;
+  align-items: center;
+  @media (max-width: 768px) {
+    justify-content: space-around;
+  }
+
+  @media (min-width: 767px) {
+    flex-direction: column;
+    justify-content: space-between;
+  }
+`;
+
+/**
+ * Text associated with an icon
+ * @color Color of the text
+ */
+export const IconText = styled.span`
+  font-family: ${props => props.theme.fonts.PRIMARY};
+  font-style: normal;
+  font-weight: 400;
+  @media (max-width: 767px) {
+    font-size: 20px;
+  }
+  @media (min-width: 768px) {
+    font-size: 15px;
+  }
+  line-height: 24px;
 `;

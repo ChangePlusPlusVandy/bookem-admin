@@ -2,8 +2,7 @@ import React from 'react';
 import { signOut } from 'next-auth/react';
 import styled from 'styled-components';
 import { PageLayout, PageTitle } from '@/styles/table.styles';
-import { Admin } from 'mongodb';
-import AdminTable from '@/components/table/AdminTable';
+import AdminTable from '@/components/Table/AdminTable/AdminTable';
 import { Button } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
 

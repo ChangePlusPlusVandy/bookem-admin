@@ -1,11 +1,11 @@
 import dbConnect from '@/lib/dbConnect';
 import Users from 'bookem-shared/src/models/Users';
 import VolunteerPrograms from 'bookem-shared/src/models/VolunteerPrograms';
-import Tags from 'bookem-shared/src/models/Tags';
 import { ObjectId } from 'mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]';
+import VolunteerEvents from 'bookem-shared/src/models/VolunteerEvents';
 
 export default async function handler(
   req: NextApiRequest,
@@ -37,13 +37,12 @@ export default async function handler(
         if (!ObjectId.isValid(id as string))
           return res.status(400).json({ message: 'Invalid id' });
 
-        // TODO: remove this after development
-        await Tags.find({});
-
         // query program and populate fields with mongoose refs
         const program = await VolunteerPrograms.findById(id)
-          .populate({ path: 'program' })
+          // .populate({ path: 'program' })
           .exec();
+
+        console.log(program);
 
         // if program is not found
         if (!program)
@@ -137,7 +136,40 @@ export default async function handler(
 
       break;
     // case 'PUT':
-    // case 'DELETE':
+    case 'DELETE':
+      try {
+        console.log(id);
+        await dbConnect();
+
+        // Start Transaction
+        const session = await VolunteerEvents.startSession();
+        session.startTransaction();
+
+        // Delete program from Program collection
+        const deletedProgram = await VolunteerPrograms.findByIdAndDelete(id);
+        if (!deletedProgram) {
+          await session.abortTransaction();
+          session.endSession();
+          return res.status(400).json({ message: 'Program not found' });
+        }
+
+        // Delete program from Events collection
+        const events = await VolunteerEvents.find({ program: id });
+        const updatePromises = events.map(async event => {
+          event.program = undefined;
+          await event.save();
+        });
+        await Promise.all(updatePromises);
+
+        // Commit transaction
+        await session.commitTransaction();
+        session.endSession();
+        res.status(200).json({ message: 'Program deleted successfully' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: error });
+      }
+      break;
     // default:
     // res.setHeader('Allow', ['GET', 'PUT', 'DELETE', 'POST']);
     // res.status(405).end(`Method ${method} Not Allowed`);

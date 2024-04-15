@@ -7,11 +7,16 @@ import {
   Container,
 } from '@/styles/components/Sidebar/sidebar.styles';
 import {
+  BOOKEM_THEME,
   SIDEBAR_ICON_HEIGHT,
   SIDEBAR_ICON_PARAMS,
   SIDEBAR_ICON_WIDTH,
 } from '@/utils/constants';
 import Image from 'next/image';
+import {
+  IconText,
+  IconFlexBox,
+} from '@/styles/components/Sidebar/sidebar.styles';
 
 export const Sidebar = () => {
   const activeRoute = useActiveRoute();
@@ -25,7 +30,14 @@ export const Sidebar = () => {
       {/* Iterate through iconParamList to display icons */}
       {SIDEBAR_ICON_PARAMS.map(iconParam => {
         return (
-          <IconContainer key={iconParam.defaultSrc}>
+          <IconContainer
+            hoveredcolor={BOOKEM_THEME.colors.BOOKEM_BLACK}
+            color={
+              activeRoute === iconParam.linkTo
+                ? BOOKEM_THEME.colors.BOOKEM_BLACK
+                : BOOKEM_THEME.colors.WHITE
+            }
+            key={iconParam.linkTo}>
             {/* Link that wraps around the icon */}
             <IconLink
               href={iconParam.linkTo}
@@ -40,13 +52,17 @@ export const Sidebar = () => {
                   ? iconParam.hoveredsrc
                   : iconParam.defaultSrc
               }>
+              {/* Desktop version only displays image */}
               {/* Icon image with default src */}
-              <Image
-                src={iconParam.defaultSrc}
-                alt=""
-                width={SIDEBAR_ICON_HEIGHT}
-                height={SIDEBAR_ICON_WIDTH}
-              />
+              <IconFlexBox>
+                <Image
+                  src={iconParam.defaultSrc}
+                  alt=""
+                  width={SIDEBAR_ICON_HEIGHT}
+                  height={SIDEBAR_ICON_WIDTH}
+                />
+                <IconText>{iconParam.text}</IconText>
+              </IconFlexBox>
             </IconLink>
           </IconContainer>
         );
