@@ -1,11 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-
 import dbConnect from '@/lib/dbConnect';
-
 import VolunteerLogs from 'bookem-shared/src/models/VolunteerLogs';
 import { QueriedVolunteerLogDTO } from 'bookem-shared/src/types/database';
-import VolunteerEvents from 'bookem-shared/src/models/VolunteerEvents';
-import Users from 'bookem-shared/src/models/Users';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,7 +15,7 @@ export default async function handler(
 
         // TODO: remove this after development
 
-        const logs = (await VolunteerLogs.find()
+        const logs = (await VolunteerLogs.find({ status: 'pending' })
           .populate({ path: 'user' })
           .populate({ path: 'event' })
           .exec()) as QueriedVolunteerLogDTO[];

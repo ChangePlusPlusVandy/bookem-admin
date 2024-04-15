@@ -26,7 +26,7 @@ const VolunteerLogTableImpl = () => {
     useContext(VolunteerLogTableContext);
 
   const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerLogDTO[]>(
-    '/api/volunteer-logs/',
+    '/api/volunteer-logs/pending/',
     fetcher,
     {
       onSuccess: data => {
