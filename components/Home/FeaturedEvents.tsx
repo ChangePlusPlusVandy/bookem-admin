@@ -34,7 +34,6 @@ const FeaturedEvents = () => {
         <div style={{ marginTop: '50px' }}>
           <Header>Bookmarked events</Header>
           <FeaturedEventsContainer>
-            
             <EventsScrollContainer>
               <Suspense fallback={<Header>Please Wait...</Header>}>
                 {events.map(event => (
@@ -46,7 +45,9 @@ const FeaturedEvents = () => {
                   />
                 ))}
               </Suspense>
-              <button onClick={() => router.push('/events/featured')}>Show More</button>
+              <button onClick={() => router.push('/events/featured')}>
+                Show More
+              </button>
             </EventsScrollContainer>
           </FeaturedEventsContainer>
         </div>

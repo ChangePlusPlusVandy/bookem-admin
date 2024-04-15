@@ -23,7 +23,7 @@ export default async function handler(
         // First, find the ObjectId for the 'featured' tag
         const featuredTag = await Tags.findOne({ tagName: 'featured' });
         if (!featuredTag) {
-          return res.status(404).json({ message: "Featured tag not found." });
+          return res.status(404).json({ message: 'Featured tag not found.' });
         }
 
         // Now, use the ObjectId to query for events
@@ -34,7 +34,7 @@ export default async function handler(
         return res.status(200).json(featuredEvents);
       } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Failed to fetch featured events." });
+        res.status(500).json({ message: 'Failed to fetch featured events.' });
       }
       break;
 

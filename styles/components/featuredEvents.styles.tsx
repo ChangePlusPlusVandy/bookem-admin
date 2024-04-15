@@ -2,12 +2,12 @@ import styled from 'styled-components';
 
 export const EventsScrollContainer = styled.div`
   display: flex;
-  overflow-x: auto;  // Allows horizontal scrolling
-  overflow-y: hidden;  // Prevents vertical scrolling
+  overflow-x: auto; // Allows horizontal scrolling
+  overflow-y: hidden; // Prevents vertical scrolling
   padding: 10px;
   white-space: nowrap;
-  max-width: 100%;  // Ensures the container does not exceed the viewport width
-  width: 100%;  // Optionally set a fixed width
+  max-width: 100%; // Ensures the container does not exceed the viewport width
+  width: 100%; // Optionally set a fixed width
 
   &::-webkit-scrollbar {
     display: none;
