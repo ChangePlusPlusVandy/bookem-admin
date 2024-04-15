@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Table, TableProps, Tag } from 'antd';
 import type {
   ColumnType,
@@ -16,23 +16,16 @@ import { convertEventDataToRowData } from '@/utils/table-utils';
 import useSWR from 'swr';
 import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
 import { LOCALE_DATE_FORMAT } from '@/utils/constants';
+import { EventTableContext } from './EventTable';
 
 /**
  * Contains the "UI" part of Program Event Table
  * @returns
  */
-const ProgramEventTableImpl = ({
-  getColumnSearchProps,
-  sortedInfo,
-  handleChange,
-  programID,
-}: {
-  getColumnSearchProps: (dataIndex: EventDataIndex) => ColumnType<EventRowData>;
-  sortedInfo: SorterResult<EventRowData>;
-  handleChange: TableProps<EventRowData>['onChange'];
-  programID: string;
-  programName: string;
-}) => {
+const ProgramEventTableImpl = ({ programID }: { programID: string }) => {
+  const { sortedInfo, handleChange, getColumnSearchProps, rowSelection } =
+    useContext(EventTableContext);
+
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
 
@@ -48,15 +41,6 @@ const ProgramEventTableImpl = ({
       revalidateOnReconnect: true,
     }
   );
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-
-  const onSelectChange = newSelectedRowKeys => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  };
 
   // Extra defense to refetch data if needed
   useEffect(() => {
@@ -149,8 +133,8 @@ const ProgramEventTableImpl = ({
         showPopup={showPopup}
         setShowPopupTag={setShowPopupTag}
         showPopupTag={showPopup}
-        hasSelected={selectedRowKeys.length > 0}
-        numSelected={selectedRowKeys.length}
+        hasSelected={rowSelection.selectedRowKeys.length > 0}
+        numSelected={rowSelection.selectedRowKeys.length}
       />
       <TableContainer>
         <div id="table-container">

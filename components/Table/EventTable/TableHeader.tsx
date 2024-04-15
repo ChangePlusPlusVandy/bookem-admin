@@ -30,8 +30,8 @@ const TableHeader = ({
   showPopup: boolean;
   setShowPopupTag: (a: boolean) => void;
   showPopupTag: boolean;
-  setShowAddPopup: (a: boolean) => void;
-  showAddPopup: boolean;
+  setShowAddPopup?: (a: boolean) => void;
+  showAddPopup?: boolean;
   hasSelected: boolean;
   numSelected: number;
 }) => {
@@ -72,12 +72,7 @@ const TableHeader = ({
       title: `Do you want to add the selected events to program ${value}?`,
       // icon: <ExclamationCircleFilled />,
       content: '',
-      onOk() {
-        messageApi.success('Program added');
-      },
-      onCancel() {
-        console.log('Cancel');
-      },
+      onOk() {},
     });
   };
 

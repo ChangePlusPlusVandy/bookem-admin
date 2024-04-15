@@ -1,5 +1,5 @@
 import { EventDataIndex, EventRowData } from '@/utils/table-types';
-import { Button, Input, InputRef, Space, TableProps } from 'antd';
+import { Button, Input, InputRef, Space, TableProps, message } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
 import {
@@ -7,7 +7,7 @@ import {
   FilterConfirmProps,
   SorterResult,
 } from 'antd/es/table/interface';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { createContext, useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import EventTableImpl from './EventTableImpl';
 import useSWR from 'swr';
@@ -17,21 +17,51 @@ import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
 import { useActiveRoute } from '@/lib/useActiveRoute';
 import ProgramEventTableImpl from './ProgramEventTableImpl';
 
+export const EventTableContext = createContext<{
+  getColumnSearchProps: (dataIndex: EventDataIndex) => ColumnType<EventRowData>;
+  sortedInfo: SorterResult<EventRowData>;
+  handleChange: TableProps<EventRowData>['onChange'];
+  filteredDataByTags: EventRowData[];
+  setFilteredDataByTags: (data: EventRowData[]) => void;
+  handleFilterByTags: (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    dataForTable: EventRowData[]
+  ) => void;
+  messageApi: any;
+  rowSelection: any;
+}>({
+  getColumnSearchProps: () => ({}),
+  sortedInfo: {},
+  handleChange: () => {},
+  filteredDataByTags: [],
+  setFilteredDataByTags: () => {},
+  handleFilterByTags: () => {},
+  messageApi: {},
+  rowSelection: {},
+});
+
 /**
  * Contains the "Functionality" part of Event Table including data fetching, search, filter and sort
  * @returns
  */
-const EventTable = ({
-  programId,
-  programname,
-}: {
-  programId?: string;
-  programname?: string;
-}) => {
+const EventTable = ({ programId }: { programId?: string }) => {
   const [sortedInfo, setSortedInfo] = useState<SorterResult<EventRowData>>({});
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
+  const [messageApi, contextHolder] = message.useMessage();
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const onSelectChange = newSelectedRowKeys => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  // const hasSelected = selectedRowKeys.length > 0;
+  const handleAddEvent = () => {
+    console.log(selectedRowKeys);
+  };
 
   // Get current route string
   const route = useActiveRoute();
@@ -194,25 +224,23 @@ const EventTable = ({
   });
   return (
     <>
-      {route === '/event' && (
-        <EventTableImpl
-          getColumnSearchProps={getColumnSearchProps}
-          sortedInfo={sortedInfo}
-          handleChange={handleChange}
-          filteredDataByTags={filteredDataByTags}
-          setFilteredDataByTags={setFilteredDataByTags}
-          handleFilterByTags={handleFilterByTags}
-        />
-      )}
-      {route.startsWith('/events/program') && (
-        <ProgramEventTableImpl
-          programID={programId as string}
-          programName={programname as string}
-          getColumnSearchProps={getColumnSearchProps}
-          sortedInfo={sortedInfo}
-          handleChange={handleChange}
-        />
-      )}
+      {contextHolder}
+      <EventTableContext.Provider
+        value={{
+          getColumnSearchProps,
+          sortedInfo,
+          handleChange,
+          filteredDataByTags,
+          setFilteredDataByTags,
+          handleFilterByTags,
+          messageApi,
+          rowSelection,
+        }}>
+        {route === '/event' && <EventTableImpl />}
+        {route.startsWith('/events/program') && (
+          <ProgramEventTableImpl programID={programId as string} />
+        )}
+      </EventTableContext.Provider>
     </>
   );
 };
