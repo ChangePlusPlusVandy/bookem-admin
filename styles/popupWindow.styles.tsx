@@ -6,7 +6,7 @@ export const Background = styled.div`
   top: 0px;
   width: 100%;
   height: 100%;
-  z-index: 2;
+  z-index: 5;
   display: flex;
   background: rgba(0, 0, 0, 0.6);
 `;
@@ -23,7 +23,7 @@ export const Container = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 3;
+  z-index: 2;
   overflow: hidden;
 `;
 
