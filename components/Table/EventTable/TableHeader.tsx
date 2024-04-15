@@ -57,6 +57,15 @@ const TableHeader = ({
       },
     });
   };
+
+  const convertProgramToItems = (programs: QueriedVolunteerProgramData[]) => {
+    const programItems = programs?.map(program => ({
+      label: program.name,
+      value: program.name,
+    }));
+    programItems.unshift({ label: 'None', value: 'None' });
+    return programItems;
+  };
   const showAddProgramConfirm = value => {
     confirm({
       title: `Do you want to add the selected events to program ${value}?`,
@@ -173,10 +182,9 @@ const TableHeader = ({
           disabled={rowSelection.selectedRowKeys.length === 0}
           placeholder="Add to Program"
           onSelect={value => showAddProgramConfirm(value)}
-          options={programs?.map(program => ({
-            label: program.name,
-            value: program.name,
-          }))}
+          options={convertProgramToItems(
+            programs as QueriedVolunteerProgramData[]
+          )}
         />
         <TableButton onClick={() => handleExport('events')}>Export</TableButton>
       </SearchContainter>
