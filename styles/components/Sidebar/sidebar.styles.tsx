@@ -23,6 +23,7 @@ export const IconContainer = styled.div<{
   color?: string;
 }>`
   color: ${props => props.color || 'white'};
+  margin-top: 20px;
   &:hover {
     color: ${props => props.hoveredcolor};
   }
