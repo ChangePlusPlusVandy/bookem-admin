@@ -89,7 +89,9 @@ const ProgramEventTableImpl = ({
       sortOrder: sortedInfo.columnKey === 'date' ? sortedInfo.order : null,
       ellipsis: true,
       render(_: any, { startDate }: EventRowData) {
-        return <>{startDate.toLocaleDateString()}</>;
+        return (
+          <>{startDate.toLocaleDateString('en-US', { timeZone: 'UTC' })}</>
+        );
       },
     },
     {

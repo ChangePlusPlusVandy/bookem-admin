@@ -30,15 +30,16 @@ const VolunteerLogTableImpl = () => {
     errorMessage,
   } = useContext(VolunteerLogTableContext);
 
+  const [status, setStatus] = useState<string>('pending');
   const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerLogDTO[]>(
-    '/api/volunteer-logs/pending/',
+    '/api/volunteer-logs/' + status,
     fetcher,
     {
       onSuccess: data => {
         setDataForTable(convertVolunteerLogDataToRowData(data));
       },
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
     }
   );
 
@@ -46,6 +47,7 @@ const VolunteerLogTableImpl = () => {
     fetch('/api/volunteer-logs/' + value)
       .then(data => data.json())
       .then(data => setDataForTable(convertVolunteerLogDataToRowData(data)))
+      .then(() => setStatus(value))
       .catch(err => {
         errorMessage('Sorry an error occurred');
         console.error(err);
@@ -103,7 +105,7 @@ const VolunteerLogTableImpl = () => {
       sortOrder: sortedInfo.columnKey === 'date' ? sortedInfo.order : null,
 
       render(_: any, { date }: VolunteerLogRowData) {
-        return <>{date.toLocaleDateString()}</>;
+        return <>{date.toLocaleString('en-US', { timeZone: 'UTC' })}</>;
       },
     },
     {

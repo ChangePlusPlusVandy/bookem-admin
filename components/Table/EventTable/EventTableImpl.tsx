@@ -147,7 +147,9 @@ const EventTableImpl = ({
       sortOrder: sortedInfo.columnKey === 'startDate' ? sortedInfo.order : null,
       ellipsis: true,
       render(_: any, { startDate }: EventRowData) {
-        return <>{startDate.toLocaleDateString()}</>;
+        return (
+          <>{startDate.toLocaleDateString('en-US', { timeZone: 'UTC' })}</>
+        );
       },
     },
     {
@@ -163,7 +165,7 @@ const EventTableImpl = ({
       sortOrder: sortedInfo.columnKey === 'endDate' ? sortedInfo.order : null,
       ellipsis: true,
       render(_: any, { endDate }: EventRowData) {
-        return <>{endDate.toLocaleDateString()}</>;
+        return <>{endDate.toLocaleDateString('en-US', { timeZone: 'UTC' })}</>;
       },
     },
     {
