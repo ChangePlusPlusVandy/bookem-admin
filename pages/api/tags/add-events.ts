@@ -20,8 +20,6 @@ export default async function handler(
       try {
         await dbConnect();
         const { eventIds, tagNames } = JSON.parse(req.body);
-        console.log(eventIds);
-        console.log(tagNames);
 
         if (tagNames.length === 0) {
           // Remove the tags field of events

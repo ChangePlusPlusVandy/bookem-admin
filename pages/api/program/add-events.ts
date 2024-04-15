@@ -13,7 +13,6 @@ export default async function handler(
       try {
         await dbConnect();
         const { eventIds, programName } = JSON.parse(req.body);
-        console.log(eventIds);
 
         if (programName === 'None') {
           // Remove the program field of events
