@@ -196,18 +196,6 @@ const VolunteerLogTable = () => {
     setFilteredInfo({});
   };
 
-  const queryTotalHours = async (ids: any[]) => {
-    const totalHours = await fetch('/api/users/totalHours', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ filters: ids }),
-    });
-    const data = await totalHours.json();
-    return data;
-  };
-
   // function to export what is on the table at the time to an excel file
   const handleExport = () => {
     const workbook = XLSX.utils.table_to_book(

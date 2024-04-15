@@ -36,6 +36,13 @@ const VolunteerLogTableImpl = () => {
       revalidateOnReconnect: false,
     }
   );
+
+  const handleSelectStatus = (value: string) => {
+    fetch('/api/volunteer-logs/' + value)
+      .then(data => data.json())
+      .then(data => setDataForTable(convertVolunteerLogDataToRowData(data)));
+  };
+
   const [dataForTable, setDataForTable] = useState<VolunteerLogRowData[]>([]);
   const [hours, setHours] = useState<number>();
   const [totalVolunteers, setTotalVolunteers] = useState(dataForTable.length);
@@ -89,6 +96,11 @@ const VolunteerLogTableImpl = () => {
         return <>{date.toLocaleDateString()}</>;
       },
     },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+    },
   ];
   // Refetch data when data is updated
   useEffect(() => {
@@ -101,7 +113,7 @@ const VolunteerLogTableImpl = () => {
 
   return (
     <>
-      <TableHeader />
+      <TableHeader handleSelectStatus={handleSelectStatus} />
       <TableContainer>
         <div id="table-container">
           <Table

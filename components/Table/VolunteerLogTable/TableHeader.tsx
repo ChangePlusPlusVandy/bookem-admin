@@ -6,11 +6,11 @@ import { Button, Select } from 'antd';
 import { VolunteerLogStatus } from 'bookem-shared/src/types/database';
 import React, { useEffect, useState } from 'react';
 
-const TableHeader = () => {
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
-
+const TableHeader = ({
+  handleSelectStatus,
+}: {
+  handleSelectStatus: (value: string) => void;
+}) => {
   const [statusOptions, setStatusOptions] = useState<any[]>([]);
   useEffect(() => {
     setStatusOptions(
@@ -26,7 +26,7 @@ const TableHeader = () => {
           <Select
             defaultValue="pending"
             style={{ width: 120 }}
-            onChange={handleChange}
+            onChange={handleSelectStatus}
             options={statusOptions}
           />
         </SelectContainer>
