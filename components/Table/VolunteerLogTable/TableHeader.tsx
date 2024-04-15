@@ -2,7 +2,7 @@ import {
   HeaderContainer,
   SelectContainer,
 } from '@/styles/components/Table/VolunteerLogTable.styles';
-import { Button, Select } from 'antd';
+import { Button, Popconfirm, Select } from 'antd';
 import { VolunteerLogStatus } from 'bookem-shared/src/types/database';
 import React, { useEffect, useState } from 'react';
 
@@ -18,6 +18,8 @@ const TableHeader = ({
     );
   }, []);
 
+  const handleApprove = () => {};
+
   return (
     <>
       <HeaderContainer>
@@ -30,8 +32,24 @@ const TableHeader = ({
             options={statusOptions}
           />
         </SelectContainer>
-        <Button style={{ marginRight: '30px' }}>Approve</Button>
-        <Button danger>Reject</Button>
+
+        <Popconfirm
+          title="Approve the hours"
+          description="Are you sure to approve the selected hours"
+          onConfirm={handleApprove}
+          okText="Yes"
+          cancelText="No">
+          <Button style={{ marginRight: '30px' }}>Approve</Button>
+        </Popconfirm>
+
+        <Popconfirm
+          title="Reject the hours"
+          description="Are you sure to reject the selected hours"
+          onConfirm={handleApprove}
+          okText="Yes"
+          cancelText="No">
+          <Button danger>Reject</Button>
+        </Popconfirm>
       </HeaderContainer>
     </>
   );

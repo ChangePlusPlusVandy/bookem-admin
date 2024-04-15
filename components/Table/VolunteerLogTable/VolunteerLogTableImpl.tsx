@@ -22,8 +22,13 @@ import { VolunteerLogTableContext } from './VolunteerLogTable';
 import TableHeader from './TableHeader';
 
 const VolunteerLogTableImpl = () => {
-  const { getColumnSearchProps, rowSelection, sortedInfo, handleChange } =
-    useContext(VolunteerLogTableContext);
+  const {
+    getColumnSearchProps,
+    rowSelection,
+    sortedInfo,
+    handleChange,
+    errorMessage,
+  } = useContext(VolunteerLogTableContext);
 
   const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerLogDTO[]>(
     '/api/volunteer-logs/pending/',
@@ -40,7 +45,11 @@ const VolunteerLogTableImpl = () => {
   const handleSelectStatus = (value: string) => {
     fetch('/api/volunteer-logs/' + value)
       .then(data => data.json())
-      .then(data => setDataForTable(convertVolunteerLogDataToRowData(data)));
+      .then(data => setDataForTable(convertVolunteerLogDataToRowData(data)))
+      .catch(err => {
+        errorMessage('Sorry an error occurred');
+        console.error(err);
+      });
   };
 
   const [dataForTable, setDataForTable] = useState<VolunteerLogRowData[]>([]);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, createContext } from 'react';
 import type { TableProps } from 'antd';
-import { Button, Space, Table, Input, Tag, InputRef } from 'antd';
+import { Button, Space, Table, Input, Tag, InputRef, message } from 'antd';
 import type {
   ColumnType,
   FilterValue,
@@ -25,11 +25,15 @@ export const VolunteerLogTableContext = createContext<{
   rowSelection: any;
   sortedInfo: SorterResult<VolunteerLogRowData>;
   handleChange: TableProps<VolunteerLogRowData>['onChange'];
+  successMessage: (str: string) => void;
+  errorMessage: (str: string) => void;
 }>({
   getColumnSearchProps: () => ({}),
   rowSelection: {},
   sortedInfo: {},
   handleChange: () => {},
+  successMessage: () => {},
+  errorMessage: () => {},
 });
 
 const VolunteerLogTable = () => {
@@ -212,14 +216,33 @@ const VolunteerLogTable = () => {
     saveAs(blob, 'volunteers.xlsx');
   };
 
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const successMessage = (message: string) => {
+    messageApi.open({
+      type: 'success',
+      content: message,
+    });
+  };
+
+  const errorMessage = (message: string) => {
+    messageApi.open({
+      type: 'error',
+      content: message,
+    });
+  };
+
   return (
     <>
+      {contextHolder}
       <VolunteerLogTableContext.Provider
         value={{
           getColumnSearchProps,
           rowSelection,
           sortedInfo,
           handleChange,
+          successMessage,
+          errorMessage,
         }}>
         <TableContainer>
           <VolunteerLogTableImpl />
