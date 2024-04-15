@@ -14,7 +14,7 @@ import {
   QueriedVolunteerProgramData,
 } from 'bookem-shared/src/types/database';
 import { PlusOutlined } from '@ant-design/icons';
-import { Modal, message } from 'antd';
+import { Modal } from 'antd';
 import { EventTableContext } from './EventTable';
 
 const TableHeader = ({
@@ -37,12 +37,8 @@ const TableHeader = ({
     '/api/program/',
     fetcher
   );
-
   const { rowSelection, messageApi, setSelectedRowKeys } =
     useContext(EventTableContext);
-
-  const [selectedProgram, setSelectedProgram] =
-    useState<QueriedVolunteerProgramData>();
   const [selectedTags, setSelectedTags] = useState<QueriedTagData[]>([]);
 
   // ANTD Modal
@@ -101,79 +97,75 @@ const TableHeader = ({
 
   return (
     <>
-      <div>
-        <SearchContainter>
-          <TableIcon>
-            <Image
-              onClick={() => setShowPopup(!showPopup)}
-              src="/table/addbutton.png"
-              alt=""
-              width={32}
-              height={32}
-              style={{ marginRight: 20 }}
-            />
-          </TableIcon>
-          <TableIcon>
-            <Image
-              onClick={() => {
-                setShowPopup(false);
-                setShowPopupTag(!showPopupTag);
-              }}
-              src="/table/tagsbutton.png"
-              alt=""
-              width={32}
-              height={32}
-            />
-          </TableIcon>
+      <SearchContainter>
+        <TableIcon>
+          <Image
+            onClick={() => setShowPopup(!showPopup)}
+            src="/table/addbutton.png"
+            alt=""
+            width={32}
+            height={32}
+            style={{ marginRight: 20 }}
+          />
+        </TableIcon>
+        <TableIcon>
+          <Image
+            onClick={() => {
+              setShowPopup(false);
+              setShowPopupTag(!showPopupTag);
+            }}
+            src="/table/tagsbutton.png"
+            alt=""
+            width={32}
+            height={32}
+          />
+        </TableIcon>
 
-          <Select
-            mode="tags"
-            disabled={rowSelection.selectedRowKeys.length === 0}
-            style={{
-              width: '13%',
-              height: '100%',
-              marginLeft: '15px',
-            }}
-            placeholder="Add Tags"
-            onChange={value => setSelectedTags(value)}
-            dropdownRender={menu => (
-              <>
-                {menu}
-                <Divider style={{ margin: '8px 0' }} />
-                <Space style={{ padding: '0 8px 4px' }}>
-                  <Button
-                    type="text"
-                    icon={<PlusOutlined />}
-                    onClick={showAddTagConfirm}>
-                    Add
-                  </Button>
-                </Space>
-              </>
-            )}
-            options={tags?.map(tag => ({
-              label: tag.tagName,
-              value: tag.tagName,
-            }))}
-          />
-          <Select
-            style={{
-              width: '13%',
-              height: '100%',
-              marginLeft: '15px',
-            }}
-            disabled={rowSelection.selectedRowKeys.length === 0}
-            placeholder="Add to Program"
-            onChange={value => showAddProgramConfirm(value)}
-            options={programs?.map(program => ({
-              label: program.name,
-              value: program.name,
-            }))}
-          />
-          <TableButton onClick={() => handleExport('events')}>
-            Export
-          </TableButton>
-        </SearchContainter>
-      </div>
+        <Select
+          mode="tags"
+          disabled={rowSelection.selectedRowKeys.length === 0}
+          style={{
+            width: '13%',
+            height: '100%',
+            marginLeft: '15px',
+          }}
+          placeholder="Add Tags"
+          onChange={value => setSelectedTags(value)}
+          dropdownRender={menu => (
+            <>
+              {menu}
+              <Divider style={{ margin: '8px 0' }} />
+              <Space style={{ padding: '0 8px 4px' }}>
+                <Button
+                  type="text"
+                  icon={<PlusOutlined />}
+                  onClick={showAddTagConfirm}>
+                  Add
+                </Button>
+              </Space>
+            </>
+          )}
+          options={tags?.map(tag => ({
+            label: tag.tagName,
+            value: tag.tagName,
+          }))}
+        />
+        <Select
+          style={{
+            width: '13%',
+            height: '100%',
+            marginLeft: '15px',
+          }}
+          disabled={rowSelection.selectedRowKeys.length === 0}
+          placeholder="Add to Program"
+          onSelect={value => showAddProgramConfirm(value)}
+          options={programs?.map(program => ({
+            label: program.name,
+            value: program.name,
+          }))}
+        />
+        <TableButton onClick={() => handleExport('events')}>Export</TableButton>
+      </SearchContainter>
     </>
   );
 };
