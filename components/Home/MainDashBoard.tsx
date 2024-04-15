@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 
+import FeaturedEvents from '@/components/Home/FeaturedEvents';
 import UpcomingEvents from '@/components/Home/UpcomingEvents';
 import type { MenuProps } from 'antd';
 
@@ -78,7 +79,7 @@ const MainDashboard: React.FC = () => {
         </InfoIcon>
 
         <Header>
-          Here are some quick stats for
+          Here are some quick stats:
           <span style={{ marginRight: '10px' }}></span>
           {/* <Dropdown menu={menuProps}>
             <Button>
@@ -106,6 +107,8 @@ const MainDashboard: React.FC = () => {
             <StatsDescription>total events</StatsDescription>
           </FlexChild>
         </StatsFlex>
+
+        <FeaturedEvents />
 
         {/* Additional dashboard components go here */}
       </Container>

@@ -4,7 +4,6 @@ import {
   ShortFormInput,
   LongFormInput,
   LargeFormInput,
-  InputFlex,
   FormInput,
   FormLabel,
   CreateEventForm,
