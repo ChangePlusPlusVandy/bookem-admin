@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Table,
   TableProps,
@@ -32,34 +32,30 @@ import {
   FilterIcon,
   TagTitle,
 } from '@/styles/components/Table/EventTable.styles';
+import AddEventPopupWindow from '@/components/Forms/AddEventPopupWindow';
 import mongoose from 'mongoose';
 import { LOCALE_DATE_FORMAT } from '@/utils/constants';
+import { EventTableContext } from './EventTable';
 
 /**
  * Contains the "UI" part of Event Table
  * @returns
  */
-const EventTableImpl = ({
-  getColumnSearchProps,
-  sortedInfo,
-  handleChange,
-  filteredDataByTags,
-  setFilteredDataByTags,
-  handleFilterByTags,
-}: {
-  getColumnSearchProps: (dataIndex: EventDataIndex) => ColumnType<EventRowData>;
-  sortedInfo: SorterResult<EventRowData>;
-  handleChange: TableProps<EventRowData>['onChange'];
-  filteredDataByTags: EventRowData[];
-  setFilteredDataByTags: (data: EventRowData[]) => void;
-  handleFilterByTags: (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    dataForTable: EventRowData[]
-  ) => void;
-}) => {
+const EventTableImpl = () => {
+  const {
+    getColumnSearchProps,
+    sortedInfo,
+    handleChange,
+    filteredDataByTags,
+    setFilteredDataByTags,
+    handleFilterByTags,
+    messageApi,
+    rowSelection,
+  } = useContext(EventTableContext);
+
   const [showPopup, setShowPopup] = useState(false);
   const [showPopupTag, setShowPopupTag] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();
+  const [showPopupAdd, setShowPopupAdd] = useState(false);
 
   const [dataForTable, setDataForTable] = useState<EventRowData[]>([]);
   const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerEventDTO[]>(
@@ -84,19 +80,6 @@ const EventTableImpl = ({
   useEffect(() => {
     setFilteredDataByTags(dataForTable);
   }, [dataForTable, setFilteredDataByTags]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-
-  const onSelectChange = newSelectedRowKeys => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  };
-  // const hasSelected = selectedRowKeys.length > 0;
-  const handleAddEvent = () => {
-    console.log(selectedRowKeys);
-  };
 
   const handleDeleteEvent = async (_id: mongoose.Types.ObjectId) => {
     const res = await fetch(`/api/event/${_id}`, {
@@ -252,19 +235,19 @@ const EventTableImpl = ({
 
   return (
     <>
-      {contextHolder}
       {showPopup && <EventPopupWindowForm setShowPopup={setShowPopup} />}
       {showPopupTag && <TagEventPopupWindow setShowPopup={setShowPopupTag} />}
-      {/* <Button type="primary" onClick={handleAddEvent} disabled={!hasSelected} /> */}
-      {/* {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''} */}
+      {showPopupAdd && <AddEventPopupWindow setShowPopup={setShowPopupAdd} />}
 
       <TableHeader
         setShowPopup={setShowPopup}
         showPopup={showPopup}
         setShowPopupTag={setShowPopupTag}
         showPopupTag={showPopup}
-        hasSelected={selectedRowKeys.length > 0}
-        numSelected={selectedRowKeys.length}></TableHeader>
+        setShowAddPopup={setShowPopupAdd}
+        showAddPopup={showPopupAdd}
+        mutate={mutate}
+      />
 
       <TableContainer>
         <div id="table-container">

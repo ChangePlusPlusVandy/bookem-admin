@@ -14,6 +14,7 @@
     "postinstall": "npm update && npm i bookem-shared"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.3.6",
     "@fontsource/inter": "^5.0.15",
     "@next-auth/mongodb-adapter": "^1.1.1",
     "@types/mongoose": "^5.11.97",
