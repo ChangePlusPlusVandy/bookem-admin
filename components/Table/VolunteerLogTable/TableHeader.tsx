@@ -6,11 +6,14 @@ import { Button, Popconfirm, Select } from 'antd';
 import { VolunteerLogStatus } from 'bookem-shared/src/types/database';
 import React, { useContext, useEffect, useState } from 'react';
 import { VolunteerLogTableContext } from './VolunteerLogTable';
+import { error } from 'console';
 
 const TableHeader = ({
   handleSelectStatus,
+  mutate,
 }: {
   handleSelectStatus: (value: string) => void;
+  mutate: () => void;
 }) => {
   const { rowSelection, errorMessage, successMessage } = useContext(
     VolunteerLogTableContext
@@ -29,6 +32,64 @@ const TableHeader = ({
       errorMessage('No rows selected');
       return;
     }
+
+    fetch('/api/volunteer-logs/approved', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(rowSelection.selectedRowKeys),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to approve hours');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.status === 'error') {
+          errorMessage(data.message);
+        } else {
+          successMessage(data.message);
+        }
+      })
+      .then(() => mutate())
+      .catch(err => {
+        errorMessage('Sorry an error occurred');
+        console.error(err);
+      });
+  };
+
+  const handleReject = () => {
+    if (rowSelection.selectedRowKeys.length === 0) {
+      errorMessage('No rows selected');
+      return;
+    }
+    fetch('/api/volunteer-logs/rejected', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(rowSelection.selectedRowKeys),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to reject hours');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.status === 'error') {
+          errorMessage(data.message);
+        } else {
+          successMessage(data.message);
+        }
+      })
+      .then(() => mutate())
+      .catch(err => {
+        errorMessage('Sorry an error occurred');
+        console.error(err);
+      });
   };
 
   return (
@@ -62,7 +123,7 @@ const TableHeader = ({
         <Popconfirm
           title="Reject the hours"
           description="Are you sure to reject the selected hours"
-          onConfirm={handleApprove}
+          onConfirm={handleReject}
           okText="Yes"
           cancelText="No">
           {rowSelection.selectedRowKeys.length === 0 ? (

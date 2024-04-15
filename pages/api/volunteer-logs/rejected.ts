@@ -29,6 +29,28 @@ export default async function handler(
       }
       break;
 
+    case 'PUT':
+      try {
+        await dbConnect();
+
+        const logIds = req.body as string[];
+
+        await VolunteerLogs.updateMany(
+          { _id: { $in: logIds } },
+          { status: 'rejected' }
+        );
+
+        res.status(200).json({
+          message: 'The hours have been rejected!',
+          status: 'success',
+        });
+      } catch (error) {
+        console.error('An error has occurred in index.ts', error);
+        res.status(500).json({
+          error: 'Sorry, an error occurred while connecting to the database',
+        });
+      }
+
     default:
       res.status(405).json({
         error: 'Sorry, only GET requests are supported',

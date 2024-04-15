@@ -24,10 +24,33 @@ export default async function handler(
       } catch (e) {
         console.error('An error has occurred in index.ts', e);
         res.status(500).json({
-          error: 'Sorry, an error occurred while connecting to the database',
+          error: 'Sorry, an error occurred',
         });
       }
       break;
+    case 'PUT':
+      try {
+        await dbConnect();
+
+        const logIds = req.body as string[];
+
+        await VolunteerLogs.updateMany(
+          { _id: { $in: logIds } },
+          { status: 'approved' }
+        );
+
+        res
+          .status(200)
+          .json({
+            message: 'The hours have been approved!',
+            status: 'success',
+          });
+      } catch (error) {
+        console.error('An error has occurred in index.ts', error);
+        res.status(500).json({
+          error: 'Sorry, an error occurred',
+        });
+      }
 
     default:
       res.status(405).json({
