@@ -82,3 +82,11 @@ export const EVENT_CONTACT_ICON_WIDTH = 23;
  * Default height of event contact icons
  */
 export const EVENT_CONTACT_ICON_HEIGHT = 23;
+
+export const LOCALE_DATE_FORMAT: any = {
+  // weekday: 'short',
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+  timeZone: 'UTC',
+};

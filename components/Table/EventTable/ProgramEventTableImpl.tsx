@@ -15,6 +15,7 @@ import TableHeader from '@/components/Table/EventTable/TableHeader';
 import { convertEventDataToRowData } from '@/utils/table-utils';
 import useSWR from 'swr';
 import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
+import { LOCALE_DATE_FORMAT } from '@/utils/constants';
 
 /**
  * Contains the "UI" part of Program Event Table
@@ -89,9 +90,7 @@ const ProgramEventTableImpl = ({
       sortOrder: sortedInfo.columnKey === 'date' ? sortedInfo.order : null,
       ellipsis: true,
       render(_: any, { startDate }: EventRowData) {
-        return (
-          <>{startDate.toLocaleDateString('en-US', { timeZone: 'UTC' })}</>
-        );
+        return <>{startDate.toLocaleDateString('en-US', LOCALE_DATE_FORMAT)}</>;
       },
     },
     {

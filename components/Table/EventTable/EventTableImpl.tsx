@@ -33,6 +33,7 @@ import {
   TagTitle,
 } from '@/styles/components/Table/EventTable.styles';
 import mongoose from 'mongoose';
+import { LOCALE_DATE_FORMAT } from '@/utils/constants';
 
 /**
  * Contains the "UI" part of Event Table
@@ -147,9 +148,7 @@ const EventTableImpl = ({
       sortOrder: sortedInfo.columnKey === 'startDate' ? sortedInfo.order : null,
       ellipsis: true,
       render(_: any, { startDate }: EventRowData) {
-        return (
-          <>{startDate.toLocaleDateString('en-US', { timeZone: 'UTC' })}</>
-        );
+        return <>{startDate.toLocaleDateString('en-US', LOCALE_DATE_FORMAT)}</>;
       },
     },
     {
@@ -165,7 +164,7 @@ const EventTableImpl = ({
       sortOrder: sortedInfo.columnKey === 'endDate' ? sortedInfo.order : null,
       ellipsis: true,
       render(_: any, { endDate }: EventRowData) {
-        return <>{endDate.toLocaleDateString('en-US', { timeZone: 'UTC' })}</>;
+        return <>{endDate.toLocaleDateString('en-US', LOCALE_DATE_FORMAT)}</>;
       },
     },
     {
