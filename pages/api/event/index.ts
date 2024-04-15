@@ -20,8 +20,6 @@ export default async function handler(
   // Get session user
   const session = await getServerSession(req, res, authOptions);
 
-  await dbConnect();
-
   switch (req.method) {
     /**
      * @route GET /api/event/

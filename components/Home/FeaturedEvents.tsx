@@ -32,7 +32,7 @@ const FeaturedEvents = () => {
       {!events && !error && <div>Loading...</div>}
       {events && (
         <div style={{ marginTop: '50px' }}>
-          <Header>Bookmarked events</Header>
+          <Header>Featured events</Header>
           <FeaturedEventsContainer>
             <EventsScrollContainer>
               <Suspense fallback={<Header>Please Wait...</Header>}>
@@ -45,9 +45,7 @@ const FeaturedEvents = () => {
                   />
                 ))}
               </Suspense>
-              <button onClick={() => router.push('/events/featured')}>
-                Show More
-              </button>
+              <button onClick={() => router.push('/event/')}>Show More</button>
             </EventsScrollContainer>
           </FeaturedEventsContainer>
         </div>
