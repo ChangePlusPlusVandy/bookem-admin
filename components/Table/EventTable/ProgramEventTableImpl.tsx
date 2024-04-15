@@ -133,6 +133,7 @@ const ProgramEventTableImpl = ({ programID }: { programID: string }) => {
         showPopup={showPopup}
         setShowPopupTag={setShowPopupTag}
         showPopupTag={showPopup}
+        mutate={mutate}
       />
       <TableContainer>
         <div id="table-container">
