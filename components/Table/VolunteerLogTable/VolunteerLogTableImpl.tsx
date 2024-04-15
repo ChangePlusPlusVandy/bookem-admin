@@ -72,6 +72,7 @@ const VolunteerLogTableImpl = () => {
       render(_: any, { userEmail }: VolunteerLogRowData) {
         return <Link href={'mailto:' + userEmail}>{userEmail}</Link>;
       },
+      ellipsis: true,
     },
     {
       title: 'Event',
