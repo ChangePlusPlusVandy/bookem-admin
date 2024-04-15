@@ -33,11 +33,10 @@ export default async function handler(
     case 'POST':
       try {
         if (session.user.status !== 'superadmin') {
-          res.status(200).json({
+          return res.status(200).json({
             message: 'Sorry, only super admin is allowed to create new admins',
             status: 'error',
           });
-          throw new Error('Only super admin is allowed to create new admins');
         }
         // start a try catch block to catch any errors in parsing the request body
         const admin = req.body as QueriedAdminData;
@@ -47,7 +46,7 @@ export default async function handler(
 
         // Check if the user's email and password are valid
         if (!email || !email.includes('@') || !password) {
-          res
+          return res
             .status(200)
             .json({ message: 'Invalid email or password', status: 'error' });
         }
@@ -62,10 +61,9 @@ export default async function handler(
 
         // If the user already exists, return an error
         if (checkExisting) {
-          res
+          return res
             .status(200)
             .json({ message: 'Admin email already exists', status: 'error' });
-          throw new Error('Admin email already exists');
         }
 
         // Hash the user's password

@@ -1,4 +1,6 @@
 import dbConnect from '@/lib/dbConnect';
+import Users from 'bookem-shared/src/models/Users';
+import VolunteerEvents from 'bookem-shared/src/models/VolunteerEvents';
 import VolunteerLogs from 'bookem-shared/src/models/VolunteerLogs';
 import { QueriedVolunteerLogDTO } from 'bookem-shared/src/types/database';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -14,6 +16,8 @@ export default async function handler(
         await dbConnect();
 
         // TODO: remove this after development
+        await Users.find();
+        await VolunteerEvents.find();
 
         const logs = (await VolunteerLogs.find({ status: 'rejected' })
           .populate({ path: 'user' })

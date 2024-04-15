@@ -18,6 +18,8 @@ export default async function handler(
         await dbConnect();
 
         // TODO: remove this after development
+        await Users.find();
+        await VolunteerEvents.find();
 
         const logs = (await VolunteerLogs.find()
           .populate({ path: 'user' })
