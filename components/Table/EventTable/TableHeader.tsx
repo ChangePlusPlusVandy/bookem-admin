@@ -63,7 +63,32 @@ const TableHeader = ({
       title: `Do you want to add the selected events to program ${value}?`,
       // icon: <ExclamationCircleFilled />,
       content: '',
-      onOk() {},
+      onOk() {
+        fetch('/api/program/add-events', {
+          method: 'PUT',
+          body: JSON.stringify(rowSelection.selectedRowKeys),
+        })
+          .then(res => {
+            if (!res.ok) {
+              throw new Error('Failed to add event to program');
+            }
+            return res.json();
+          })
+          .then(data => {
+            if (data.status === 'error') {
+              messageApi.open({
+                type: 'error',
+                content: data.message,
+              });
+            } else {
+              messageApi.open({
+                type: 'success',
+                content: data.message,
+              });
+            }
+          })
+          .catch(err => {});
+      },
     });
   };
 
