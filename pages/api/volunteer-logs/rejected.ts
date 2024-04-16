@@ -24,7 +24,7 @@ export default async function handler(
           .populate({ path: 'event' })
           .exec()) as QueriedVolunteerLogDTO[];
 
-        res.status(200).json(logs);
+        return res.status(200).json(logs);
       } catch (e) {
         console.error('An error has occurred in index.ts', e);
         res.status(500).json({
@@ -44,7 +44,7 @@ export default async function handler(
           { status: 'rejected' }
         );
 
-        res.status(200).json({
+        return res.status(200).json({
           message: 'The hours have been rejected!',
           status: 'success',
         });
