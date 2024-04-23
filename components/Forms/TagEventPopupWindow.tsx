@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PopupWindow from '@/components/PopupWindow';
 import Image from 'next/image';
 import { ExclamationCircleFilled } from '@ant-design/icons';
@@ -36,38 +36,55 @@ const TagEventPopupWindow = ({
 }: {
   setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const {
-    data: allTags,
-    isLoading,
-    error,
-    mutate, // Used to refetch the data
-  } = useSWR<QueriedTagData[]>('/api/tags/', fetcher, {
-    onSuccess: data => {
-      setFilteredTags(data);
-    },
-  });
+  // const {
+  //   data: allTags,
+  //   isLoading,
+  //   error,
+  //   mutate, // Used to refetch the data
+  // } = useSWR<QueriedTagData[]>('/api/tags/', fetcher, {
+  //   onSuccess: data => {
+  //     setFilteredTags(data);
+  //   },
+  // });
+
+  // ANTD message
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const fetchTags = useCallback(() => {
+    fetch('/api/tags/')
+      .then(res => res.json())
+      .then(data => {
+        setAllTags(data);
+        setFilteredTags(data);
+      })
+      .catch(err => {
+        console.error(err);
+        messageApi.open({
+          type: 'error',
+          content: 'Failed to load tags',
+        });
+      });
+  }, [messageApi]);
 
   useEffect(() => {
-    mutate();
-  }, [allTags, mutate]);
+    fetchTags();
+  }, [fetchTags]);
 
   const [showInfo, setShowInfo] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredTags, setFilteredTags] = useState<QueriedTagData[]>([]);
+  const [allTags, setAllTags] = useState<QueriedTagData[]>([]);
   //for edit tag
   const [editingTag, setEditingTag] = useState<QueriedTagData | undefined>(
     undefined
   );
   const [newTagName, setNewTagName] = useState('');
 
-  // ANTD message
-  const [messageApi, contextHolder] = message.useMessage();
-
   // ANTD Modal
   const { confirm } = Modal;
 
-  if (!allTags || error) return <div>Failed to load event table</div>;
-  if (isLoading) return <div>Loading...</div>;
+  if (!allTags) return <div>Failed to load event table</div>;
+  // if (isLoading) return <div>Loading...</div>;
 
   const showDeleteConfirm = (tagName: string, tagId: ObjectId) => {
     confirm({
@@ -96,7 +113,8 @@ const TagEventPopupWindow = ({
         type: 'success',
         content: resObj.message,
       });
-      mutate();
+      // mutate();
+      fetchTags();
     } else {
       messageApi.open({
         type: 'error',
@@ -130,7 +148,8 @@ const TagEventPopupWindow = ({
             type: 'success',
             content: resObj.message,
           });
-          mutate();
+          fetchTags();
+          setSearchQuery('');
         } else {
           messageApi.open({
             type: 'error',
@@ -162,7 +181,7 @@ const TagEventPopupWindow = ({
         type: 'success',
         content: resObj.message,
       });
-      mutate();
+      fetchTags();
     } else {
       alert('error editing tag');
     }
