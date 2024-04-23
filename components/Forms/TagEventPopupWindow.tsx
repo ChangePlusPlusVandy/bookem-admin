@@ -36,17 +36,6 @@ const TagEventPopupWindow = ({
 }: {
   setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  // const {
-  //   data: allTags,
-  //   isLoading,
-  //   error,
-  //   mutate, // Used to refetch the data
-  // } = useSWR<QueriedTagData[]>('/api/tags/', fetcher, {
-  //   onSuccess: data => {
-  //     setFilteredTags(data);
-  //   },
-  // });
-
   // ANTD message
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -84,7 +73,6 @@ const TagEventPopupWindow = ({
   const { confirm } = Modal;
 
   if (!allTags) return <div>Failed to load event table</div>;
-  // if (isLoading) return <div>Loading...</div>;
 
   const showDeleteConfirm = (tagName: string, tagId: ObjectId) => {
     confirm({
@@ -113,7 +101,6 @@ const TagEventPopupWindow = ({
         type: 'success',
         content: resObj.message,
       });
-      // mutate();
       fetchTags();
     } else {
       messageApi.open({
