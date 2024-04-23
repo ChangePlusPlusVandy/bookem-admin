@@ -101,7 +101,10 @@ const EventTableImpl = () => {
   };
 
   // check for errors and loading
-  if (error) return <div>Failed to load event table</div>;
+  if (error) {
+    console.log(error);
+    return <div>Failed to load event table</div>;
+  }
   if (isLoading) return <div>Loading...</div>;
 
   // check for errors and loading
