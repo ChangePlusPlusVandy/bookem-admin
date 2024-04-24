@@ -3,6 +3,11 @@ import 'survey-core/defaultV2.min.css';
 import 'survey-creator-core/survey-creator-core.min.css';
 import { useEffect, useState } from 'react';
 import { Serializer } from 'survey-core';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Typography } from 'antd';
+
+const { Title } = Typography;
 
 //remove a property to the page object. You can't set it in JSON as well
 Serializer.removeProperty('panelbase', 'visibleIf');
@@ -62,7 +67,19 @@ export default function SurveyCreatorWidget() {
 
   if (!creator) return <>Loading...</>;
 
-  return <SurveyCreatorComponent creator={creator} />;
+  return (
+    <>
+      <Link
+        href="#"
+        onClick={() => window.history.back()}
+        style={{
+          margin: '0 0 0 20px',
+        }}>
+        <Image src="/event/arrow-left.svg" alt="" width={48} height={48} />
+      </Link>
+      <SurveyCreatorComponent creator={creator} />
+    </>
+  );
 }
 
 export { getServerSideProps } from '@/lib/getServerSideProps';
