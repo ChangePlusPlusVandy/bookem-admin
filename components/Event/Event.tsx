@@ -121,13 +121,15 @@ const Event = ({ pid }: { pid: string }) => {
               <Button
                 size="large"
                 style={{ marginLeft: '10px' }}
-                onClick={() => router.push('/volunteers/event/' + pid)}>
+                onClick={() =>
+                  router.push(router.basePath + pid + '/application')
+                }>
                 Add/Edit application
               </Button>
               <Button
                 size="large"
                 style={{ marginLeft: '10px' }}
-                onClick={() => router.push('/volunteers/event/' + pid)}>
+                onClick={() => {}}>
                 Publish
               </Button>
             </ConfigProvider>
