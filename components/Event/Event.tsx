@@ -21,6 +21,8 @@ import {
 } from '@/styles/components/Event/event.styles';
 import EventPopupWindowForm from '../Forms/EventPopupWindowForm';
 import { useRouter } from 'next/router';
+import { Button, ConfigProvider } from 'antd';
+import { BOOKEM_THEME } from '@/utils/constants';
 
 /**
  * Event Detail
@@ -95,18 +97,41 @@ const Event = ({ pid }: { pid: string }) => {
         <TextContainer>
           <EventName> {event.name}</EventName>
           <SpotsFilled>
-            {' '}
             {event.volunteers.length} / {event.maxSpot} spots filled
           </SpotsFilled>
           <ButtonContainer>
-            <EditButton onClick={() => setShowPopup(prev => !prev)}>
-              Edit
-            </EditButton>
-            <SeeSignUpButton
-              onClick={() => router.push('/volunteers/event/' + pid)}>
-              See sign-Ups
-            </SeeSignUpButton>
-            <Image src="/event/bookmarks.png" alt="" width={50} height={50} />
+            <ConfigProvider
+              theme={{
+                components: {
+                  Button: {
+                    defaultHoverColor: BOOKEM_THEME.colors.BOOKEM_BLACK,
+                    defaultHoverBorderColor: BOOKEM_THEME.colors.BOOKEM_BLACK,
+                  },
+                },
+              }}>
+              <Button size="large" onClick={() => setShowPopup(prev => !prev)}>
+                Edit event
+              </Button>
+              <Button
+                size="large"
+                style={{ marginLeft: '10px' }}
+                onClick={() => router.push('/volunteers/event/' + pid)}>
+                See sign-Ups
+              </Button>
+              <Button
+                size="large"
+                style={{ marginLeft: '10px' }}
+                onClick={() => router.push('/volunteers/event/' + pid)}>
+                Add/Edit application
+              </Button>
+              <Button
+                size="large"
+                style={{ marginLeft: '10px' }}
+                onClick={() => router.push('/volunteers/event/' + pid)}>
+                Publish
+              </Button>
+            </ConfigProvider>
+            {/* <Image src="/event/bookmarks.png" alt="" width={50} height={50} /> */}
           </ButtonContainer>
         </TextContainer>
       </MiddleBox>
