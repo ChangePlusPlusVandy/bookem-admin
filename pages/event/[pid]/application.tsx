@@ -13,6 +13,7 @@ import {
 } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
 import mongoose from 'mongoose';
+import { message } from 'antd';
 
 //remove a property to the page object. You can't set it in JSON as well
 Serializer.removeProperty('panelbase', 'visibleIf');
@@ -49,6 +50,8 @@ export default function SurveyCreatorWidget() {
   const router = useRouter();
   const { pid } = router.query;
   const [event, setEvent] = useState<QueriedVolunteerEventDTO>();
+
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     fetch('/api/event/' + pid)
@@ -102,7 +105,19 @@ export default function SurveyCreatorWidget() {
         body: JSON.stringify(newApplication),
       })
         .then(res => res.json())
-        .then(data => console.log(data));
+        .then(data => {
+          if (data.status === 'error') {
+            messageApi.open({
+              content: data.message,
+              type: 'error',
+            });
+          } else {
+            messageApi.open({
+              content: data.message,
+              type: 'success',
+            });
+          }
+        });
 
       callback(saveNo, true);
     };
@@ -122,6 +137,7 @@ export default function SurveyCreatorWidget() {
 
   return (
     <>
+      {contextHolder}
       <Link
         href="#"
         onClick={() => window.history.back()}

@@ -58,6 +58,8 @@ export default async function handler(
         await dbConnect();
 
         const newApplication = new VolunteerApplications(req.body);
+
+        // check if event exists
         const event = await VolunteerEvents.findById(newApplication.event);
         if (!event) {
           return res
@@ -65,11 +67,10 @@ export default async function handler(
             .json({ message: 'Event not found', status: 'error' });
         }
 
+        // check if application exists
         const existingApplication = await VolunteerApplications.findOne({
           event: newApplication.event,
         });
-
-        console.log(existingApplication);
 
         if (existingApplication) {
           existingApplication.questions = newApplication.questions;
@@ -90,10 +91,10 @@ export default async function handler(
 
         return res
           .status(200)
-          .json({ message: 'Application created', status: 'success' });
+          .json({ message: 'Application saved', status: 'success' });
       } catch (error: any) {
         console.error(error);
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: 'Sorry an internal error occurred' });
       }
       break;
 
