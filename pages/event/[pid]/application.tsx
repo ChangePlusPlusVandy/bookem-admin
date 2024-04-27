@@ -114,7 +114,7 @@ export default function SurveyCreatorWidget() {
     });
 
     setCreator(creator);
-  }, []);
+  }, [event?.name, pid]);
 
   const [creator, setCreator] = useState<SurveyCreator | null>(null);
 
