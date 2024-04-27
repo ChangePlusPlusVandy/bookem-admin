@@ -83,23 +83,3 @@ export default function SurveyCreatorWidget() {
 }
 
 export { getServerSideProps } from '@/lib/getServerSideProps';
-
-// function saveSurveyJson(url, json, saveNo, callback) {
-//   fetch(url, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json;charset=UTF-8'
-//     },
-//     body: JSON.stringify(json)
-//   })
-//   .then(response => {
-//     if (response.ok) {
-//       callback(saveNo, true);
-//     } else {
-//       callback(saveNo, false);
-//     }
-//   })
-//   .catch(error => {
-//     callback(saveNo, false);
-//   });
-// }
