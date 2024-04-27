@@ -6,6 +6,8 @@ import React, { useEffect, useState } from 'react';
 import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
 import useSWR from 'swr';
 import { fetcher } from '@/utils/utils';
+import Link from 'next/link';
+import Image from 'next/image';
 
 const UsersInEvent = () => {
   const router = useRouter();
@@ -32,10 +34,28 @@ const UsersInEvent = () => {
   if (error) return <div>Failed to load event table</div>;
   if (isLoading) return <div>Loading...</div>;
   return (
-    <PageLayout>
-      <PageTitle>Volunteers in {eventName} </PageTitle>
-      <VolunteerTable eventId={pid as string} />
-    </PageLayout>
+    <>
+      {/* Arrow */}
+      <Link
+        href="#"
+        onClick={() => window.history.back()}
+        style={{
+          margin: '0 0 0 50px',
+        }}>
+        <Image
+          style={{ margin: '20px 0 0 0' }}
+          src="/event/arrow-left.svg"
+          alt=""
+          width={48}
+          height={48}
+        />
+      </Link>
+
+      <PageLayout>
+        <PageTitle>Volunteers in {eventName} </PageTitle>
+        <VolunteerTable eventId={pid as string} />
+      </PageLayout>
+    </>
   );
 };
 
