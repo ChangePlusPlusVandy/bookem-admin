@@ -52,5 +52,27 @@ export default async function handler(
         res.status(500).json({ message: error.message });
       }
       break;
+
+    case 'POST':
+      try {
+        await dbConnect();
+
+        const newApplication = new VolunteerApplications(req.body);
+        const event = await VolunteerEvents.findById(newApplication.event);
+        console.log(event);
+        // const savedApplication = await newApplication.save();
+
+        return res
+          .status(201)
+          .json({ message: 'Application created', status: 'success' });
+      } catch (error: any) {
+        console.error(error);
+        res.status(500).json({ message: error.message });
+      }
+      break;
+
+    default:
+      res.status(405).end('Method Not Allowed');
+      break;
   }
 }

@@ -6,6 +6,7 @@ import { ObjectId } from 'mongodb';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]';
+import VolunteerPrograms from 'bookem-shared/src/models/VolunteerPrograms';
 
 export default async function handler(
   req: NextApiRequest,
@@ -30,6 +31,8 @@ export default async function handler(
     case 'GET':
       try {
         await dbConnect();
+        await VolunteerPrograms.findOne();
+        await Tags.findOne();
 
         if (!id) return res.status(400).json({ message: 'Missing id' });
 
