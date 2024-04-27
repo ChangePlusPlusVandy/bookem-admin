@@ -129,7 +129,7 @@ export default function SurveyCreatorWidget() {
     });
 
     setCreator(creator);
-  }, [event?.name, pid]);
+  }, [event?.name, pid, messageApi]);
 
   const [creator, setCreator] = useState<SurveyCreator | null>(null);
 
