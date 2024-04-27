@@ -59,11 +59,37 @@ export default async function handler(
 
         const newApplication = new VolunteerApplications(req.body);
         const event = await VolunteerEvents.findById(newApplication.event);
-        console.log(event);
-        // const savedApplication = await newApplication.save();
+        if (!event) {
+          return res
+            .status(200)
+            .json({ message: 'Event not found', status: 'error' });
+        }
+
+        const existingApplication = await VolunteerApplications.findOne({
+          event: newApplication.event,
+        });
+
+        console.log(existingApplication);
+
+        if (existingApplication) {
+          existingApplication.questions = newApplication.questions;
+          const savedApplication = await existingApplication.save();
+          if (!savedApplication) {
+            return res
+              .status(200)
+              .json({ message: 'Failed to save application', status: 'error' });
+          }
+        } else {
+          const savedApplication = await newApplication.save();
+          if (!savedApplication) {
+            return res
+              .status(200)
+              .json({ message: 'Failed to save application', status: 'error' });
+          }
+        }
 
         return res
-          .status(201)
+          .status(200)
           .json({ message: 'Application created', status: 'success' });
       } catch (error: any) {
         console.error(error);
