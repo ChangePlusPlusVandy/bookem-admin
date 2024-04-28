@@ -71,7 +71,12 @@ export default function SurveyCreatorWidget() {
         }
         return res.json();
       })
-      .then(data => setEvent(data))
+      .then(data => {
+        setEvent(data);
+      })
+      .then(() => {
+        creator.survey.title = 'Volunteer Application for ' + event?.name;
+      })
       .catch(err => console.error(err));
 
     // Load the application questions
@@ -85,8 +90,9 @@ export default function SurveyCreatorWidget() {
         return res.json();
       })
       .then(data => {
-        console.log(data);
-        console.log(convertApplicationToSurveyQuestions(data));
+        // console.log(data);
+        // console.log(convertApplicationToSurveyQuestions(data));
+
         // Set the survey questions after converting the application questions
         setSurveyQuestions(convertApplicationToSurveyQuestions(data));
       })
@@ -98,7 +104,6 @@ export default function SurveyCreatorWidget() {
 
     creator.toolbox.forceCompact = true;
     creator.showSaveButton = true;
-    creator.survey.title = 'Volunteer Application for ' + event?.name;
     creator.saveSurveyFunc = (saveNo, callback) => {
       const surveyQuestions = JSON.parse(creator.text);
 
@@ -108,8 +113,8 @@ export default function SurveyCreatorWidget() {
         event: new mongoose.Types.ObjectId(pid as string),
         published: false,
       };
-      console.log(surveyQuestions);
-      console.log(newApplication);
+      // console.log(surveyQuestions);
+      // console.log(newApplication);
 
       fetch(`/api/event/${pid}/applications`, {
         method: 'POST',
