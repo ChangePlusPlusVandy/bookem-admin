@@ -14,6 +14,10 @@ import {
 import { useRouter } from 'next/router';
 import mongoose from 'mongoose';
 import { message } from 'antd';
+import {
+  convertApplicationToSurveyQuestions,
+  convertSurveyToApplicationQuestions,
+} from '@/utils/application-utils';
 
 //remove a property to the page object. You can't set it in JSON as well
 Serializer.removeProperty('panelbase', 'visibleIf');
@@ -50,10 +54,14 @@ export default function SurveyCreatorWidget() {
   const router = useRouter();
   const { pid } = router.query;
   const [event, setEvent] = useState<QueriedVolunteerEventDTO>();
+  const [surveyQuestions, setSurveyQuestions] = useState<any>();
 
   const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
+    const creator = new SurveyCreator(creatorOptions);
+
+    // Load the event data
     fetch('/api/event/' + pid)
       .then(res => {
         if (!res.ok) {
@@ -65,37 +73,43 @@ export default function SurveyCreatorWidget() {
       })
       .then(data => setEvent(data))
       .catch(err => console.error(err));
-    const creator = new SurveyCreator(creatorOptions);
-    creator.text =
-      window.localStorage.getItem('survey-json') || JSON.stringify(defaultJson);
+
+    // Load the application questions
+    fetch('/api/event/' + pid + '/application-questions')
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(
+            'An error has occurred while fetching: ' + res.statusText
+          );
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log(data);
+        console.log(convertApplicationToSurveyQuestions(data));
+        // Set the survey questions after converting the application questions
+        setSurveyQuestions(convertApplicationToSurveyQuestions(data));
+      })
+      .then(() => {
+        // Display survey qeustions after state is set
+        creator.text = JSON.stringify(surveyQuestions);
+      })
+      .catch(err => console.error(err));
 
     creator.toolbox.forceCompact = true;
     creator.showSaveButton = true;
     creator.survey.title = 'Volunteer Application for ' + event?.name;
-
     creator.saveSurveyFunc = (saveNo, callback) => {
       const surveyQuestions = JSON.parse(creator.text);
 
-      // TODO Add
-      let applicationQuestions: ApplicationQuestionData[] = [];
-
-      surveyQuestions.pages.forEach(page => {
-        page.elements.forEach(element => {
-          applicationQuestions.push({
-            type: element.type,
-            title: element.title,
-            choices: element.choices?.map((choice: any) => choice.text),
-          });
-        });
-      });
       const newApplication: VolunteerApplicationData = {
-        questions: applicationQuestions,
+        questions: convertSurveyToApplicationQuestions(surveyQuestions),
         responses: [] as ApplicationResponseData[],
         event: new mongoose.Types.ObjectId(pid as string),
         published: false,
       };
-
       console.log(surveyQuestions);
+      console.log(newApplication);
 
       fetch(`/api/event/${pid}/applications`, {
         method: 'POST',
@@ -117,16 +131,23 @@ export default function SurveyCreatorWidget() {
               type: 'success',
             });
           }
+        })
+        .catch(err => {
+          console.error(err);
+          messageApi.open({
+            content: 'Sorry an internal error occurred',
+            type: 'error',
+          });
         });
 
       callback(saveNo, true);
     };
 
-    creator.onShowingProperty.add(function (sender, options) {
-      if (options.obj.getType() == 'survey') {
-        options.canShow = options.property.name == 'title';
-      }
-    });
+    // creator.onShowingProperty.add(function (sender, options) {
+    //   if (options.obj.getType() == 'survey') {
+    //     options.canShow = options.property.name == 'title';
+    //   }
+    // });
 
     setCreator(creator);
   }, [event?.name, pid, messageApi]);

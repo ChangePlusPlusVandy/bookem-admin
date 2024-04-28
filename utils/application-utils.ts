@@ -1,5 +1,10 @@
 import { ApplicationQuestionData } from 'bookem-shared/src/types/database';
 
+/**
+ * Convert survey questions to application questions
+ * @param surveyQuestions - survey questions that fit surveyJS model
+ * @returns application questions that fit our database model
+ */
 export const convertSurveyToApplicationQuestions = (
   surveyQuestions: any
 ): ApplicationQuestionData[] => {
@@ -29,6 +34,11 @@ export const convertSurveyToApplicationQuestions = (
   return applicationQuestions;
 };
 
+/**
+ * Convert application questions to survey questions
+ * @param applicationQuestion - application questions that fit our database model
+ * @returns survey questions that fit surveyJS model
+ */
 export const convertApplicationToSurveyQuestions = applicationQuestion => {
   return {
     pages: [
@@ -39,9 +49,17 @@ export const convertApplicationToSurveyQuestions = applicationQuestion => {
             name: question.title,
             title: question.title,
             type: question.type,
-            choices: question.choices?.map(choice => {
-              return { text: choice };
-            }),
+            choices: question.choices
+              ?.filter(choice => {
+                return !['None', 'Other', 'Select All'].includes(choice);
+              })
+              .map(choice => {
+                return { text: choice };
+              }),
+            isRequired: question.isRequired,
+            showNoneItem: question.choices?.includes('None'),
+            showOtherItem: question.choices?.includes('Other'),
+            showSelectAllItem: question.choices?.includes('Select All'),
           };
         }),
       },
