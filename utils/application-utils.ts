@@ -39,7 +39,9 @@ export const convertSurveyToApplicationQuestions = (
  * @param applicationQuestion - application questions that fit our database model
  * @returns survey questions that fit surveyJS model
  */
-export const convertApplicationToSurveyQuestions = applicationQuestion => {
+export const convertApplicationToSurveyQuestions = (
+  applicationQuestion: ApplicationQuestionData[]
+) => {
   return {
     pages: [
       {
@@ -51,7 +53,9 @@ export const convertApplicationToSurveyQuestions = applicationQuestion => {
             type: question.type,
             choices: question.choices
               ?.filter(choice => {
-                return !['None', 'Other', 'Select All'].includes(choice);
+                return !['None', 'Other', 'Select All'].includes(
+                  choice as string
+                );
               })
               .map(choice => {
                 return { text: choice };
