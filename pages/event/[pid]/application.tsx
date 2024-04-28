@@ -30,26 +30,6 @@ const creatorOptions = {
   questionTypes: ['text', 'checkbox', 'radiogroup'],
 };
 
-const defaultJson = {
-  pages: [
-    {
-      name: 'Name',
-      elements: [
-        {
-          name: 'FirstName',
-          title: 'Enter your first name:',
-          type: 'text',
-        },
-        {
-          name: 'LastName',
-          title: 'Enter your last name:',
-          type: 'text',
-        },
-      ],
-    },
-  ],
-};
-
 export default function SurveyCreatorWidget() {
   const router = useRouter();
   const { pid } = router.query;
@@ -148,11 +128,11 @@ export default function SurveyCreatorWidget() {
       callback(saveNo, true);
     };
 
-    // creator.onShowingProperty.add(function (sender, options) {
-    //   if (options.obj.getType() == 'survey') {
-    //     options.canShow = options.property.name == 'title';
-    //   }
-    // });
+    creator.onShowingProperty.add(function (sender, options) {
+      if (options.obj.getType() == 'survey') {
+        options.canShow = options.property.name == 'title';
+      }
+    });
 
     setCreator(creator);
   }, [event?.name, pid, messageApi]);
