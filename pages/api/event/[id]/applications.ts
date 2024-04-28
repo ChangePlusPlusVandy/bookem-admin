@@ -59,6 +59,8 @@ export default async function handler(
 
         const newApplication = new VolunteerApplications(req.body);
 
+        // console.log(newApplication);
+
         // check if event exists
         const event = await VolunteerEvents.findById(newApplication.event);
         if (!event) {

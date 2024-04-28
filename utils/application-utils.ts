@@ -13,7 +13,7 @@ export const convertSurveyToApplicationQuestions = (
     page.elements.forEach(element => {
       const question = {
         type: element.type,
-        title: element.title,
+        title: element.title ?? element.name,
         choices: [] as string[],
         isRequired: element.isRequired ?? false,
       };

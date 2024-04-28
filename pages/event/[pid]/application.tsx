@@ -57,7 +57,13 @@ export default function SurveyCreatorWidget() {
       .then(() => {
         creator.survey.title = 'Volunteer Application for ' + event?.name;
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error(err);
+        messageApi.open({
+          content: "Failed to load the event's data",
+          type: 'error',
+        });
+      });
 
     // Load the application questions
     fetch('/api/event/' + pid + '/application-questions')
@@ -80,7 +86,13 @@ export default function SurveyCreatorWidget() {
         // Display survey qeustions after state is set
         creator.text = JSON.stringify(surveyQuestions);
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.log(err);
+        messageApi.open({
+          content: "You haven't created an application yet",
+          type: 'info',
+        });
+      });
 
     creator.toolbox.forceCompact = true;
     creator.showSaveButton = true;
@@ -135,6 +147,7 @@ export default function SurveyCreatorWidget() {
     });
 
     setCreator(creator);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [event?.name, pid, messageApi]);
 
   const [creator, setCreator] = useState<SurveyCreator | null>(null);
