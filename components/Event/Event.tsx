@@ -1,5 +1,5 @@
 import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Header from './Header';
 import BookIcon from './BookIcon';
@@ -21,9 +21,12 @@ import {
 } from '@/styles/components/Event/event.styles';
 import EventPopupWindowForm from '../Forms/EventPopupWindowForm';
 import { useRouter } from 'next/router';
-import { Button, ConfigProvider, Modal } from 'antd';
+import { Button, ConfigProvider, Flex, Modal, Tag, message } from 'antd';
 import { BOOKEM_THEME } from '@/utils/constants';
-import { ExclamationCircleFilled } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  ExclamationCircleFilled,
+} from '@ant-design/icons';
 
 const { confirm } = Modal;
 
@@ -38,25 +41,27 @@ const Event = ({ pid }: { pid: string }) => {
   const [event, setEvent] = useState<QueriedVolunteerEventDTO>();
   const [error, setError] = useState<Error>();
   const router = useRouter();
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const fetchEvent = useCallback(() => {
+    fetch('/api/event/' + pid)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(
+            'An error has occurred while fetching: ' + res.statusText
+          );
+        }
+        return res.json();
+      })
+      .then(data => setEvent(data))
+      .catch(err => setError(err));
+  }, [pid]);
 
   useEffect(() => {
-    const fetchEvent = () => {
-      fetch('/api/event/' + pid)
-        .then(res => {
-          if (!res.ok) {
-            throw new Error(
-              'An error has occurred while fetching: ' + res.statusText
-            );
-          }
-          return res.json();
-        })
-        .then(data => setEvent(data))
-        .catch(err => setError(err));
-    };
     if (!showPopup) {
       fetchEvent();
     }
-  }, [pid, showPopup]);
+  }, [showPopup, fetchEvent]);
 
   const showDeleteConfirm = () => {
     confirm({
@@ -79,9 +84,16 @@ const Event = ({ pid }: { pid: string }) => {
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success') {
-          console.log('Event published');
+          messageApi.open({
+            content: data.message,
+            type: 'success',
+          });
+          fetchEvent();
         } else {
-          console.error('Error publishing event');
+          messageApi.open({
+            content: data.message,
+            type: 'error',
+          });
         }
       })
       .catch(err => console.error(err));
@@ -92,6 +104,7 @@ const Event = ({ pid }: { pid: string }) => {
 
   return (
     <EventBox>
+      {contextHolder}
       <CopyButton
         onClick={() => {
           navigator.clipboard.writeText(
@@ -131,6 +144,13 @@ const Event = ({ pid }: { pid: string }) => {
           <SpotsFilled>
             {event.volunteers.length} / {event.maxSpot} spots filled
           </SpotsFilled>
+          <Flex style={{ margin: '0 0 10px 50px' }} gap="4px 0" wrap="wrap">
+            {event.published && (
+              <Tag icon={<CheckCircleOutlined />} color="success">
+                published
+              </Tag>
+            )}
+          </Flex>
           <ButtonContainer>
             <ConfigProvider
               theme={{
@@ -150,14 +170,24 @@ const Event = ({ pid }: { pid: string }) => {
                 onClick={() => router.push('/volunteers/event/' + pid)}>
                 See sign-Ups
               </Button>
-              <Button
-                size="large"
-                style={{ marginLeft: '10px' }}
-                onClick={() =>
-                  router.push(router.basePath + pid + '/application')
-                }>
-                Add/Edit application
-              </Button>
+              {event.published ? (
+                <Button
+                  size="large"
+                  style={{ marginLeft: '10px' }}
+                  onClick={() => {}}>
+                  See Applications
+                </Button>
+              ) : (
+                <Button
+                  size="large"
+                  style={{ marginLeft: '10px' }}
+                  onClick={() =>
+                    router.push(router.basePath + pid + '/application')
+                  }>
+                  Add/Edit application
+                </Button>
+              )}
+
               <Button
                 size="large"
                 style={{ marginLeft: '10px' }}
