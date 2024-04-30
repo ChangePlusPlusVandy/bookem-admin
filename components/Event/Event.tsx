@@ -21,8 +21,11 @@ import {
 } from '@/styles/components/Event/event.styles';
 import EventPopupWindowForm from '../Forms/EventPopupWindowForm';
 import { useRouter } from 'next/router';
-import { Button, ConfigProvider } from 'antd';
+import { Button, ConfigProvider, Modal } from 'antd';
 import { BOOKEM_THEME } from '@/utils/constants';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+
+const { confirm } = Modal;
 
 /**
  * Event Detail
@@ -54,6 +57,35 @@ const Event = ({ pid }: { pid: string }) => {
       fetchEvent();
     }
   }, [pid, showPopup]);
+
+  const showDeleteConfirm = () => {
+    confirm({
+      title: 'Are you sure about publishing this event?',
+      icon: <ExclamationCircleFilled />,
+      content:
+        "After the event is published, you will no longer be able to modify the application questions, but you can still edit the event details using 'Edit Event' button",
+      okText: 'Yes',
+      cancelText: 'No',
+      onOk() {
+        publishEvent();
+      },
+    });
+  };
+
+  const publishEvent = () => {
+    fetch('/api/event/' + pid + '/publish', {
+      method: 'PUT',
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          console.log('Event published');
+        } else {
+          console.error('Error publishing event');
+        }
+      })
+      .catch(err => console.error(err));
+  };
 
   if (error) return <div>Event not found!</div>;
   if (!event) return <div>Loading...</div>;
@@ -129,7 +161,7 @@ const Event = ({ pid }: { pid: string }) => {
               <Button
                 size="large"
                 style={{ marginLeft: '10px' }}
-                onClick={() => {}}>
+                onClick={showDeleteConfirm}>
                 Publish
               </Button>
             </ConfigProvider>
