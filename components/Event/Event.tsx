@@ -202,7 +202,12 @@ const Event = ({ pid }: { pid: string }) => {
 
       {/* edit button */}
       {showPopup && (
-        <EventPopupWindowForm event={event} setShowPopup={setShowPopup} />
+        <EventPopupWindowForm
+          event={event}
+          setShowPopup={setShowPopup}
+          mutate={fetchEvent}
+          messageApi={messageApi}
+        />
       )}
 
       {/* Time and Place of the event */}
