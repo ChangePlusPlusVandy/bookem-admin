@@ -143,6 +143,7 @@ const EventPopupWindowForm = ({
       email: data.email,
       startDate: data.dateRange[0].format(),
       endDate: data.dateRange[1].format(),
+      published: false,
     };
     console.log(modifiedData);
 
