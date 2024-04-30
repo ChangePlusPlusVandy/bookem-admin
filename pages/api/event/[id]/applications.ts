@@ -53,6 +53,12 @@ export default async function handler(
       }
       break;
 
+    /**
+     * @route POST /api/event/applications
+     * @desc Create a new application or update an existing application
+     * @req event id, questions
+     * @res success or error message
+     */
     case 'POST':
       try {
         await dbConnect();
@@ -90,12 +96,10 @@ export default async function handler(
             if (!savedApplication) {
               await session.abortTransaction();
               session.endSession();
-              return res
-                .status(200)
-                .json({
-                  message: 'Failed to save application',
-                  status: 'error',
-                });
+              return res.status(200).json({
+                message: 'Failed to save application',
+                status: 'error',
+              });
             }
 
             event.applicationId = savedApplication._id;
