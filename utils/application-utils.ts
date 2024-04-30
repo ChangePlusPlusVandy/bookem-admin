@@ -22,9 +22,7 @@ export const convertSurveyToApplicationQuestions = (
         question.choices = element.choices.map(choice => choice.text ?? choice);
 
         if (element.showNoneItem) question.choices.push('None');
-
         if (element.showOtherItem) question.choices.push('Other');
-
         if (element.showSelectAllItem) question.choices.push('Select All');
       }
 
