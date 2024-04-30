@@ -81,6 +81,7 @@ export default async function handler(
         });
 
         if (existingApplication) {
+          // update existing application
           existingApplication.questions = newApplication.questions;
           const savedApplication = await existingApplication.save();
           if (!savedApplication) {
@@ -89,6 +90,7 @@ export default async function handler(
               .json({ message: 'Failed to save application', status: 'error' });
           }
         } else {
+          // create new application
           const session = await VolunteerApplications.startSession();
           session.startTransaction();
           try {
