@@ -77,7 +77,10 @@ const VolunteerTableImpl = () => {
   }, [mutate, data]);
 
   // check for errors and loading
-  if (error) return <div>Failed to load event table</div>;
+  if (error) {
+    console.error(error);
+    return <div>Failed to load volunteer table</div>;
+  }
   if (isLoading) return <div>Loading...</div>;
 
   return (

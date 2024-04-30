@@ -52,5 +52,88 @@ export default async function handler(
         res.status(500).json({ message: error.message });
       }
       break;
+
+    /**
+     * @route POST /api/event/applications
+     * @desc Create a new application or update an existing application
+     * @req event id, questions
+     * @res success or error message
+     */
+    case 'POST':
+      try {
+        await dbConnect();
+
+        const newApplication = new VolunteerApplications(req.body);
+
+        // console.log(newApplication);
+
+        // check if event exists
+        const event = await VolunteerEvents.findById(newApplication.event);
+        if (!event) {
+          return res
+            .status(200)
+            .json({ message: 'Event not found', status: 'error' });
+        }
+
+        // check if application exists
+        const existingApplication = await VolunteerApplications.findOne({
+          event: newApplication.event,
+        });
+
+        if (existingApplication) {
+          // update existing application
+          existingApplication.questions = newApplication.questions;
+          const savedApplication = await existingApplication.save();
+          if (!savedApplication) {
+            return res
+              .status(200)
+              .json({ message: 'Failed to save application', status: 'error' });
+          }
+        } else {
+          // create new application
+          const session = await VolunteerApplications.startSession();
+          session.startTransaction();
+          try {
+            const savedApplication = await newApplication.save();
+            if (!savedApplication) {
+              await session.abortTransaction();
+              session.endSession();
+              return res.status(200).json({
+                message: 'Failed to save application',
+                status: 'error',
+              });
+            }
+
+            event.applicationId = savedApplication._id;
+            await event.save();
+
+            await session.commitTransaction();
+            session.endSession();
+
+            return res
+              .status(200)
+              .json({ message: 'Application saved', status: 'success' });
+          } catch (error: any) {
+            await session.abortTransaction();
+            session.endSession();
+            console.error(error);
+            res
+              .status(500)
+              .json({ message: 'Sorry an internal error occurred' });
+          }
+        }
+
+        return res
+          .status(200)
+          .json({ message: 'Application saved', status: 'success' });
+      } catch (error: any) {
+        console.error(error);
+        res.status(500).json({ message: 'Sorry an internal error occurred' });
+      }
+      break;
+
+    default:
+      res.status(405).end('Method Not Allowed');
+      break;
   }
 }

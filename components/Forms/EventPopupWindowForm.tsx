@@ -30,10 +30,14 @@ interface ModifiedVolunteerEventData
 
 const EventPopupWindowForm = ({
   setShowPopup,
+  mutate,
   event,
+  messageApi,
 }: {
   setShowPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  mutate: () => void;
   event?: QueriedVolunteerEventDTO;
+  messageApi: any;
 }) => {
   const router = useRouter();
   const { pid } = router.query;
@@ -95,10 +99,23 @@ const EventPopupWindowForm = ({
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
-    }).then(() => {
-      setLoading(false);
-      setShowPopup(false);
-    });
+    })
+      .then(() => {
+        setLoading(false);
+        setShowPopup(false);
+        mutate();
+        messageApi.open({
+          type: 'success',
+          content: 'Event has been updated',
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        messageApi.open({
+          type: 'error',
+          content: 'Failed to update event',
+        });
+      });
   };
 
   const handleCreateEvent = (data: ModifiedVolunteerEventData) => {
@@ -108,10 +125,23 @@ const EventPopupWindowForm = ({
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
-    }).then(() => {
-      setLoading(false);
-      setShowPopup(false);
-    });
+    })
+      .then(() => {
+        setLoading(false);
+        setShowPopup(false);
+        mutate();
+        messageApi.open({
+          type: 'success',
+          content: 'Event has been created',
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        messageApi.open({
+          type: 'error',
+          content: 'Failed to create event',
+        });
+      });
   };
 
   const onSubmit = (data: any) => {
@@ -143,6 +173,7 @@ const EventPopupWindowForm = ({
       email: data.email,
       startDate: data.dateRange[0].format(),
       endDate: data.dateRange[1].format(),
+      published: false,
     };
     console.log(modifiedData);
 

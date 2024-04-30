@@ -22,8 +22,6 @@ const TableHeader = ({
   showPopup,
   setShowPopupTag,
   showPopupTag,
-  setShowAddPopup,
-  showAddPopup,
   mutate,
 }: {
   setShowPopup: (a: boolean) => void;

@@ -238,7 +238,13 @@ const EventTableImpl = () => {
 
   return (
     <>
-      {showPopup && <EventPopupWindowForm setShowPopup={setShowPopup} />}
+      {showPopup && (
+        <EventPopupWindowForm
+          setShowPopup={setShowPopup}
+          mutate={mutate}
+          messageApi={messageApi}
+        />
+      )}
       {showPopupTag && <TagEventPopupWindow setShowPopup={setShowPopupTag} />}
       {showPopupAdd && <AddEventPopupWindow setShowPopup={setShowPopupAdd} />}
 
@@ -247,8 +253,6 @@ const EventTableImpl = () => {
         showPopup={showPopup}
         setShowPopupTag={setShowPopupTag}
         showPopupTag={showPopup}
-        setShowAddPopup={setShowPopupAdd}
-        showAddPopup={showPopupAdd}
         mutate={mutate}
       />
 

@@ -54,7 +54,7 @@ export const BottomBox = styled.div`
 export const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
-  margin-left: 10px;
+  margin-left: 50px;
 `;
 
 /**
