@@ -103,7 +103,6 @@ export default function SurveyCreatorWidget() {
         questions: convertSurveyToApplicationQuestions(surveyQuestions),
         responses: [] as ApplicationResponseData[],
         event: new mongoose.Types.ObjectId(pid as string),
-        published: false,
       };
       // console.log(surveyQuestions);
       // console.log(newApplication);
