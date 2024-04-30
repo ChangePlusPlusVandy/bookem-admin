@@ -83,11 +83,37 @@ export default async function handler(
               .json({ message: 'Failed to save application', status: 'error' });
           }
         } else {
-          const savedApplication = await newApplication.save();
-          if (!savedApplication) {
+          const session = await VolunteerApplications.startSession();
+          session.startTransaction();
+          try {
+            const savedApplication = await newApplication.save();
+            if (!savedApplication) {
+              await session.abortTransaction();
+              session.endSession();
+              return res
+                .status(200)
+                .json({
+                  message: 'Failed to save application',
+                  status: 'error',
+                });
+            }
+
+            event.applicationId = savedApplication._id;
+            await event.save();
+
+            await session.commitTransaction();
+            session.endSession();
+
             return res
               .status(200)
-              .json({ message: 'Failed to save application', status: 'error' });
+              .json({ message: 'Application saved', status: 'success' });
+          } catch (error: any) {
+            await session.abortTransaction();
+            session.endSession();
+            console.error(error);
+            res
+              .status(500)
+              .json({ message: 'Sorry an internal error occurred' });
           }
         }
 
