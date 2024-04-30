@@ -36,8 +36,6 @@ export default async function handler(
             .json({ message: 'Event not found', status: 'error' });
         }
 
-        console.log(event);
-
         return res
           .status(200)
           .json({ message: 'Event published', status: 'success' });
