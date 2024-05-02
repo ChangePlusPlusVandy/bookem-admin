@@ -53,10 +53,8 @@ export default function SurveyCreatorWidget() {
       })
       .then(data => {
         console.log(data);
+        creator.survey.title = 'Volunteer Application for ' + data.name;
         setEvent(data);
-      })
-      .then(() => {
-        creator.survey.title = 'Volunteer Application for ' + event?.name;
       })
       .catch(err => {
         console.error(err);
@@ -81,13 +79,12 @@ export default function SurveyCreatorWidget() {
       .then(data => {
         console.log(data);
         // console.log(convertApplicationToSurveyQuestions(data));
-
-        // Set the survey questions after converting the application questions
-        setSurveyQuestions(convertApplicationToSurveyQuestions(data));
-      })
-      .then(() => {
         // Display survey qeustions after state is set
-        creator.text = JSON.stringify(surveyQuestions);
+        const fetchedSurveyQuestions =
+          convertApplicationToSurveyQuestions(data);
+        creator.text = JSON.stringify(fetchedSurveyQuestions);
+        // Set the survey questions after converting the application questions
+        setSurveyQuestions(fetchedSurveyQuestions);
       })
       .catch(err => {
         console.log(err);
