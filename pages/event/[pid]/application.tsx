@@ -149,7 +149,7 @@ export default function SurveyCreatorWidget() {
     });
 
     Promise.all([fetchEventPromise, fetchQuestionPromise]).then(() => {
-      console.log('Setting creator');
+      console.log('Setting creator:', creator.text);
       setCreator(creator);
     });
     // setCreator(creator);
