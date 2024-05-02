@@ -42,7 +42,7 @@ export default function SurveyCreatorWidget() {
     const creator = new SurveyCreator(creatorOptions);
 
     // Load the event data
-    fetch('/api/event/' + pid)
+    const fetchEventPromise = fetch('/api/event/' + pid)
       .then(res => {
         if (!res.ok) {
           throw new Error(
@@ -66,7 +66,9 @@ export default function SurveyCreatorWidget() {
       });
 
     // Load the application questions
-    fetch('/api/event/' + pid + '/application-questions')
+    const fetchQuestionPromise = fetch(
+      '/api/event/' + pid + '/application-questions'
+    )
       .then(res => {
         if (!res.ok) {
           throw new Error(
@@ -145,7 +147,10 @@ export default function SurveyCreatorWidget() {
       }
     });
 
-    setCreator(creator);
+    Promise.all([fetchEventPromise, fetchQuestionPromise]).then(() =>
+      setCreator(creator)
+    );
+    // setCreator(creator);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [event?.name, pid, messageApi]);
 
