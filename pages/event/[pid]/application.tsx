@@ -52,6 +52,7 @@ export default function SurveyCreatorWidget() {
         return res.json();
       })
       .then(data => {
+        console.log(data);
         setEvent(data);
       })
       .then(() => {
@@ -78,7 +79,7 @@ export default function SurveyCreatorWidget() {
         return res.json();
       })
       .then(data => {
-        // console.log(data);
+        console.log(data);
         // console.log(convertApplicationToSurveyQuestions(data));
 
         // Set the survey questions after converting the application questions
@@ -147,9 +148,10 @@ export default function SurveyCreatorWidget() {
       }
     });
 
-    Promise.all([fetchEventPromise, fetchQuestionPromise]).then(() =>
-      setCreator(creator)
-    );
+    Promise.all([fetchEventPromise, fetchQuestionPromise]).then(() => {
+      console.log('Setting creator');
+      setCreator(creator);
+    });
     // setCreator(creator);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [event?.name, pid, messageApi]);
