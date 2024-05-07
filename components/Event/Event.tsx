@@ -174,7 +174,9 @@ const Event = ({ pid }: { pid: string }) => {
                 <Button
                   size="large"
                   style={{ marginLeft: '10px' }}
-                  onClick={() => {}}>
+                  onClick={() =>
+                    router.push(router.basePath + pid + '/responses')
+                  }>
                   See Applications
                 </Button>
               ) : (
