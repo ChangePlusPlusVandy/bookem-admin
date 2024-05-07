@@ -34,7 +34,6 @@ export default function SurveyCreatorWidget() {
   const router = useRouter();
   const { pid } = router.query;
   const [event, setEvent] = useState<QueriedVolunteerEventDTO>();
-  const [surveyQuestions, setSurveyQuestions] = useState<any>();
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -52,7 +51,7 @@ export default function SurveyCreatorWidget() {
         return res.json();
       })
       .then(data => {
-        console.log(data);
+        // console.log(data);
         creator.survey.title = 'Volunteer Application for ' + data.name;
         setEvent(data);
       })
@@ -77,14 +76,12 @@ export default function SurveyCreatorWidget() {
         return res.json();
       })
       .then(data => {
-        console.log(data);
+        // console.log(data);
         // console.log(convertApplicationToSurveyQuestions(data));
         // Display survey qeustions after state is set
         const fetchedSurveyQuestions =
           convertApplicationToSurveyQuestions(data);
         creator.text = JSON.stringify(fetchedSurveyQuestions);
-        // Set the survey questions after converting the application questions
-        setSurveyQuestions(fetchedSurveyQuestions);
       })
       .catch(err => {
         console.log(err);
@@ -146,7 +143,7 @@ export default function SurveyCreatorWidget() {
     });
 
     Promise.all([fetchEventPromise, fetchQuestionPromise]).then(() => {
-      console.log('Setting creator:', creator.text);
+      // console.log('Setting creator:', creator.text);
       setCreator(creator);
     });
     // setCreator(creator);
