@@ -33,7 +33,6 @@ const creatorOptions = {
 export default function SurveyCreatorWidget() {
   const router = useRouter();
   const { pid } = router.query;
-  const [event, setEvent] = useState<QueriedVolunteerEventDTO>();
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -53,7 +52,6 @@ export default function SurveyCreatorWidget() {
       .then(data => {
         // console.log(data);
         creator.survey.title = 'Volunteer Application for ' + data.name;
-        setEvent(data);
       })
       .catch(err => {
         console.error(err);
@@ -148,7 +146,7 @@ export default function SurveyCreatorWidget() {
     });
     // setCreator(creator);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [event?.name, pid, messageApi]);
+  }, [pid, messageApi]);
 
   const [creator, setCreator] = useState<SurveyCreator | null>(null);
 
