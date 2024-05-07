@@ -10,6 +10,7 @@ import { TableContainer } from '@/styles/table.styles';
 import { ColumnsType, Key } from 'antd/es/table/interface';
 import { VolunteerLogTableContext } from './ApplicationTable';
 import { LOCALE_DATE_FORMAT } from '@/utils/constants';
+import TableHeader from './TableHeader';
 
 const ApplicationTableImpl = () => {
   const {
@@ -113,6 +114,11 @@ const ApplicationTableImpl = () => {
   return (
     <>
       <TableContainer>
+        <TableHeader
+          handleSelectStatus={handleSelectStatus}
+          mutate={mutate}
+          status={status}
+        />
         <div id="table-container">
           <Table
             dataSource={dataForTable}
