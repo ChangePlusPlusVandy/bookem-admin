@@ -34,7 +34,6 @@ export default function SurveyCreatorWidget() {
   const router = useRouter();
   const { pid } = router.query;
   const [event, setEvent] = useState<QueriedVolunteerEventDTO>();
-  const [surveyQuestions, setSurveyQuestions] = useState<any>();
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -42,7 +41,7 @@ export default function SurveyCreatorWidget() {
     const creator = new SurveyCreator(creatorOptions);
 
     // Load the event data
-    fetch('/api/event/' + pid)
+    const fetchEventPromise = fetch('/api/event/' + pid)
       .then(res => {
         if (!res.ok) {
           throw new Error(
@@ -52,10 +51,9 @@ export default function SurveyCreatorWidget() {
         return res.json();
       })
       .then(data => {
+        // console.log(data);
+        creator.survey.title = 'Volunteer Application for ' + data.name;
         setEvent(data);
-      })
-      .then(() => {
-        creator.survey.title = 'Volunteer Application for ' + event?.name;
       })
       .catch(err => {
         console.error(err);
@@ -66,7 +64,9 @@ export default function SurveyCreatorWidget() {
       });
 
     // Load the application questions
-    fetch('/api/event/' + pid + '/application-questions')
+    const fetchQuestionPromise = fetch(
+      '/api/event/' + pid + '/application-questions'
+    )
       .then(res => {
         if (!res.ok) {
           throw new Error(
@@ -78,13 +78,10 @@ export default function SurveyCreatorWidget() {
       .then(data => {
         // console.log(data);
         // console.log(convertApplicationToSurveyQuestions(data));
-
-        // Set the survey questions after converting the application questions
-        setSurveyQuestions(convertApplicationToSurveyQuestions(data));
-      })
-      .then(() => {
         // Display survey qeustions after state is set
-        creator.text = JSON.stringify(surveyQuestions);
+        const fetchedSurveyQuestions =
+          convertApplicationToSurveyQuestions(data);
+        creator.text = JSON.stringify(fetchedSurveyQuestions);
       })
       .catch(err => {
         console.log(err);
@@ -145,7 +142,11 @@ export default function SurveyCreatorWidget() {
       }
     });
 
-    setCreator(creator);
+    Promise.all([fetchEventPromise, fetchQuestionPromise]).then(() => {
+      // console.log('Setting creator:', creator.text);
+      setCreator(creator);
+    });
+    // setCreator(creator);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [event?.name, pid, messageApi]);
 
