@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import ApplicationTable from '@/components/Table/ApplicationTable/ApplicationTable';
 
 export default function responses() {
   return (
@@ -12,7 +13,7 @@ export default function responses() {
         }}>
         <Image src="/event/arrow-left.svg" alt="" width={48} height={48} />
       </Link>
-      responses
+      <ApplicationTable />
     </>
   );
 }
