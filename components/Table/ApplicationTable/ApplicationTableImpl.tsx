@@ -1,5 +1,5 @@
 import { VolunteerLogRowData } from '@/utils/table-types';
-import { fetcher } from '@/utils/utils';
+import { calculateTotalCharacters, fetcher } from '@/utils/utils';
 import {
   QueriedVolunteerApplicationData,
   QueriedVolunteerLogDTO,
@@ -26,32 +26,55 @@ const ApplicationTableImpl = () => {
   } = useContext(ApplicationTableContext);
 
   const [status, setStatus] = useState<string>('pending');
-  const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerLogDTO[]>(
-    '/api/volunteer-logs/' + status,
-    fetcher,
-    {
-      onSuccess: data => {
-        setDataForTable(convertVolunteerLogDataToRowData(data));
-      },
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
-    }
-  );
+  const [tableWidth, setTableWidth] = useState<number>(0);
+  const { data, error, isLoading, mutate } =
+    useSWR<QueriedVolunteerApplicationData>(
+      '/api/event/' +
+        event._id +
+        '/applications?' +
+        new URLSearchParams({ status }),
+      fetcher,
+      {
+        onSuccess: data => {
+          // setDataForTable(convertVolunteerLogDataToRowData(data));
+          // console.log(data);
+
+          const newColumns: any[] = [];
+          data.questions.forEach(question => {
+            newColumns.push({
+              title: question.title,
+              dataIndex: question,
+              key: question._id,
+              ...getColumnSearchProps(question.title),
+              ellipsis: false,
+            });
+          });
+
+          const finalColumns = [...defaultColumns, ...newColumns];
+          setTableWidth(
+            calculateTotalCharacters(finalColumns.map(c => c.title)) * 15
+          );
+          setColumns(finalColumns);
+        },
+        revalidateOnFocus: true,
+        revalidateOnReconnect: true,
+      }
+    );
 
   const handleSelectStatus = (value: string) => {
-    fetch('/api/volunteer-logs/' + value)
-      .then(data => data.json())
-      .then(data => setDataForTable(convertVolunteerLogDataToRowData(data)))
-      .then(() => setStatus(value))
-      .catch(err => {
-        errorMessage('Sorry an error occurred');
-        console.error(err);
-      });
+    // fetch('/api/volunteer-logs/' + value)
+    //   .then(data => data.json())
+    //   .then(data => setDataForTable(convertVolunteerLogDataToRowData(data)))
+    //   .then(() => setStatus(value))
+    //   .catch(err => {
+    //     errorMessage('Sorry an error occurred');
+    //     console.error(err);
+    //   });
   };
 
-  const [dataForTable, setDataForTable] = useState<VolunteerLogRowData[]>([]);
+  const [dataForTable, setDataForTable] = useState<any[]>([]);
 
-  const columns: ColumnsType<VolunteerLogRowData> = [
+  const defaultColumns: ColumnsType<any> = [
     {
       title: 'Volunteer',
       dataIndex: 'userName',
@@ -69,43 +92,13 @@ const ApplicationTableImpl = () => {
       ellipsis: true,
     },
     {
-      title: 'Event',
-      dataIndex: 'eventName',
-      key: 'eventName',
-      ...getColumnSearchProps('eventName'),
-      ellipsis: true,
-    },
-    {
-      title: 'Date attended',
-      dataIndex: 'date',
-      key: 'date',
-      // Custom sorter based on date values
-      sorter: (a: VolunteerLogRowData, b: VolunteerLogRowData) => {
-        return a.date.getTime() - b.date.getTime();
-      },
-      // Configuring the sort order based on the 'date' column
-      sortOrder: sortedInfo.columnKey === 'date' ? sortedInfo.order : null,
-
-      render(_: any, { date }: VolunteerLogRowData) {
-        return <>{date.toLocaleString('en-US', LOCALE_DATE_FORMAT)}</>;
-      },
-    },
-    {
-      title: 'Hours',
-      dataIndex: 'hours',
-      key: 'hours',
-    },
-    {
-      title: 'Books Donated',
-      dataIndex: 'numBooks',
-      key: 'numBooks',
-    },
-    {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
     },
   ];
+
+  const [columns, setColumns] = useState<ColumnsType<any>>(defaultColumns);
 
   useEffect(() => {
     fetch('/api/event/' + event._id + '/applications')
@@ -137,7 +130,7 @@ const ApplicationTableImpl = () => {
             onChange={handleChange}
             columns={columns}
             pagination={false}
-            scroll={{ y: 700 }}
+            scroll={{ y: 700, x: tableWidth }}
           />
         </div>
       </TableContainer>

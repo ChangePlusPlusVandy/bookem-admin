@@ -12,7 +12,7 @@ export default async function handler(
 ) {
   // Get request parameter
   const {
-    query: { id },
+    query: { id, status },
     method,
   } = req;
 
@@ -30,7 +30,7 @@ export default async function handler(
         await ApplicationResponse.findOne();
         await Users.findOne();
 
-        const application = await VolunteerApplications.find({
+        const application = await VolunteerApplications.findOne({
           event: id,
         })
           .populate({
@@ -40,6 +40,7 @@ export default async function handler(
               model: 'User',
               select: 'name email',
             },
+            match: { status },
           })
           .exec();
 

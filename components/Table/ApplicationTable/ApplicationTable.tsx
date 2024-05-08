@@ -20,9 +20,7 @@ import ApplicationTableImpl from './ApplicationTableImpl';
 import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
 
 export const ApplicationTableContext = createContext<{
-  getColumnSearchProps: (
-    dataIndex: VolunteerLogDataIndex
-  ) => ColumnType<VolunteerLogRowData>;
+  getColumnSearchProps: (dataIndex: any) => ColumnType<VolunteerLogRowData>;
   rowSelection: any;
   sortedInfo: SorterResult<VolunteerLogRowData>;
   handleChange: TableProps<VolunteerLogRowData>['onChange'];
@@ -61,14 +59,6 @@ const ApplicationTable = ({ event }: { event: QueriedVolunteerEventDTO }) => {
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
-  };
-
-  const handleApproveLog = () => {
-    console.log(selectedRowKeys);
-  };
-
-  const handleRejectLog = () => {
-    console.log(selectedRowKeys);
   };
 
   const handleChange: TableProps<VolunteerLogRowData>['onChange'] = (
