@@ -17,6 +17,7 @@ import {
   VolunteerLogRowData,
 } from '@/utils/table-types';
 import ApplicationTableImpl from './ApplicationTableImpl';
+import { QueriedVolunteerEventDTO } from 'bookem-shared/src/types/database';
 
 export const ApplicationTableContext = createContext<{
   getColumnSearchProps: (
@@ -27,6 +28,7 @@ export const ApplicationTableContext = createContext<{
   handleChange: TableProps<VolunteerLogRowData>['onChange'];
   successMessage: (str: string) => void;
   errorMessage: (str: string) => void;
+  event: QueriedVolunteerEventDTO;
 }>({
   getColumnSearchProps: () => ({}),
   rowSelection: {},
@@ -34,9 +36,10 @@ export const ApplicationTableContext = createContext<{
   handleChange: () => {},
   successMessage: () => {},
   errorMessage: () => {},
+  event: {} as QueriedVolunteerEventDTO,
 });
 
-const ApplicationTable = () => {
+const ApplicationTable = ({ event }: { event: QueriedVolunteerEventDTO }) => {
   const [filterTable, setFilterTable] = useState<VolunteerLogRowData[]>([]);
   const [isFiltering, setIsFilter] = useState<boolean>(false);
   const [filteredInfo, setFilteredInfo] = useState<
@@ -243,6 +246,7 @@ const ApplicationTable = () => {
           handleChange,
           successMessage,
           errorMessage,
+          event,
         }}>
         <TableContainer>
           <ApplicationTableImpl />

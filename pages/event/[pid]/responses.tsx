@@ -17,7 +17,7 @@ export default function VolunteerApplicationResponses() {
     isLoading,
   } = useSWR<QueriedVolunteerEventDTO>('/api/event/' + pid, fetcher);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (!event || isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading event</div>;
 
   return (
@@ -32,9 +32,9 @@ export default function VolunteerApplicationResponses() {
             }}>
             <Image src="/event/arrow-left.svg" alt="" width={48} height={48} />
           </Link>
-          <PageTitle>Applications to {event?.name}</PageTitle>
+          <PageTitle>Applications to {event.name}</PageTitle>
         </div>
-        <ApplicationTable />
+        <ApplicationTable event={event} />
       </PageLayout>
     </>
   );

@@ -27,8 +27,8 @@ export default async function handler(
       try {
         await dbConnect();
 
-        await ApplicationResponse.find();
-        await Users.find();
+        await ApplicationResponse.findOne();
+        await Users.findOne();
 
         const application = await VolunteerApplications.find({
           event: id,

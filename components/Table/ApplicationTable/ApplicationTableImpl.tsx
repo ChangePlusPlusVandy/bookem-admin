@@ -1,6 +1,9 @@
 import { VolunteerLogRowData } from '@/utils/table-types';
 import { fetcher } from '@/utils/utils';
-import { QueriedVolunteerLogDTO } from 'bookem-shared/src/types/database';
+import {
+  QueriedVolunteerApplicationData,
+  QueriedVolunteerLogDTO,
+} from 'bookem-shared/src/types/database';
 import React, { useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import Link from 'next/link';
@@ -19,6 +22,7 @@ const ApplicationTableImpl = () => {
     sortedInfo,
     handleChange,
     errorMessage,
+    event,
   } = useContext(ApplicationTableContext);
 
   const [status, setStatus] = useState<string>('pending');
@@ -102,6 +106,13 @@ const ApplicationTableImpl = () => {
       key: 'status',
     },
   ];
+
+  useEffect(() => {
+    fetch('/api/event/' + event._id + '/applications')
+      .then(res => res.json())
+      .then(console.log);
+  });
+
   // Refetch data when data is updated
   useEffect(() => {
     mutate();
