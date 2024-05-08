@@ -18,7 +18,7 @@ import {
 } from '@/utils/table-types';
 import ApplicationTableImpl from './ApplicationTableImpl';
 
-export const VolunteerLogTableContext = createContext<{
+export const ApplicationTableContext = createContext<{
   getColumnSearchProps: (
     dataIndex: VolunteerLogDataIndex
   ) => ColumnType<VolunteerLogRowData>;
@@ -235,7 +235,7 @@ const ApplicationTable = () => {
   return (
     <>
       {contextHolder}
-      <VolunteerLogTableContext.Provider
+      <ApplicationTableContext.Provider
         value={{
           getColumnSearchProps,
           rowSelection,
@@ -247,7 +247,7 @@ const ApplicationTable = () => {
         <TableContainer>
           <ApplicationTableImpl />
         </TableContainer>
-      </VolunteerLogTableContext.Provider>
+      </ApplicationTableContext.Provider>
     </>
   );
 };

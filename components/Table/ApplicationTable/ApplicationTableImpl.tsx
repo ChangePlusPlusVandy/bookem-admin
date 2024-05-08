@@ -8,7 +8,7 @@ import { Table } from 'antd';
 import { convertVolunteerLogDataToRowData } from '@/utils/table-utils';
 import { TableContainer } from '@/styles/table.styles';
 import { ColumnsType, Key } from 'antd/es/table/interface';
-import { VolunteerLogTableContext } from './ApplicationTable';
+import { ApplicationTableContext } from './ApplicationTable';
 import { LOCALE_DATE_FORMAT } from '@/utils/constants';
 import TableHeader from './TableHeader';
 
@@ -19,7 +19,7 @@ const ApplicationTableImpl = () => {
     sortedInfo,
     handleChange,
     errorMessage,
-  } = useContext(VolunteerLogTableContext);
+  } = useContext(ApplicationTableContext);
 
   const [status, setStatus] = useState<string>('pending');
   const { data, error, isLoading, mutate } = useSWR<QueriedVolunteerLogDTO[]>(

@@ -5,7 +5,7 @@ import {
 import { Button, Popconfirm, Select } from 'antd';
 import { VolunteerLogStatus } from 'bookem-shared/src/types/database';
 import React, { useContext, useEffect, useState } from 'react';
-import { VolunteerLogTableContext } from './ApplicationTable';
+import { ApplicationTableContext } from './ApplicationTable';
 import { error } from 'console';
 
 const TableHeader = ({
@@ -18,7 +18,7 @@ const TableHeader = ({
   status: string;
 }) => {
   const { rowSelection, errorMessage, successMessage } = useContext(
-    VolunteerLogTableContext
+    ApplicationTableContext
   );
 
   const [statusOptions, setStatusOptions] = useState<any[]>([]);
