@@ -37,24 +37,28 @@ const ApplicationTableImpl = () => {
       {
         onSuccess: data => {
           // setDataForTable(convertVolunteerLogDataToRowData(data));
-          // console.log(data);
+          console.log(data);
 
           const newColumns: any[] = [];
-          data.questions.forEach(question => {
+          data.questions.forEach((question, index) => {
             newColumns.push({
               title: question.title,
-              dataIndex: question,
               key: question._id,
-              ...getColumnSearchProps(question.title),
+              // ...getColumnSearchProps(question.title),
+              render: (_: any, { answers }: any) => {
+                return <>{answers[index].text.join(', ')}</>;
+              },
               ellipsis: false,
             });
           });
 
           const finalColumns = [...defaultColumns, ...newColumns];
+          // Hacky way to auto-extend table width since ANTD doesn't support it
           setTableWidth(
             calculateTotalCharacters(finalColumns.map(c => c.title)) * 15
           );
           setColumns(finalColumns);
+          setDataForTable(data.responses);
         },
         revalidateOnFocus: true,
         revalidateOnReconnect: true,
@@ -62,14 +66,21 @@ const ApplicationTableImpl = () => {
     );
 
   const handleSelectStatus = (value: string) => {
-    // fetch('/api/volunteer-logs/' + value)
-    //   .then(data => data.json())
-    //   .then(data => setDataForTable(convertVolunteerLogDataToRowData(data)))
-    //   .then(() => setStatus(value))
-    //   .catch(err => {
-    //     errorMessage('Sorry an error occurred');
-    //     console.error(err);
-    //   });
+    fetch(
+      '/api/event/' +
+        event._id +
+        '/applications?' +
+        new URLSearchParams({ status: value })
+    )
+      .then(data => data.json())
+      .then(data => {
+        setDataForTable(data.responses);
+        setStatus(value);
+      })
+      .catch(err => {
+        errorMessage('Sorry an error occurred');
+        console.error(err);
+      });
   };
 
   const [dataForTable, setDataForTable] = useState<any[]>([]);
@@ -77,17 +88,17 @@ const ApplicationTableImpl = () => {
   const defaultColumns: ColumnsType<any> = [
     {
       title: 'Volunteer',
-      dataIndex: 'userName',
+      dataIndex: ['user', 'name'],
       key: 'userName',
       ...getColumnSearchProps('userName'),
       ellipsis: true,
     },
     {
       title: 'Volunteer Email',
-      dataIndex: 'userEmail',
+      dataIndex: ['user', 'email'],
       key: 'userEmail',
-      render(_: any, { userEmail }: VolunteerLogRowData) {
-        return <Link href={'mailto:' + userEmail}>{userEmail}</Link>;
+      render(_: any, { user }) {
+        return <Link href={'mailto:' + user.email}>{user.email}</Link>;
       },
       ellipsis: true,
     },
