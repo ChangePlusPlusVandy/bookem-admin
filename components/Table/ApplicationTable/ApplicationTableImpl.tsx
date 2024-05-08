@@ -48,7 +48,7 @@ const ApplicationTableImpl = () => {
               render: (_: any, { answers }: any) => {
                 return <>{answers[index].text.join(', ')}</>;
               },
-              ellipsis: false,
+              ellipsis: true,
             });
           });
 
