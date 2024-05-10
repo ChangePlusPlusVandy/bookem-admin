@@ -41,38 +41,25 @@ const ApplicationTableImpl = () => {
       {
         onSuccess: data => {
           // setDataForTable(convertVolunteerLogDataToRowData(data));
-          console.log(data);
+          // console.log(data);
 
           const newColumns: any[] = [];
 
-          for (let i = 0; i < data.questions.length; ++i) {
-            console.log(data.responses[i]);
+          data.questions.forEach((question, index) => {
             newColumns.push({
-              title: data.questions[i].title,
-              dataIndex: i,
-              key: i,
+              title: question.title,
+              dataIndex: index,
+              key: index,
               render: (_: any, { answers }: any) => {
-                return <>{answers[i].text.join(', ')}</>;
+                return <>{answers[index].text.join(', ')}</>;
               },
               ellipsis: true,
             });
-          }
-
-          // data.questions.forEach((question, index) => {
-          //   newColumns.push({
-          //     title: question.title,
-          //     dataIndex: index,
-          //     key: index,
-          //     render: (_: any, { answers }: any) => {
-          //       return <>{answers[index].text.join(', ')}</>;
-          //     },
-          //     ellipsis: true,
-          //   });
-          // });
+          });
 
           const finalColumns = [...defaultColumns, ...newColumns];
 
-          console.log(finalColumns);
+          // console.log(finalColumns);
           // Hacky way to auto-extend table width since ANTD doesn't support it
           setTableWidth(
             calculateTotalCharacters(finalColumns.map(c => c.title)) * 15

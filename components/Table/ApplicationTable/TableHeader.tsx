@@ -17,7 +17,7 @@ const TableHeader = ({
   mutate: () => void;
   status: string;
 }) => {
-  const { rowSelection, errorMessage, successMessage } = useContext(
+  const { rowSelection, errorMessage, successMessage, event } = useContext(
     ApplicationTableContext
   );
 
@@ -35,31 +35,31 @@ const TableHeader = ({
       return;
     }
 
-    // fetch('/api/volunteer-logs/approved', {
-    //   method: 'PUT',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(rowSelection.selectedRowKeys),
-    // })
-    //   .then(response => {
-    //     if (!response.ok) {
-    //       throw new Error('Failed to approve hours');
-    //     }
-    //     return response.json();
-    //   })
-    //   .then(data => {
-    //     if (data.status === 'error') {
-    //       errorMessage(data.message);
-    //     } else {
-    //       successMessage(data.message);
-    //     }
-    //   })
-    //   .then(() => mutate())
-    //   .catch(err => {
-    //     errorMessage('Sorry an error occurred');
-    //     console.error(err);
-    //   });
+    fetch('/api/event/' + event._id + '/application/approve', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(rowSelection.selectedRowKeys),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to approve hours');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.status === 'error') {
+          errorMessage(data.message);
+        } else {
+          successMessage(data.message);
+        }
+      })
+      .then(() => mutate())
+      .catch(err => {
+        errorMessage('Sorry an error occurred');
+        console.error(err);
+      });
     console.log(rowSelection);
   };
 
@@ -68,31 +68,31 @@ const TableHeader = ({
       errorMessage('No rows selected');
       return;
     }
-    // fetch('/api/volunteer-logs/rejected', {
-    //   method: 'PUT',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(rowSelection.selectedRowKeys),
-    // })
-    //   .then(response => {
-    //     if (!response.ok) {
-    //       throw new Error('Failed to reject hours');
-    //     }
-    //     return response.json();
-    //   })
-    //   .then(data => {
-    //     if (data.status === 'error') {
-    //       errorMessage(data.message);
-    //     } else {
-    //       successMessage(data.message);
-    //     }
-    //   })
-    //   .then(() => mutate())
-    //   .catch(err => {
-    //     errorMessage('Sorry an error occurred');
-    //     console.error(err);
-    //   });
+    fetch('/api/event/' + event._id + '/application/reject', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(rowSelection.selectedRowKeys),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to reject hours');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.status === 'error') {
+          errorMessage(data.message);
+        } else {
+          successMessage(data.message);
+        }
+      })
+      .then(() => mutate())
+      .catch(err => {
+        errorMessage('Sorry an error occurred');
+        console.error(err);
+      });
   };
 
   return (
@@ -109,8 +109,8 @@ const TableHeader = ({
         </SelectContainer>
 
         <Popconfirm
-          title="Approve the hours"
-          description="Are you sure to approve the selected hours"
+          title="Approve the applications"
+          description="Are you sure to approve the selected applications"
           onConfirm={handleApprove}
           okText="Yes"
           cancelText="No">
@@ -124,8 +124,8 @@ const TableHeader = ({
         </Popconfirm>
 
         <Popconfirm
-          title="Reject the hours"
-          description="Are you sure to reject the selected hours"
+          title="Reject the applications"
+          description="Are you sure to reject the selected applications"
           onConfirm={handleReject}
           okText="Yes"
           cancelText="No">
