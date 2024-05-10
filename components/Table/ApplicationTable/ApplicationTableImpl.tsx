@@ -1,6 +1,7 @@
 import { VolunteerLogRowData } from '@/utils/table-types';
 import { calculateTotalCharacters, fetcher } from '@/utils/utils';
 import {
+  QueriedApplicationResponseData,
   QueriedVolunteerApplicationData,
   QueriedVolunteerLogDTO,
 } from 'bookem-shared/src/types/database';
@@ -8,7 +9,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import Link from 'next/link';
 import { Table } from 'antd';
-import { convertVolunteerLogDataToRowData } from '@/utils/table-utils';
+import {
+  convertResponseDataToRowData,
+  convertVolunteerLogDataToRowData,
+} from '@/utils/table-utils';
 import { TableContainer } from '@/styles/table.styles';
 import { ColumnsType, Key } from 'antd/es/table/interface';
 import { ApplicationTableContext } from './ApplicationTable';
@@ -40,25 +44,41 @@ const ApplicationTableImpl = () => {
           console.log(data);
 
           const newColumns: any[] = [];
-          data.questions.forEach((question, index) => {
+
+          for (let i = 0; i < data.questions.length; ++i) {
+            console.log(data.responses[i]);
             newColumns.push({
-              title: question.title,
-              key: question._id,
-              // ...getColumnSearchProps(question.title),
+              title: data.questions[i].title,
+              dataIndex: i,
+              key: i,
               render: (_: any, { answers }: any) => {
-                return <>{answers[index].text.join(', ')}</>;
+                return <>{answers[i].text.join(', ')}</>;
               },
               ellipsis: true,
             });
-          });
+          }
+
+          // data.questions.forEach((question, index) => {
+          //   newColumns.push({
+          //     title: question.title,
+          //     dataIndex: index,
+          //     key: index,
+          //     render: (_: any, { answers }: any) => {
+          //       return <>{answers[index].text.join(', ')}</>;
+          //     },
+          //     ellipsis: true,
+          //   });
+          // });
 
           const finalColumns = [...defaultColumns, ...newColumns];
+
+          console.log(finalColumns);
           // Hacky way to auto-extend table width since ANTD doesn't support it
           setTableWidth(
             calculateTotalCharacters(finalColumns.map(c => c.title)) * 15
           );
           setColumns(finalColumns);
-          setDataForTable(data.responses);
+          setDataForTable(convertResponseDataToRowData(data.responses));
         },
         revalidateOnFocus: true,
         revalidateOnReconnect: true,
@@ -123,7 +143,10 @@ const ApplicationTableImpl = () => {
   }, [mutate, data]);
 
   // check for errors and loading
-  if (error) return <div>Failed to load event table</div>;
+  if (error) {
+    console.error(error);
+    return <div>Failed to load application table</div>;
+  }
   if (isLoading) return <div>Loading...</div>;
 
   return (

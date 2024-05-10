@@ -35,31 +35,32 @@ const TableHeader = ({
       return;
     }
 
-    fetch('/api/volunteer-logs/approved', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(rowSelection.selectedRowKeys),
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to approve hours');
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data.status === 'error') {
-          errorMessage(data.message);
-        } else {
-          successMessage(data.message);
-        }
-      })
-      .then(() => mutate())
-      .catch(err => {
-        errorMessage('Sorry an error occurred');
-        console.error(err);
-      });
+    // fetch('/api/volunteer-logs/approved', {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(rowSelection.selectedRowKeys),
+    // })
+    //   .then(response => {
+    //     if (!response.ok) {
+    //       throw new Error('Failed to approve hours');
+    //     }
+    //     return response.json();
+    //   })
+    //   .then(data => {
+    //     if (data.status === 'error') {
+    //       errorMessage(data.message);
+    //     } else {
+    //       successMessage(data.message);
+    //     }
+    //   })
+    //   .then(() => mutate())
+    //   .catch(err => {
+    //     errorMessage('Sorry an error occurred');
+    //     console.error(err);
+    //   });
+    console.log(rowSelection);
   };
 
   const handleReject = () => {
@@ -67,31 +68,31 @@ const TableHeader = ({
       errorMessage('No rows selected');
       return;
     }
-    fetch('/api/volunteer-logs/rejected', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(rowSelection.selectedRowKeys),
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to reject hours');
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data.status === 'error') {
-          errorMessage(data.message);
-        } else {
-          successMessage(data.message);
-        }
-      })
-      .then(() => mutate())
-      .catch(err => {
-        errorMessage('Sorry an error occurred');
-        console.error(err);
-      });
+    // fetch('/api/volunteer-logs/rejected', {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(rowSelection.selectedRowKeys),
+    // })
+    //   .then(response => {
+    //     if (!response.ok) {
+    //       throw new Error('Failed to reject hours');
+    //     }
+    //     return response.json();
+    //   })
+    //   .then(data => {
+    //     if (data.status === 'error') {
+    //       errorMessage(data.message);
+    //     } else {
+    //       successMessage(data.message);
+    //     }
+    //   })
+    //   .then(() => mutate())
+    //   .catch(err => {
+    //     errorMessage('Sorry an error occurred');
+    //     console.error(err);
+    //   });
   };
 
   return (
