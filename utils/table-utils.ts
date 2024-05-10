@@ -60,3 +60,10 @@ export const convertVolunteerLogDataToRowData = (
     };
   });
 };
+
+export const convertResponseDataToRowData = (data: any[]) => {
+  return data.map(response => ({
+    ...response,
+    key: response._id.toString(),
+  }));
+};

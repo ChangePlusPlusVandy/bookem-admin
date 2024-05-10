@@ -4,6 +4,8 @@ import {
   QueriedAdminData,
   QueriedUserData,
   QueriedVolunteerLogDTO,
+  QueriedVolunteerApplicationData,
+  ApplicationResponseData,
 } from 'bookem-shared/src/types/database';
 import { ObjectId } from 'mongodb';
 

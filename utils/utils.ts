@@ -61,3 +61,16 @@ export const handleExport = (fileName: string) => {
   });
   saveAs(blob, fileName + '.xlsx');
 };
+
+/**
+ * Calculate the total number of characters in an array of strings
+ * @param strings Array of strings
+ * @returns
+ */
+export const calculateTotalCharacters = (strings: string[]): number => {
+  let totalCharacters = 0;
+  strings.forEach(str => {
+    totalCharacters += str.length;
+  });
+  return totalCharacters;
+};
