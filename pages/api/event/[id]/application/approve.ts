@@ -21,6 +21,12 @@ export default async function handler(
   } = req;
 
   switch (method) {
+    /**
+     * @route PUT /api/event/[id]/application/approve
+     * @desc update the status of a response to approved
+     * @req responseIds (array of response ids)
+     * @res a message telling whether the response is updated
+     */
     case 'PUT':
       try {
         await dbConnect();
