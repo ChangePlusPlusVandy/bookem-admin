@@ -13,11 +13,12 @@ import {
 } from 'bookem-shared/src/types/database';
 import { useRouter } from 'next/router';
 import mongoose from 'mongoose';
-import { message } from 'antd';
+import { Modal, message } from 'antd';
 import {
   convertApplicationToSurveyQuestions,
   convertSurveyToApplicationQuestions,
 } from '@/utils/application-utils';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 //remove a property to the page object. You can't set it in JSON as well
 Serializer.removeProperty('panelbase', 'visibleIf');
@@ -34,7 +35,20 @@ export default function SurveyCreatorWidget() {
   const router = useRouter();
   const { pid } = router.query;
 
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi, messageContextHolder] = message.useMessage();
+  const [modal, modalContextHolder] = Modal.useModal();
+  const confirm = () => {
+    modal.confirm({
+      title: 'Confirm',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Make sure you have saved the application',
+      okText: 'Yes',
+      onOk() {
+        router.back();
+      },
+      cancelText: 'Cancel',
+    });
+  };
 
   useEffect(() => {
     const creator = new SurveyCreator(creatorOptions);
@@ -146,7 +160,7 @@ export default function SurveyCreatorWidget() {
     });
     // setCreator(creator);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pid, messageApi]);
+  }, [pid]);
 
   const [creator, setCreator] = useState<SurveyCreator | null>(null);
 
@@ -154,15 +168,19 @@ export default function SurveyCreatorWidget() {
 
   return (
     <>
-      {contextHolder}
-      <Link
-        href="#"
-        onClick={() => window.history.back()}
+      {messageContextHolder}
+      {modalContextHolder}
+      <Image
+        onClick={confirm}
+        src="/event/arrow-left.svg"
+        alt=""
+        width={48}
+        height={48}
         style={{
           margin: '0 0 0 20px',
-        }}>
-        <Image src="/event/arrow-left.svg" alt="" width={48} height={48} />
-      </Link>
+          cursor: 'pointer',
+        }}
+      />
       <SurveyCreatorComponent creator={creator} />
     </>
   );
