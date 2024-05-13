@@ -107,6 +107,7 @@ export default function SurveyCreatorWidget() {
     creator.showSaveButton = true;
     creator.saveSurveyFunc = (saveNo, callback) => {
       const surveyQuestions = JSON.parse(creator.text);
+      if (!surveyQuestions.pages) return;
 
       const newApplication: VolunteerApplicationData = {
         questions: convertSurveyToApplicationQuestions(surveyQuestions),
