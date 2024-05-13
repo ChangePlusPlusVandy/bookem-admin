@@ -34,6 +34,8 @@ export default async function handler(
         const session = await mongoose.startSession();
         await session.withTransaction(async () => {
           const responseIds = req.body as string[];
+
+          // Update the status of the responses to approved
           const updated = await ApplicationResponse.updateMany(
             { _id: { $in: responseIds } },
             { status: 'approved' }
@@ -47,6 +49,7 @@ export default async function handler(
 
           await Promise.all(
             responseIds.map(async responseId => {
+              // Find the response
               const response = await ApplicationResponse.findById(responseId);
               if (!response) {
                 await session.abortTransaction();
@@ -55,6 +58,7 @@ export default async function handler(
                   .json({ message: 'Response not found', status: 'error' });
               }
 
+              // Update Users and Events collections
               const [user, event] = await Promise.all([
                 Users.findById(response.user),
                 VolunteerEvents.findById(response.event),
