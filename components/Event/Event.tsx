@@ -68,8 +68,18 @@ const Event = ({ pid }: { pid: string }) => {
     confirm({
       title: 'Are you sure about publishing this event?',
       icon: <ExclamationCircleFilled />,
-      content:
-        "After the event is published, you will no longer be able to modify the application questions, but you can still edit the event details using 'Edit Event' button",
+      content: (
+        <>
+          <p>
+            <b>This action cannot be undone! </b>
+          </p>
+          <p>
+            After the event is published, you will no longer be able to modify
+            the application questions, but you can still edit the event details
+            using &apos;Edit Event&apos; button
+          </p>
+        </>
+      ),
       okText: 'Yes',
       cancelText: 'No',
       onOk() {
