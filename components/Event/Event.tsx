@@ -26,6 +26,7 @@ import { BOOKEM_THEME } from '@/utils/constants';
 import {
   CheckCircleOutlined,
   ExclamationCircleFilled,
+  InfoCircleOutlined,
 } from '@ant-design/icons';
 
 const { confirm } = Modal;
@@ -145,9 +146,13 @@ const Event = ({ pid }: { pid: string }) => {
             {event.volunteers.length} / {event.maxSpot} spots filled
           </SpotsFilled>
           <Flex style={{ margin: '0 0 10px 50px' }} gap="4px 0" wrap="wrap">
-            {event.published && (
+            {event.published ? (
               <Tag icon={<CheckCircleOutlined />} color="success">
                 published
+              </Tag>
+            ) : (
+              <Tag icon={<InfoCircleOutlined />} color="processing">
+                unpublished
               </Tag>
             )}
           </Flex>
