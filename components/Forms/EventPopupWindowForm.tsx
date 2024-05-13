@@ -126,7 +126,8 @@ const EventPopupWindowForm = ({
       },
       body: JSON.stringify(data),
     })
-      .then(() => {
+      .then(res => res.json())
+      .then(data => {
         setLoading(false);
         setShowPopup(false);
         mutate();
@@ -134,6 +135,8 @@ const EventPopupWindowForm = ({
           type: 'success',
           content: 'Event has been created',
         });
+        // redirect to the new event
+        router.push(`/event/${data._id}`);
       })
       .catch(err => {
         console.error(err);
