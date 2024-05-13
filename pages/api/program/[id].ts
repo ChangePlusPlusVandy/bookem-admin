@@ -6,6 +6,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]';
 import VolunteerEvents from 'bookem-shared/src/models/VolunteerEvents';
+import mongoose from 'mongoose';
 
 export default async function handler(
   req: NextApiRequest,
@@ -142,27 +143,26 @@ export default async function handler(
         await dbConnect();
 
         // Start Transaction
-        const session = await VolunteerEvents.startSession();
-        session.startTransaction();
+        const session = await mongoose.startSession();
+        session.withTransaction(async () => {
+          // Delete program from Program collection
+          const deletedProgram = await VolunteerPrograms.findByIdAndDelete(id);
+          if (!deletedProgram) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(400).json({ message: 'Program not found' });
+          }
 
-        // Delete program from Program collection
-        const deletedProgram = await VolunteerPrograms.findByIdAndDelete(id);
-        if (!deletedProgram) {
-          await session.abortTransaction();
-          session.endSession();
-          return res.status(400).json({ message: 'Program not found' });
-        }
-
-        // Delete program from Events collection
-        const events = await VolunteerEvents.find({ program: id });
-        const updatePromises = events.map(async event => {
-          event.program = undefined;
-          await event.save();
+          // Delete program from Events collection
+          const events = await VolunteerEvents.find({ program: id });
+          const updatePromises = events.map(async event => {
+            event.program = undefined;
+            event.save();
+          });
+          await Promise.all(updatePromises);
         });
-        await Promise.all(updatePromises);
 
-        // Commit transaction
-        await session.commitTransaction();
+        // End Transaction
         session.endSession();
         res.status(200).json({ message: 'Program deleted successfully' });
       } catch (error) {

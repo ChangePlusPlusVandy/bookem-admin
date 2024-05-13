@@ -140,7 +140,7 @@ export default async function handler(
             ]);
           }
         });
-
+        session.endSession();
         return res.status(200).json({ message: 'Event deleted successfully' });
       } catch (error) {
         console.error(error);
