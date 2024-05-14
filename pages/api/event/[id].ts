@@ -7,6 +7,9 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]';
 import VolunteerPrograms from 'bookem-shared/src/models/VolunteerPrograms';
+import VolunteerApplications from 'bookem-shared/src/models/VolunteerApplications';
+import mongoose from 'mongoose';
+import ApplicationResponse from 'bookem-shared/src/models/ApplicationResponse';
 
 export default async function handler(
   req: NextApiRequest,
@@ -102,11 +105,43 @@ export default async function handler(
       break;
     case 'DELETE':
       try {
-        const deletedEvent = await VolunteerEvents.findByIdAndDelete(id);
-        if (!deletedEvent) {
-          return res.status(400).json({ message: 'Event not found' });
-        }
-        res.status(200).json({ message: 'Event deleted successfully' });
+        const session = await mongoose.startSession();
+        await session.withTransaction(async () => {
+          const deletedApplication = await VolunteerApplications.findOne({
+            event: id,
+          });
+
+          const deletedEvent = await VolunteerEvents.findByIdAndDelete(id);
+          if (!deletedEvent) {
+            await session.abortTransaction();
+            return res.status(400).json({ message: 'Event not found' });
+          }
+
+          if (deletedApplication) {
+            await Promise.all([
+              ...deletedApplication.responses.map(async responseId => {
+                // Find responses to this application
+                const response = await ApplicationResponse.findById(responseId);
+                if (response) {
+                  // Update User collection
+                  const user = await Users.findById(response.user);
+                  if (user) {
+                    user.events = user.events.filter(
+                      eventId => eventId.toString() !== id
+                    );
+                    user.save();
+                  }
+                  // Remove response
+                  response.remove();
+                }
+              }),
+              // Remove Application
+              deletedApplication.remove(),
+            ]);
+          }
+        });
+        session.endSession();
+        return res.status(200).json({ message: 'Event deleted successfully' });
       } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Sorry an error occurred' });

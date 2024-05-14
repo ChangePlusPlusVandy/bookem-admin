@@ -126,7 +126,8 @@ const EventPopupWindowForm = ({
       },
       body: JSON.stringify(data),
     })
-      .then(() => {
+      .then(res => res.json())
+      .then(data => {
         setLoading(false);
         setShowPopup(false);
         mutate();
@@ -134,6 +135,8 @@ const EventPopupWindowForm = ({
           type: 'success',
           content: 'Event has been created',
         });
+        // redirect to the new event
+        router.push(`/event/${data._id}`);
       })
       .catch(err => {
         console.error(err);
@@ -173,7 +176,7 @@ const EventPopupWindowForm = ({
       email: data.email,
       startDate: data.dateRange[0].format(),
       endDate: data.dateRange[1].format(),
-      published: false,
+      published: event ? event.published : false,
     };
     console.log(modifiedData);
 

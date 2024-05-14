@@ -26,6 +26,7 @@ import { BOOKEM_THEME } from '@/utils/constants';
 import {
   CheckCircleOutlined,
   ExclamationCircleFilled,
+  InfoCircleOutlined,
 } from '@ant-design/icons';
 
 const { confirm } = Modal;
@@ -67,8 +68,18 @@ const Event = ({ pid }: { pid: string }) => {
     confirm({
       title: 'Are you sure about publishing this event?',
       icon: <ExclamationCircleFilled />,
-      content:
-        "After the event is published, you will no longer be able to modify the application questions, but you can still edit the event details using 'Edit Event' button",
+      content: (
+        <>
+          <p>
+            <b>This action cannot be undone! </b>
+          </p>
+          <p>
+            After the event is published, you will no longer be able to modify
+            the application questions, but you can still edit the event details
+            using &apos;Edit Event&apos; button
+          </p>
+        </>
+      ),
       okText: 'Yes',
       cancelText: 'No',
       onOk() {
@@ -145,9 +156,13 @@ const Event = ({ pid }: { pid: string }) => {
             {event.volunteers.length} / {event.maxSpot} spots filled
           </SpotsFilled>
           <Flex style={{ margin: '0 0 10px 50px' }} gap="4px 0" wrap="wrap">
-            {event.published && (
+            {event.published ? (
               <Tag icon={<CheckCircleOutlined />} color="success">
                 published
+              </Tag>
+            ) : (
+              <Tag icon={<InfoCircleOutlined />} color="processing">
+                unpublished
               </Tag>
             )}
           </Flex>

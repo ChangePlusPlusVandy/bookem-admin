@@ -8,6 +8,7 @@ import {
   Button,
   Popconfirm,
   message,
+  Modal,
 } from 'antd';
 import type {
   ColumnType,
@@ -36,6 +37,7 @@ import AddEventPopupWindow from '@/components/Forms/AddEventPopupWindow';
 import mongoose from 'mongoose';
 import { LOCALE_DATE_FORMAT } from '@/utils/constants';
 import { EventTableContext } from './EventTable';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 /**
  * Contains the "UI" part of Event Table
@@ -70,6 +72,30 @@ const EventTableImpl = () => {
       revalidateOnReconnect: false,
     }
   );
+
+  /**
+   * Function to confirm the deletion of an event
+   * @param _id
+   */
+  const confirm = (_id: mongoose.Types.ObjectId) => {
+    modal.confirm({
+      title: 'Delete Event',
+      icon: <ExclamationCircleOutlined />,
+      content: (
+        <>
+          <p>Are you sure about deleting this event?</p>
+        </>
+      ),
+      okText: 'Delete',
+      okType: 'danger',
+      onOk() {
+        handleDeleteEvent(_id);
+      },
+      cancelText: 'Cancel',
+    });
+  };
+
+  const [modal, contextHolder] = Modal.useModal();
 
   // Refetch data when data is updated
   useEffect(() => {
@@ -222,14 +248,17 @@ const EventTableImpl = () => {
             <Link key={name} href={`/event/${_id.toString()}`}>
               See more
             </Link>
-            <Popconfirm
+            {/* <Popconfirm
               title="Delete the event"
               description="Are you sure to delete this event?"
               okText="Yes"
               cancelText="No"
               onConfirm={() => handleDeleteEvent(_id)}>
               <Button danger>Delete</Button>
-            </Popconfirm>
+            </Popconfirm> */}
+            <Button onClick={() => confirm(_id)} danger>
+              Delete
+            </Button>
           </SpaceBetweenFlexContainer>
         </>
       ),
@@ -238,6 +267,7 @@ const EventTableImpl = () => {
 
   return (
     <>
+      {contextHolder}
       {showPopup && (
         <EventPopupWindowForm
           setShowPopup={setShowPopup}
