@@ -51,7 +51,15 @@ const ApplicationTableImpl = () => {
               dataIndex: index,
               key: index,
               render: (_: any, { answers }: any) => {
-                return <>{answers[index].text.join(', ')}</>;
+                const answer = answers.find(
+                  (answer: any) => answer.questionId === question._id
+                );
+
+                if (answer) {
+                  return <>{answer.text.join(', ')}</>;
+                } else {
+                  return <></>;
+                }
               },
               ellipsis: false,
             });
